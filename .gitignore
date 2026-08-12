@@ -1,0 +1,37 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# Raw 3D scans: hundreds of megabytes, and Git keeps every version forever.
+# Only the reduced, stylised exports belong in the repository.
+assets/scans/
+*.ply
+
+# Original gallery photographs stay on this computer. Only the selected,
+# web-ready copies in src/assets/gallery/ belong in the repository.
+assets/gallery/
+
+# Local handover state and private working notes for future AI sessions.
+docs/starting-prompt.md
+docs/local/
