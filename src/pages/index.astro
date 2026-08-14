@@ -1,0 +1,306 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import "../styles/global.css";
+import cyclingRoute from "../assets/continue/cycling/shenzhen-bay-route.webp";
+import metabolisCover from "../assets/continue/metabolis/background-title-source.png";
+import galleryOne from "../assets/gallery/gallery-01.webp";
+import galleryTwo from "../assets/gallery/gallery-06.webp";
+import galleryThree from "../assets/gallery/gallery-12.webp";
+import galleryFour from "../assets/gallery/gallery-20.webp";
+
+const activities = (await getCollection("activities")).sort(
+  (left, right) => left.data.order - right.data.order,
+);
+
+const achievements = [
+  { award: "Outstanding", context: "International Mathematical Modeling Challenge · 2026" },
+  { award: "Finalist", context: "International Mathematical Modeling Challenge · 2026" },
+  { award: "Meritorious", context: "High School Mathematical Contest in Modeling · 2025" },
+  { award: "AIME II qualifier", context: "American Invitational Mathematics Examination · 2026" },
+];
+
+const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta
+      name="description"
+      content="Yanlang Liu — mathematics, artificial intelligence, research, and teaching."
+    />
+    <title>Yanlang Liu</title>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Back to the top">YL</a>
+      <nav aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#now">Now</a>
+      </nav>
+      <a class="room-link compact-room-link" href="/interactive">Interactive room <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="top">
+      <section class="hero page-width" aria-labelledby="hero-title">
+        <p class="eyebrow">Student portfolio · Shenzhen, China</p>
+        <div class="hero-copy">
+          <h1 id="hero-title">Yanlang Liu</h1>
+          <p class="hero-statement">
+            I study mathematics and artificial intelligence through building, teaching, and working with others.
+          </p>
+        </div>
+        <div class="hero-details">
+          <p>International Division<br />Shenzhen Middle School</p>
+          <p>Mathematics · AI · Research · Education</p>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="#work">View selected work <span aria-hidden="true">↓</span></a>
+          <a class="button secondary" href="/interactive">Explore the interactive room <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="about section page-width" id="about" aria-labelledby="about-title">
+        <p class="eyebrow">01 · About</p>
+        <div class="section-intro">
+          <h2 id="about-title">Learning how systems connect.</h2>
+          <p>
+            I am a seventeen-year-old student at Shenzhen Middle School. My work moves between mathematical ideas, artificial intelligence, and the practical questions that appear when people have to use what you build. I enjoy taking a difficult idea apart, finding the structure underneath it, and making it understandable to someone else.
+          </p>
+        </div>
+      </section>
+
+      <section class="work section page-width" id="work" aria-labelledby="work-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">02 · Selected work</p>
+            <h2 id="work-title">A few ways I learn by doing.</h2>
+          </div>
+          <p class="section-note">Each account below is complete enough to read here. The longer records remain available in the interactive room.</p>
+        </div>
+
+        <div class="work-list">
+          {
+            activities.map((activity) => (
+              <article class="work-item">
+                <div class="work-image">
+                  {activity.data.cover && (
+                    <Image
+                      src={activity.data.cover}
+                      alt={activity.data.coverAlt ?? ""}
+                      widths={[320, 480]}
+                      sizes="(max-width: 720px) 100vw, 30vw"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+                <div class="work-copy">
+                  <p class="eyebrow">{activity.data.category}</p>
+                  <h3>{activity.data.title}</h3>
+                  <p class="work-context">{activity.data.context}</p>
+                  <p class="work-summary">{activity.data.summary}</p>
+                  {activity.data.role && <p class="work-role"><strong>My role:</strong> {activity.data.role}</p>}
+                  <ul class="tag-list" aria-label={`${activity.data.title} topics`}>
+                    {activity.data.tags.map((tag) => <li>{tag}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="achievements section page-width" id="achievements" aria-labelledby="achievements-title">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">03 · Achievements</p>
+            <h2 id="achievements-title">Mathematical modelling and competition.</h2>
+          </div>
+          <p class="section-note">Team modelling has taught me to turn an open question into assumptions, a model, and a clear argument.</p>
+        </div>
+        <ol class="achievement-list">
+          {achievements.map((achievement, index) => (
+            <li>
+              <span class="achievement-number">{String(index + 1).padStart(2, "0")}</span>
+              <strong>{achievement.award}</strong>
+              <span>{achievement.context}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="now section page-width" id="now" aria-labelledby="now-title">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">04 · Current work</p>
+            <h2 id="now-title">What I am still building.</h2>
+          </div>
+          <p class="section-note">These are ongoing projects rather than a finished activity record.</p>
+        </div>
+        <div class="now-grid">
+          <article class="now-card">
+            <Image
+              src={metabolisCover}
+              alt="Pixel-art roads and vehicles from Metabolis"
+              widths={[520, 760]}
+              sizes="(max-width: 720px) 100vw, 50vw"
+              loading="lazy"
+            />
+            <div>
+              <p class="eyebrow">Game design</p>
+              <h3>Metabolis</h3>
+              <p>A strategy game that turns biological circulation and infrastructure into an evolving pixel-art city.</p>
+            </div>
+          </article>
+          <article class="now-card">
+            <Image
+              src={cyclingRoute}
+              alt="A privacy-cropped cycling route through Shenzhen"
+              widths={[520, 760]}
+              sizes="(max-width: 720px) 100vw, 50vw"
+              loading="lazy"
+            />
+            <div>
+              <p class="eyebrow">Cycling log</p>
+              <h3>327.3 km across 17 rides</h3>
+              <p>A personal record of routes through Shenzhen, kept as a visual archive rather than a performance feed.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="glimpses section page-width" aria-labelledby="glimpses-title">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">05 · Glimpses</p>
+            <h2 id="glimpses-title">Outside the work.</h2>
+          </div>
+          <p class="section-note">A small selection of photographs. The complete gallery is part of the interactive room.</p>
+        </div>
+        <div class="glimpse-grid">
+          {gallery.map((photo, index) => (
+            <Image
+              src={photo}
+              alt=""
+              widths={[260, 400]}
+              sizes="(max-width: 720px) 46vw, 22vw"
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section class="room-invitation page-width" aria-labelledby="room-title">
+        <div>
+          <p class="eyebrow">Optional exploration</p>
+          <h2 id="room-title">Prefer a more personal way to explore?</h2>
+        </div>
+        <div>
+          <p>The interactive room is a separate visual journey through the same work, projects, certificates, and photographs.</p>
+          <a class="button primary" href="/interactive">Enter the interactive room <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer page-width">
+      <p>Yanlang Liu · Shenzhen, China</p>
+      <a href="#top">Back to top ↑</a>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :global(html) { scroll-behavior: smooth; }
+  :global(body) { background: #faf6f1; }
+  .page-width { width: min(1120px, calc(100% - 56px)); margin: 0 auto; }
+  .site-header { position: sticky; z-index: 10; top: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: min(1240px, calc(100% - 40px)); min-height: 70px; margin: 0 auto; border-bottom: 1px solid #e8e0d6; background: color-mix(in srgb, #faf6f1 94%, transparent); backdrop-filter: blur(14px); }
+  .wordmark { width: max-content; font-weight: 800; font-size: .9rem; letter-spacing: -.07em; }
+  nav { display: flex; gap: 24px; font-size: .8rem; }
+  nav a, .room-link, .site-footer a { transition: color 180ms ease; }
+  nav a:hover, .room-link:hover, .site-footer a:hover { color: #c8552f; }
+  .room-link { justify-self: end; font-size: .75rem; font-weight: 650; }
+  .eyebrow { margin: 0; color: #8a817a; font-size: .71rem; font-weight: 700; letter-spacing: .08em; line-height: 1.4; text-transform: uppercase; }
+  .hero { display: flex; flex-direction: column; justify-content: center; min-height: min(690px, calc(100svh - 70px)); padding: 86px 0 70px; }
+  .hero-copy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr); gap: 50px; align-items: end; margin-top: 24px; }
+  h1, h2, h3, p { margin-top: 0; }
+  h1, h2, h3 { letter-spacing: -.05em; }
+  h1 { margin-bottom: 0; font-size: clamp(4.1rem, 10.2vw, 8.8rem); line-height: .82; }
+  h2 { max-width: 720px; margin-bottom: 0; font-size: clamp(2.3rem, 5.4vw, 4.6rem); line-height: .94; }
+  h3 { margin-bottom: 6px; font-size: clamp(1.6rem, 2.6vw, 2.35rem); line-height: 1; }
+  .hero-statement { max-width: 390px; margin: 0 0 3px; color: #554f49; font-size: clamp(1.05rem, 1.7vw, 1.35rem); line-height: 1.45; }
+  .hero-details { display: flex; gap: 48px; margin-top: 76px; color: #8a817a; font-size: .83rem; line-height: 1.5; }
+  .hero-details p { margin-bottom: 0; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+  .button { display: inline-flex; align-items: center; gap: 12px; width: max-content; min-height: 44px; padding: 0 17px; border: 1px solid #131211; font-size: .81rem; font-weight: 700; transition: background 180ms ease, color 180ms ease, transform 180ms ease; }
+  .button:hover { transform: translateY(-2px); }
+  .button.primary { background: #131211; color: #faf6f1; }
+  .button.primary:hover { border-color: #c8552f; background: #c8552f; }
+  .button.secondary:hover { border-color: #c8552f; color: #c8552f; }
+  .section { padding: 132px 0; border-top: 1px solid #e8e0d6; }
+  .section-intro { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); gap: 64px; align-items: start; margin-top: 22px; }
+  .section-intro > p { margin: 8px 0 0; color: #554f49; font-size: 1.05rem; line-height: 1.7; }
+  .section-heading { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(220px, .6fr); gap: 64px; align-items: end; }
+  .section-heading h2 { margin-top: 18px; }
+  .section-note { max-width: 320px; justify-self: end; margin: 0 0 5px; color: #8a817a; font-size: .86rem; line-height: 1.6; }
+  .work-list { margin-top: 70px; }
+  .work-item { display: grid; grid-template-columns: minmax(220px, .73fr) minmax(0, 1.27fr); gap: clamp(28px, 6vw, 82px); align-items: start; padding: 28px 0; border-top: 1px solid #e8e0d6; }
+  .work-item:last-child { border-bottom: 1px solid #e8e0d6; }
+  .work-image { background: #eee7df; }
+  .work-image :global(img) { display: block; width: 100%; aspect-ratio: 1.4 / 1; object-fit: cover; }
+  .work-context { margin-bottom: 17px; color: #8a817a; font-size: .82rem; }
+  .work-copy > .eyebrow { margin-bottom: 9px; }
+  .work-summary { max-width: 630px; margin: 20px 0 11px; font-size: 1rem; line-height: 1.65; }
+  .work-role { max-width: 700px; margin-bottom: 18px; color: #554f49; font-size: .87rem; line-height: 1.55; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 7px; padding: 0; margin: 0; list-style: none; }
+  .tag-list li { padding: 4px 8px; border: 1px solid #e0d7cd; color: #8a817a; font-size: .69rem; }
+  .achievement-list { padding: 0; margin: 62px 0 0; list-style: none; }
+  .achievement-list li { display: grid; grid-template-columns: 72px minmax(160px, .7fr) minmax(200px, 1.3fr); gap: 18px; align-items: baseline; padding: 20px 0; border-top: 1px solid #e8e0d6; }
+  .achievement-list li:last-child { border-bottom: 1px solid #e8e0d6; }
+  .achievement-number { color: #c8552f; font-size: .76rem; font-weight: 700; }
+  .achievement-list strong { font-size: 1rem; }
+  .achievement-list span:last-child { color: #8a817a; font-size: .84rem; line-height: 1.5; }
+  .now-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 62px; }
+  .now-card { display: grid; grid-template-rows: auto 1fr; border: 1px solid #e8e0d6; background: #fffdfa; }
+  .now-card :global(img) { display: block; width: 100%; aspect-ratio: 1.7 / 1; border-bottom: 1px solid #e8e0d6; object-fit: cover; }
+  .now-card > div { padding: 25px 26px 27px; }
+  .now-card .eyebrow { margin-bottom: 10px; }
+  .now-card h3 { font-size: 1.8rem; }
+  .now-card p:last-child { max-width: 420px; margin: 15px 0 0; color: #554f49; font-size: .9rem; line-height: 1.6; }
+  .glimpse-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 62px; }
+  .glimpse-grid :global(img) { display: block; width: 100%; aspect-ratio: .82; object-fit: cover; }
+  .room-invitation { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(260px, .65fr); gap: 70px; align-items: end; padding: 100px 0; border-top: 1px solid #e8e0d6; }
+  .room-invitation h2 { margin-top: 16px; font-size: clamp(2rem, 4.2vw, 3.65rem); }
+  .room-invitation > div:last-child > p { margin: 0 0 23px; color: #554f49; font-size: .95rem; line-height: 1.6; }
+  .site-footer { display: flex; justify-content: space-between; gap: 24px; padding: 26px 0 30px; border-top: 1px solid #e8e0d6; color: #8a817a; font-size: .76rem; }
+  .site-footer p { margin-bottom: 0; }
+  @media (max-width: 720px) {
+    .page-width { width: min(100% - 32px, 540px); }
+    .site-header { grid-template-columns: 1fr auto; width: min(100% - 28px, 570px); min-height: 59px; }
+    .site-header nav { display: none; }
+    .compact-room-link { font-size: .72rem; }
+    .hero { min-height: min(640px, calc(100svh - 59px)); padding: 74px 0 55px; }
+    .hero-copy, .section-intro, .section-heading, .room-invitation { grid-template-columns: 1fr; gap: 24px; }
+    h1 { font-size: clamp(3.8rem, 19vw, 5.6rem); }
+    h2 { font-size: clamp(2.25rem, 11.5vw, 3.5rem); }
+    .hero-details { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 56px; }
+    .section { padding: 82px 0; }
+    .section-note { justify-self: start; margin: 0; }
+    .work-list, .achievement-list, .now-grid, .glimpse-grid { margin-top: 42px; }
+    .work-item { grid-template-columns: 1fr; gap: 22px; padding: 20px 0 26px; }
+    .work-image :global(img) { aspect-ratio: 1.55 / 1; }
+    .achievement-list li { grid-template-columns: 42px 1fr; gap: 8px 12px; }
+    .achievement-list span:last-child { grid-column: 2; }
+    .now-grid { grid-template-columns: 1fr; gap: 14px; }
+    .now-card > div { padding: 21px; }
+    .glimpse-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .room-invitation { gap: 28px; padding: 77px 0; }
+    .site-footer { padding-bottom: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { :global(html) { scroll-behavior: auto; } }
+</style>

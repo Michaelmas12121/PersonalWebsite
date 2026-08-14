@@ -1,6 +1,7 @@
 ---
 title: "Teaching the mathematics behind AI"
 context: "Turing Society — president and instructor"
+category: "Leadership & Teaching"
 date: 2025-10-08
 order: 2
 summary: "I ran the society and taught it: machine learning foundations, how a neural network actually works, and image recognition worked through by hand."

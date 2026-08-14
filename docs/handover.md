@@ -9,21 +9,23 @@ longer live in the working tree.
 ## What this is
 
 This is a personal site for a 17-year-old applying to universities in the
-United States. Version 4 presents its main menu as a warm monochrome drawing of
-his room. Navigation is camera movement between fixed objects, while readable
-content remains ordinary HTML. The immersive destinations introduce natural
-room colour during camera travel, then expand the selected physical surface
-into readable content.
+United States. The reading-first homepage is served at `/` and presents his
+work as a direct, scrollable portfolio. Its optional interactive room, at
+`/interactive`, is a warm monochrome drawing of his room. Navigation there is
+camera movement between fixed objects, while readable content remains ordinary
+HTML. The immersive destinations introduce natural room colour during camera
+travel, then expand the selected physical surface into readable content.
 
-Version 4 is the only active site in this repository. `/` redirects to `/v4`.
-Versions 1 and 2 live in separate private frozen repositories; the rejected
-version 3 direction is retained only in the private history backup.
+Version 4 is the only active site in this repository. Versions 1 and 2 live in
+separate private frozen repositories; the rejected version 3 direction is
+retained only in the private history backup.
 
 ---
 
 ## Where things stand
 
-**Complete foundations:** the independent v4 route; code-native room geometry;
+**Complete foundations:** the reading-first homepage; the independent
+interactive route; code-native room geometry;
 fixed camera navigation; five interactive objects; the monochrome-to-colour
 state rule; the capability gate; the CSS narrow-screen fallback; the stylised
 avatar and desk-side portrait view; the project browser; the photograph

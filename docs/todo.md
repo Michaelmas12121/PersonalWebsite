@@ -5,7 +5,8 @@
 - [x] Keep version 4 as the only active site in this repository.
 - [x] Remove versions 1, 2 and 3 from the working tree while preserving Git
       history and local-only experiments.
-- [x] Make `/` open `/v4`.
+- [x] Make `/` a direct, reading-first homepage and serve the optional room at
+      `/interactive`.
 - [x] Keep three.js behind the capability gate and dynamic import.
 - [x] Keep the code-native narrow-screen fallback.
 

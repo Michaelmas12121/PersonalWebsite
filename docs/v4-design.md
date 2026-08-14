@@ -1,8 +1,9 @@
 # Version 4 — Interactive Colour Line Room
 
-Version 4 is the only active site in this repository and is served at `/v4`.
-The root route redirects to it. Earlier versions have been removed from the
-working tree and will be archived separately after version 4 is stable.
+Version 4 is the only active site in this repository. The reading-first
+portfolio is served at `/`; its optional interactive room is served at
+`/interactive`. Earlier versions have been removed from the working tree and
+will be archived separately after version 4 is stable.
 
 ## Visual direction
 

@@ -1,6 +1,7 @@
 ---
 title: "ElderGo — a companion robot for older people living alone"
 context: "Conrad Challenge"
+category: "Research & Building"
 date: 2025-06-14
 order: 1
 summary: "I led the technical framework and built the project's website. Bronze in the Health and Nutrition category."

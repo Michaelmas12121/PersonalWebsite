@@ -13,6 +13,8 @@ const activities = defineCollection({
       title: z.string(),
       // Shown above the title in small caps, e.g. "Conrad Challenge".
       context: z.string(),
+      // Used to group entries on the reading-first homepage.
+      category: z.string(),
       date: z.date(),
       // One or two sentences, used on the listing page.
       summary: z.string(),

@@ -1,6 +1,7 @@
 ---
 title: "Fullback"
 context: "School football team"
+category: "Teamwork & Sport"
 date: 2026-03-01
 order: 3
 summary: "Ninety minutes of stopping someone else from doing something, then getting forward anyway."
