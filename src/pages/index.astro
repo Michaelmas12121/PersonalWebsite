@@ -11,7 +11,10 @@ import galleryFour from "../assets/gallery/gallery-12.webp";
 import galleryFive from "../assets/gallery/gallery-15.webp";
 import gallerySix from "../assets/gallery/gallery-20.webp";
 import elderGoTestingDistance from "../content/activities/eldercare-robot/testing-distance.webp";
+import elderGoSensorArray from "../content/activities/eldercare-robot/sensor-array.webp";
 import turingClassroom from "../content/activities/turing-society/classroom-session.jpg";
+import turingMatrices from "../content/activities/turing-society/matrices-in-neural-networks.png";
+import footballHuddle from "../content/activities/football/team-huddle.webp";
 
 const activities = (await getCollection("activities")).sort(
   (left, right) => left.data.order - right.data.order,
@@ -20,6 +23,12 @@ const activities = (await getCollection("activities")).sort(
 const featuredImages = new Map([
   ["eldercare-robot", { src: elderGoTestingDistance, alt: "The ElderGo prototype being tested at walking distance" }],
   ["turing-society", { src: turingClassroom, alt: "A Turing Society mathematics lesson at the classroom board" }],
+]);
+
+const detailImages = new Map([
+  ["eldercare-robot", { src: elderGoSensorArray, alt: "The ElderGo prototype's front sensor array" }],
+  ["turing-society", { src: turingMatrices, alt: "A Turing Society lesson slide explaining matrices in neural networks" }],
+  ["football", { src: footballHuddle, alt: "The school football team linking arms before play" }],
 ]);
 
 const achievements = [
@@ -57,23 +66,20 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
       <div class="poster page-width">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-main">
-          <p class="eyebrow">Student portfolio · Shenzhen, China</p>
+          <p class="hero-location">Student portfolio · Shenzhen, China</p>
           <h1 id="hero-title">Yanlang<br />Liu</h1>
           <p class="hero-statement">Mathematics and artificial intelligence, explored through building, teaching, and working with others.</p>
         </div>
         <div class="about-card">
-          <p class="eyebrow">About · 17 years old</p>
           <h2>Learning how systems connect.</h2>
           <p>I study at Shenzhen Middle School. I enjoy taking a difficult idea apart, finding the structure underneath it, and making it understandable to someone else.</p>
-          <p class="about-meta">Mathematics · AI · Research · Education</p>
         </div>
       </section>
 
       <section class="work" id="work" aria-labelledby="work-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">01 · Selected work</p>
-            <h2 id="work-title">Learning by doing.</h2>
+            <h2 id="work-title">Selected work.</h2>
           </div>
         </div>
 
@@ -108,8 +114,42 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
                   <div class="work-copy">
                     <p class="work-context">{activity.data.context}</p>
                     <h3>{compactTitle}</h3>
-                    <p class="work-summary">{activity.data.summary}</p>
                   </div>
+                </article>
+              );
+            })
+          }
+        </div>
+      </section>
+
+      <section class="field-notes" aria-labelledby="field-notes-title">
+        <div class="field-notes-heading">
+          <h2 id="field-notes-title">Behind the work.</h2>
+          <p>What I build, explain, and learn alongside other people.</p>
+        </div>
+        <div class="field-notes-grid">
+          {
+            activities.map((activity) => {
+              const detailImage = detailImages.get(activity.id);
+              const compactTitle = activity.data.title.split(" — ")[0];
+              return (
+                <article class={`field-note field-note--${activity.id}`}>
+                  <div class="field-note-copy">
+                    <h3>{compactTitle}</h3>
+                    <p>{activity.data.summary}</p>
+                    {activity.data.role && <p class="field-note-role">{activity.data.role}</p>}
+                  </div>
+                  {detailImage && (
+                    <div class="field-note-visual">
+                      <Image
+                        src={detailImage.src}
+                        alt={detailImage.alt}
+                        widths={[300, 480, 640]}
+                        sizes="(max-width: 680px) 88vw, (max-width: 900px) 45vw, 28vw"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
                 </article>
               );
             })
@@ -158,17 +198,15 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
       <section class="room-invitation" id="room" aria-labelledby="room-title">
         <a class="room-entry page-width" href="/interactive">
           <div class="room-copy">
-            <p class="eyebrow">Optional creative version · Allow a little time to explore</p>
+            <p class="room-kicker">Optional creative version · Allow a little time to explore</p>
             <h2 id="room-title">Enter my<br />interactive room.</h2>
             <p>The same portfolio becomes a personal space: move between the desk, the projects, the certificates, and the window.</p>
             <span class="room-button">Open the room <span aria-hidden="true">↗</span></span>
           </div>
           <div class="door-scene" aria-hidden="true">
-            <span class="door-label">A different way in</span>
             <div class="door-frame">
               <div class="door-opening"><span>Explore</span></div>
               <div class="door-panel">
-                <span class="door-number">YL · 17</span>
                 <i class="door-inset door-inset-top"></i>
                 <i class="door-inset door-inset-bottom"></i>
                 <i class="door-handle"></i>
@@ -208,12 +246,11 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .page-width { width: min(1280px, calc(100% - 40px)); margin: 0 auto; }
   .poster { background: linear-gradient(135deg, rgb(255 253 250 / 52%), rgb(250 246 241 / 18%)); }
   .site-header { position: sticky; z-index: 10; top: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: min(1300px, calc(100% - 36px)); min-height: 48px; margin: 0 auto; border-bottom: 1px solid #e8e0d6; background: color-mix(in srgb, #faf6f1 94%, transparent); backdrop-filter: blur(14px); }
-  .wordmark { width: max-content; font-size: .84rem; font-weight: 800; letter-spacing: -.07em; }
-  nav { display: flex; gap: 22px; font-size: .68rem; }
+  .wordmark { width: max-content; font-size: .9rem; font-weight: 800; letter-spacing: -.07em; }
+  nav { display: flex; gap: 22px; font-size: .78rem; }
   nav a, .room-link, .site-footer a { transition: color 180ms ease; }
   nav a:hover, .room-link:hover, .site-footer a:hover { color: #c8552f; }
-  .room-link { justify-self: end; font-size: .7rem; font-weight: 700; }
-  .eyebrow { margin: 0; color: #8a817a; font-family: var(--meta-font); font-size: .64rem; font-weight: 700; letter-spacing: .08em; line-height: 1.4; text-transform: uppercase; }
+  .room-link { justify-self: end; font-size: .8rem; font-weight: 700; }
   h1, h2, h3, p { margin-top: 0; }
   h1, h2, h3 { letter-spacing: -.055em; }
   h1, h2 { font-family: var(--display-font); }
@@ -223,11 +260,11 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .hero { display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(280px, .58fr); gap: clamp(26px, 4vw, 58px); align-items: end; min-height: 26svh; padding: 15px 14px 14px; }
   .hero-main { position: relative; }
   .hero-main::after { position: absolute; z-index: -1; right: 8%; bottom: 8%; width: clamp(130px, 15vw, 210px); aspect-ratio: 1.45; content: ""; background: linear-gradient(135deg, rgb(213 168 74 / 28%), rgb(200 85 47 / 12%)); transform: rotate(-5deg); }
-  .hero-statement { max-width: 620px; margin: 0; color: #554f49; font-size: clamp(.76rem, 1.05vw, .92rem); line-height: 1.38; }
+  .hero-location { margin: 0; color: #7c746d; font-size: .82rem; font-weight: 700; letter-spacing: .02em; }
+  .hero-statement { max-width: 620px; margin: 0; color: #554f49; font-size: clamp(.88rem, 1.1vw, 1rem); line-height: 1.38; }
   .about-card { padding: 0 0 2px 18px; border-left: 1px solid #d8cec3; }
-  .about-card h2 { max-width: 450px; margin: 6px 0 7px; font-size: clamp(1.55rem, 2.35vw, 2.25rem); }
-  .about-card > p:not(.eyebrow, .about-meta) { max-width: 500px; margin-bottom: 7px; color: #554f49; font-size: .68rem; line-height: 1.42; }
-  .about-meta { margin-bottom: 0; color: #8a817a; font-family: var(--meta-font); font-size: .58rem; }
+  .about-card h2 { max-width: 450px; margin: 0 0 9px; font-size: clamp(1.7rem, 2.45vw, 2.35rem); }
+  .about-card > p { max-width: 500px; margin-bottom: 0; color: #554f49; font-size: .84rem; line-height: 1.45; }
   .work { padding: 14px 14px 15px; border-top: 1px solid #d9cfc4; }
   .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
   .section-heading h2 { margin-top: 3px; font-size: clamp(1.8rem, 3vw, 2.7rem); }
@@ -252,11 +289,28 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .work-card--football .work-visual::before { position: absolute; z-index: -2; inset: 7% 4% 3% 0; content: ""; border: 1.5px solid #46624d; border-radius: 50% 52% 19% 28% / 27% 30% 22% 24%; background: linear-gradient(155deg, rgb(126 149 111 / 26%), rgb(250 246 241 / 72%)); box-shadow: 10px 10px 0 rgb(126 149 111 / 13%); transform: rotate(2.5deg); transition: transform 320ms cubic-bezier(.2, .65, .2, 1); }
   .work-card--football .work-visual::after { position: absolute; z-index: -1; top: 54%; right: -6%; left: -10%; height: 1px; content: ""; background: #46624d; transform: rotate(-9deg); }
   .work-card--football :global(.work-image) { width: 82%; height: 70%; transform: translate(-50%, -50%) rotate(1.5deg); }
-  .work-copy { position: relative; z-index: 3; padding: 9px 4px 0; }
+  .work-copy { position: relative; z-index: 3; padding: 10px 4px 0; }
   .work-copy h3 { margin: 3px 0 6px; font-size: clamp(1.35rem, 2vw, 2.25rem); line-height: .92; }
-  .work-context { margin: 0; color: #776f68; font-family: var(--meta-font); font-size: .67rem; font-weight: 700; line-height: 1.35; }
-  .work-summary { max-width: 42ch; margin: 0; color: #49433f; font-size: .77rem; line-height: 1.4; }
-  .highlights { display: grid; grid-template-columns: .85fr 1.14fr 1.08fr; gap: 0; min-height: 21svh; padding: 13px 14px 14px; border-top: 1px solid #d9cfc4; border-bottom: 1px solid #d9cfc4; }
+  .work-context { margin: 0; color: #776f68; font-size: .82rem; font-weight: 700; line-height: 1.35; }
+  .field-notes { padding: 28px 14px 30px; border-top: 1px solid #d9cfc4; }
+  .field-notes-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; }
+  .field-notes-heading h2 { font-size: clamp(2rem, 3.4vw, 3rem); }
+  .field-notes-heading p { max-width: 340px; margin: 0; color: #5f5751; font-size: .92rem; line-height: 1.4; text-align: right; }
+  .field-notes-grid { display: grid; grid-template-columns: 1.2fr 1fr .96fr; gap: 0; margin-top: 20px; }
+  .field-note { display: grid; grid-template-rows: auto 154px; min-width: 0; min-height: 290px; gap: 15px; padding: 0 18px; }
+  .field-note:first-child { padding-left: 0; }
+  .field-note:last-child { padding-right: 0; }
+  .field-note + .field-note { border-left: 1px solid #e1d8ce; }
+  .field-note-copy h3 { margin: 0 0 7px; font-size: clamp(1.3rem, 1.8vw, 1.85rem); line-height: .95; }
+  .field-note-copy p { max-width: 39ch; margin: 0; color: #4f4842; font-size: .94rem; line-height: 1.42; }
+  .field-note-copy .field-note-role { margin-top: 9px; padding-top: 9px; border-top: 1px solid #e8e0d6; color: #695f57; }
+  .field-note-visual { position: relative; display: grid; min-height: 0; place-items: center; isolation: isolate; }
+  .field-note-visual::before { position: absolute; z-index: -1; inset: 8% 3% 0; content: ""; background: rgb(213 168 74 / 16%); transform: rotate(-2deg); }
+  .field-note-visual :global(img) { position: absolute; inset: 9% 6%; display: block; width: 88% !important; height: 82% !important; max-width: none; object-fit: contain; }
+  .field-note--eldercare-robot .field-note-visual::before { border: 1px solid #463e38; border-radius: 45% 48% 16% 20% / 30% 32% 18% 20%; background: rgb(213 168 74 / 17%); transform: rotate(2deg); }
+  .field-note--turing-society .field-note-visual::before { background: rgb(63 82 107 / 16%); clip-path: polygon(7% 0, 100% 12%, 92% 100%, 0 83%); transform: rotate(-2deg); }
+  .field-note--football .field-note-visual::before { border: 1px solid #46624d; border-radius: 48% 52% 20% 22% / 32% 34% 20% 20%; background: rgb(126 149 111 / 16%); transform: rotate(2deg); }
+  .highlights { display: grid; grid-template-columns: .85fr 1.14fr 1.08fr; gap: 0; min-height: 23svh; padding: 18px 14px; border-top: 1px solid #d9cfc4; border-bottom: 1px solid #d9cfc4; }
   .achievement-panel, .current-panel, .gallery-panel { min-width: 0; padding: 0 16px; }
   .current-panel, .gallery-panel { border-left: 1px solid #e1d8ce; }
   .achievement-panel { padding-left: 0; }
@@ -264,38 +318,36 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .achievement-panel h2, .panel-title h2 { margin: 0 0 10px; font-size: clamp(1.25rem, 1.7vw, 1.7rem); line-height: .95; }
   .achievement-list { padding: 0; margin: 0; list-style: none; }
   .achievement-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px; align-items: baseline; padding: 5px 0; border-top: 1px solid #e8e0d6; }
-  .achievement-list strong { font-size: .75rem; }
-  .achievement-list span { color: #7a7169; font-family: var(--meta-font); font-size: .67rem; }
+  .achievement-list strong { font-size: .84rem; }
+  .achievement-list span { color: #7a7169; font-size: .76rem; }
   .panel-title { margin-bottom: 10px; }
   .current-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; height: 126px; }
   .current-grid article { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; }
   .current-grid article + article { border-left: 1px solid #e1d8ce; padding-left: 9px; }
   .current-grid :global(img) { display: block; width: 100%; height: 100%; min-height: 0; background: #eee7df; object-fit: contain; transition: filter 220ms ease, transform 300ms ease; }
-  .current-grid strong { padding: 5px 1px 0; font-size: .72rem; line-height: 1.15; }
+  .current-grid strong { padding: 5px 1px 0; font-size: .8rem; line-height: 1.15; }
   .photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 5px; height: 126px; }
   .photo-grid :global(img) { display: block; width: 100%; height: 100%; min-height: 0; background: #eee7df; object-fit: contain; transition: filter 200ms ease, transform 300ms ease; }
   .room-invitation { min-height: 50svh; border-top: 1px solid #342f2b; background: #171615; color: #faf6f1; overflow: hidden; }
   .room-entry { display: grid; grid-template-columns: minmax(270px, .68fr) minmax(420px, 1.32fr); gap: clamp(34px, 7vw, 100px); align-items: center; min-height: 50svh; padding-top: 24px; padding-bottom: 24px; color: inherit; }
   .room-entry:focus-visible { outline: 2px solid #d5a84a; outline-offset: -2px; }
-  .room-copy .eyebrow { color: #c3b8ae; }
+  .room-kicker { margin: 0; color: #c3b8ae; font-size: .78rem; font-weight: 700; line-height: 1.35; }
   .room-copy h2 { margin: 9px 0 12px; font-size: clamp(2.8rem, 5.4vw, 5.5rem); line-height: .78; text-shadow: .04em .04em 0 #6d3e30, .08em .08em 0 rgb(213 168 74 / 40%); }
-  .room-copy > p:not(.eyebrow) { max-width: 440px; margin-bottom: 16px; color: #cfc5bb; font-size: .72rem; line-height: 1.48; }
-  .room-button { display: inline-flex; gap: 12px; align-items: center; padding: 9px 12px; border: 1px solid #faf6f1; font-size: .67rem; font-weight: 700; transition: background 180ms ease, color 180ms ease; }
+  .room-copy > p:not(.room-kicker) { max-width: 440px; margin-bottom: 16px; color: #cfc5bb; font-size: .84rem; line-height: 1.48; }
+  .room-button { display: inline-flex; gap: 12px; align-items: center; padding: 9px 12px; border: 1px solid #faf6f1; font-size: .78rem; font-weight: 700; transition: background 180ms ease, color 180ms ease; }
   .door-scene { position: relative; height: min(37svh, 350px); border: 1px solid #5f5953; background: radial-gradient(circle at 58% 45%, rgb(213 168 74 / 9%), transparent 33%), linear-gradient(150deg, #211f1d, #131211); box-shadow: 18px 18px 0 rgb(200 85 47 / 13%); perspective: 1000px; transition: border-color 240ms ease, transform 340ms cubic-bezier(.2, .65, .2, 1); }
-  .door-label { position: absolute; top: 9%; left: 7%; color: #918980; font-family: var(--meta-font); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; writing-mode: vertical-rl; }
   .door-frame { position: absolute; top: 7%; bottom: 8%; left: 50%; width: min(36%, 220px); border: 3px solid #9c9186; border-bottom-width: 5px; box-shadow: 0 0 0 1px #302d2a, 0 0 34px rgb(213 168 74 / 6%); transform: translateX(-50%); perspective: 900px; }
   .door-opening { position: absolute; inset: 0; display: grid; place-items: center; background: linear-gradient(145deg, #d5a84a 0%, #b97865 36%, #3f526b 100%); overflow: hidden; }
   .door-opening::before { position: absolute; inset: 0; content: ""; background: linear-gradient(115deg, transparent 18%, rgb(250 246 241 / 28%) 49%, transparent 68%); transform: translateX(-80%); transition: transform 650ms ease; }
   .door-opening span { color: rgb(250 246 241 / 88%); font-family: var(--display-font); font-size: clamp(1.25rem, 2vw, 2rem); letter-spacing: -.04em; text-shadow: 0 2px 14px rgb(23 22 21 / 38%); }
   .door-panel { position: absolute; inset: 0; border: 1px solid #aea298; background: linear-gradient(115deg, #262320, #171615 65%); box-shadow: inset -14px 0 28px rgb(0 0 0 / 26%); transform: rotateY(0deg); transform-origin: left center; transform-style: preserve-3d; transition: transform 620ms cubic-bezier(.2, .72, .2, 1), box-shadow 400ms ease; }
-  .door-number { position: absolute; top: 6%; left: 8%; color: #b7ada4; font-family: var(--meta-font); font-size: .48rem; letter-spacing: .12em; }
   .door-inset { position: absolute; right: 13%; left: 13%; display: block; border: 1px solid #5f5953; box-shadow: inset 0 0 0 5px #1b1917; }
   .door-inset-top { top: 18%; height: 28%; }
   .door-inset-bottom { bottom: 10%; height: 32%; }
   .door-handle { position: absolute; top: 52%; right: 9%; width: 8px; aspect-ratio: 1; border: 2px solid #d5a84a; border-radius: 50%; box-shadow: 0 0 0 4px rgb(213 168 74 / 10%); }
   .door-handle::after { position: absolute; top: 2px; left: 7px; width: 19px; height: 2px; content: ""; background: #d5a84a; transform: rotate(-8deg); transform-origin: left; }
   .door-floor-line { position: absolute; right: 7%; bottom: 7%; left: 7%; height: 1px; background: #5f5953; transform: rotate(-3deg); transform-origin: right; }
-  .site-footer { display: flex; justify-content: space-between; gap: 24px; padding: 12px 0 14px; border-top: 1px solid #e8e0d6; color: #8a817a; font-family: var(--meta-font); font-size: .56rem; }
+  .site-footer { display: flex; justify-content: space-between; gap: 24px; padding: 12px 0 14px; border-top: 1px solid #e8e0d6; color: #8a817a; font-size: .8rem; }
   .site-footer p { margin-bottom: 0; }
   @media (hover: hover) and (pointer: fine) {
     nav a { position: relative; }
@@ -319,6 +371,10 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
     .hero { grid-template-columns: 1.1fr .9fr; min-height: auto; padding: 30px 0; }
     .work-grid { grid-template-columns: 1fr 1fr; gap: 22px; }
     .work-card--eldercare-robot { grid-column: 1 / -1; grid-template-rows: 320px auto; }
+    .field-notes-grid { grid-template-columns: 1fr 1fr; }
+    .field-note { min-height: 276px; }
+    .field-note--football { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; align-items: stretch; padding: 18px 0 0; border-top: 1px solid #e1d8ce; border-left: 0; }
+    .field-note--football .field-note-visual { min-height: 154px; }
     .highlights { grid-template-columns: 1fr 1fr; min-height: auto; }
     .gallery-panel { grid-column: 1 / -1; padding-top: 10px; padding-left: 0; border-top: 1px solid #e1d8ce; border-left: 0; }
     .photo-grid { height: 170px; grid-template-columns: repeat(6, 1fr); grid-template-rows: 1fr; }
@@ -338,7 +394,17 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
     .work-card--eldercare-robot { grid-template-rows: 275px auto; }
     .work-card + .work-card { border-top: 1px solid #e1d8ce; padding-top: 16px; }
     .work-copy h3 { font-size: clamp(1.6rem, 8vw, 2.2rem); }
-    .work-summary { max-width: 48ch; font-size: .82rem; }
+    .field-notes { padding: 20px 8px 22px; }
+    .field-notes-heading { display: block; }
+    .field-notes-heading h2 { margin-bottom: 9px; }
+    .field-notes-heading p { max-width: 38ch; text-align: left; font-size: .94rem; }
+    .field-notes-grid { grid-template-columns: 1fr; margin-top: 16px; }
+    .field-note, .field-note--football { grid-column: auto; grid-template-columns: 1fr; grid-template-rows: auto 172px; min-height: 0; gap: 14px; padding: 18px 0; border-left: 0; }
+    .field-note:first-child { padding-top: 0; }
+    .field-note + .field-note { border-top: 1px solid #e1d8ce; }
+    .field-note-copy h3 { font-size: 1.65rem; }
+    .field-note-copy p { max-width: 43ch; font-size: .96rem; }
+    .field-note--football .field-note-visual { min-height: 0; }
     .highlights { grid-template-columns: 1fr; padding: 10px 8px; }
     .achievement-panel, .current-panel, .gallery-panel { padding: 8px 0; }
     .current-panel, .gallery-panel { border-top: 1px solid #e1d8ce; border-left: 0; }
