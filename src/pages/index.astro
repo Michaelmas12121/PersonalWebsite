@@ -59,7 +59,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
         <a href="#highlights">Highlights</a>
         <a href="#room">Interactive room</a>
       </nav>
-      <a class="room-link" href="/interactive">Explore <span aria-hidden="true">↗</span></a>
+      <a class="room-link" data-room-entry href="/interactive">Explore <span aria-hidden="true">↗</span></a>
     </header>
 
     <main id="top">
@@ -192,7 +192,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
       </div>
 
       <section class="room-invitation" id="room" aria-labelledby="room-title">
-        <a class="room-entry page-width" href="/interactive">
+        <a class="room-entry page-width" data-room-entry href="/interactive">
           <div class="room-copy">
             <p class="room-kicker">Optional creative version · Allow a little time to explore</p>
             <h2 id="room-title">Enter my<br />interactive room.</h2>
@@ -229,6 +229,19 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
           document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`);
         }, { passive: true });
       }
+
+      let roomTransitionInProgress = false;
+      document.querySelectorAll<HTMLAnchorElement>("[data-room-entry]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          if (roomTransitionInProgress) return;
+
+          roomTransitionInProgress = true;
+          document.body.classList.add("is-entering-room");
+          window.setTimeout(() => window.location.assign(link.href), prefersReducedMotion.matches ? 0 : 480);
+        });
+      });
     </script>
   </body>
 </html>
@@ -247,6 +260,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   nav a, .room-link, .site-footer a { transition: color 180ms ease; }
   nav a:hover, .room-link:hover, .site-footer a:hover { color: #c8552f; }
   .room-link { justify-self: end; font-size: .8rem; font-weight: 700; }
+  .room-link span, .room-button span { display: inline-block; transition: transform 220ms ease; }
   h1, h2, h3, p { margin-top: 0; }
   h1, h2, h3 { letter-spacing: -.055em; }
   h1, h2 { font-family: var(--display-font); }
@@ -315,7 +329,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 5px; height: 100%; min-height: 0; }
   .photo-grid :global(img) { display: block; width: 100%; height: 100%; min-height: 0; background: #eee7df; object-fit: contain; transition: filter 200ms ease, transform 300ms ease; }
   .room-invitation { min-height: 50svh; background: #171615; color: #faf6f1; overflow: hidden; }
-  .room-entry { display: grid; grid-template-columns: minmax(270px, .68fr) minmax(420px, 1.32fr); gap: clamp(34px, 7vw, 100px); align-items: center; min-height: 50svh; padding-top: 24px; padding-bottom: 24px; color: inherit; }
+  .room-entry { display: grid; grid-template-columns: minmax(270px, .68fr) minmax(420px, 1.32fr); gap: clamp(34px, 7vw, 100px); align-items: center; min-height: 50svh; padding-top: 24px; padding-bottom: 24px; color: inherit; transition: opacity 360ms ease, transform 420ms cubic-bezier(.2, .72, .2, 1); }
   .room-entry:focus-visible { outline: 2px solid #d5a84a; outline-offset: -2px; }
   .room-kicker { margin: 0; color: #c3b8ae; font-size: .78rem; font-weight: 700; line-height: 1.35; }
   .room-copy h2 { margin: 9px 0 12px; font-size: clamp(2.8rem, 5.4vw, 5.5rem); line-height: .78; text-shadow: .04em .04em 0 #6d3e30, .08em .08em 0 rgb(213 168 74 / 40%); }
@@ -335,6 +349,18 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .door-floor-line { position: absolute; right: 7%; bottom: 7%; left: 7%; height: 1px; background: #5f5953; transform: rotate(-3deg); transform-origin: right; }
   .site-footer { display: flex; justify-content: space-between; gap: 24px; padding: 16px 0 14px; color: #8a817a; font-size: .8rem; }
   .site-footer p { margin-bottom: 0; }
+  :global(body.is-entering-room) { overflow: hidden; }
+  :global(body.is-entering-room) .poster, :global(body.is-entering-room) .site-header, :global(body.is-entering-room) .site-footer { animation: poster-depart 440ms cubic-bezier(.3, .05, .2, 1) forwards; pointer-events: none; }
+  :global(body.is-entering-room) .room-invitation { animation: room-invitation-depart 440ms cubic-bezier(.2, .72, .2, 1) forwards; pointer-events: none; }
+  :global(body.is-entering-room) .room-entry { transform: translateY(-6px) scale(1.012); }
+  :global(body.is-entering-room) .room-link span, :global(body.is-entering-room) .room-button span { transform: translate(4px, -4px); }
+  :global(body.is-entering-room) .door-scene { border-color: #d5a84a; box-shadow: 0 0 0 1px rgb(213 168 74 / 28%), 22px 18px 0 rgb(200 85 47 / 16%), 0 0 52px rgb(213 168 74 / 19%); }
+  :global(body.is-entering-room) .door-opening { animation: doorway-brighten 460ms ease-out forwards; }
+  :global(body.is-entering-room) .door-opening::before { transform: translateX(125%); transition-duration: 450ms; }
+  :global(body.is-entering-room) .door-panel { box-shadow: 28px 0 45px rgb(0 0 0 / 38%); transform: rotateY(-88deg); }
+  @keyframes poster-depart { to { opacity: 0; filter: blur(1.4px); transform: scale(.982); } }
+  @keyframes room-invitation-depart { to { filter: brightness(1.15); transform: scale(1.018); } }
+  @keyframes doorway-brighten { 55% { filter: brightness(1.28) saturate(1.08); } 100% { filter: brightness(1.12) saturate(1.04); } }
   @media (hover: hover) and (pointer: fine) {
     nav a { position: relative; }
     nav a::after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; content: ""; background: currentcolor; transform: scaleX(0); transform-origin: right; transition: transform 180ms ease; }
@@ -348,7 +374,9 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
     .work-card--football:hover .work-visual::before { transform: rotate(4deg) translateY(-3px); }
     .current-grid article:hover :global(img) { transform: translateY(-3px); filter: saturate(1.05); }
     .photo-grid :global(img):hover { z-index: 1; filter: saturate(1.12); transform: scale(1.08) rotate(-1deg); }
+    .room-link:hover span { transform: translate(3px, -3px); }
     .room-entry:hover .room-button { background: #faf6f1; color: #171615; }
+    .room-entry:hover .room-button span { transform: translate(3px, -3px); }
     .room-entry:hover .door-scene { border-color: #d5a84a; transform: translate(-7px, -5px) rotate(-.5deg); }
     .room-entry:hover .door-panel { box-shadow: 18px 0 35px rgb(0 0 0 / 34%); transform: rotateY(-28deg); }
     .room-entry:hover .door-opening::before { transform: translateX(85%); }
@@ -399,5 +427,5 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
     .door-scene { order: -1; height: 230px; }
     .door-frame { width: min(42%, 154px); }
   }
-  @media (prefers-reduced-motion: reduce) { :global(html) { scroll-behavior: auto; } .cursor-glow { display: none; } .door-panel, .door-opening::before { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { :global(html) { scroll-behavior: auto; } .cursor-glow { display: none; } .room-link span, .room-button span, .room-entry, .door-panel, .door-opening::before { transition: none; } :global(body.is-entering-room) .poster, :global(body.is-entering-room) .site-header, :global(body.is-entering-room) .site-footer, :global(body.is-entering-room) .room-invitation, :global(body.is-entering-room) .door-opening { animation: none; } }
 </style>
