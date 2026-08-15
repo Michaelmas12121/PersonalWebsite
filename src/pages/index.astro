@@ -266,7 +266,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .section-heading h2 { margin-top: 3px; font-size: clamp(1.8rem, 3vw, 2.7rem); }
   .work-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .92fr) minmax(0, .78fr); gap: clamp(12px, 2vw, 28px); align-items: end; margin-top: 14px; }
   .work-card { position: relative; display: grid; grid-template-rows: clamp(220px, 28svh, 265px) auto; min-width: 0; padding: 0 0 6px; }
-  .work-card--eldercare-robot { grid-template-rows: clamp(275px, 35svh, 335px) auto; }
+  .work-card--eldercare-robot { grid-template-rows: clamp(250px, 32svh, 300px) auto; }
   .work-visual { position: relative; display: grid; min-height: 0; place-items: center; isolation: isolate; }
   :global(.work-image) { position: absolute; z-index: 2; top: 50%; left: 50%; display: block; width: min(86%, 540px); height: 76%; object-fit: contain; filter: saturate(.9); transform: translate(-50%, -50%); transition: filter 220ms ease, transform 300ms cubic-bezier(.2, .65, .2, 1); }
   .work-card--eldercare-robot .work-visual::before { position: absolute; z-index: -2; inset: 14% 5% 1%; content: ""; border: 1.5px solid #463e38; border-radius: 44% 45% 22% 24% / 30% 30% 19% 20%; background: linear-gradient(145deg, rgb(213 168 74 / 28%), rgb(233 225 216 / 76%) 50%, rgb(104 123 134 / 16%)); box-shadow: 13px 12px 0 rgb(200 85 47 / 14%); transform: rotate(-2.5deg); transition: transform 320ms cubic-bezier(.2, .65, .2, 1); }
@@ -277,7 +277,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .robot-sensor { position: absolute; z-index: 3; top: 49%; width: 8px; aspect-ratio: 1; border: 1.5px solid #463e38; border-radius: 50%; background: #e7c9b6; }
   .robot-sensor-left { left: 16%; }
   .robot-sensor-right { right: 16%; }
-  .work-card--turing-society { grid-template-rows: clamp(240px, 30svh, 285px) auto; padding-bottom: 22px; }
+  .work-card--turing-society { grid-template-rows: clamp(220px, 27svh, 260px) auto; padding-bottom: 6px; }
   .work-card--turing-society .work-visual::before { position: absolute; z-index: -2; inset: 10% 2% 3% 6%; content: ""; background: linear-gradient(135deg, rgb(63 82 107 / 22%), rgb(134 160 160 / 25%)); clip-path: polygon(12% 0, 100% 8%, 90% 100%, 0 87%); box-shadow: 10px 10px 0 rgb(63 82 107 / 12%); transform: rotate(-2deg); transition: transform 320ms cubic-bezier(.2, .65, .2, 1); }
   .work-card--turing-society .work-visual::after { position: absolute; z-index: -1; top: 5%; right: 7%; width: 42%; height: 20%; content: ""; border-top: 1.5px solid #3f526b; border-right: 1.5px solid #3f526b; transform: rotate(7deg); }
   .work-card--turing-society :global(.work-image) { width: 84%; height: 70%; transform: translate(-50%, -50%) rotate(-1deg); }
@@ -290,7 +290,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .work-context { margin: 0; color: #776f68; font-size: .82rem; font-weight: 700; line-height: 1.35; }
   .field-notes { padding: 4px 14px 30px; }
   .field-notes-grid { display: grid; grid-template-columns: 1.2fr 1fr .96fr; gap: 26px; }
-  .field-note { display: grid; grid-template-rows: auto 154px; min-width: 0; min-height: 290px; gap: 15px; }
+  .field-note { display: grid; grid-template-rows: auto 130px; min-width: 0; min-height: 290px; gap: 15px; }
   .field-note-copy h3 { margin: 0 0 7px; font-size: clamp(1.3rem, 1.8vw, 1.85rem); line-height: .95; }
   .field-note-copy p { max-width: 39ch; margin: 0; color: #4f4842; font-size: .94rem; line-height: 1.42; }
   .field-note-copy .field-note-role { margin-top: 10px; color: #695f57; }
@@ -300,19 +300,19 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   .field-note--eldercare-robot .field-note-visual::before { border: 1px solid #463e38; border-radius: 45% 48% 16% 20% / 30% 32% 18% 20%; background: rgb(213 168 74 / 17%); transform: rotate(2deg); }
   .field-note--turing-society .field-note-visual::before { background: rgb(63 82 107 / 16%); clip-path: polygon(7% 0, 100% 12%, 92% 100%, 0 83%); transform: rotate(-2deg); }
   .field-note--football .field-note-visual::before { border: 1px solid #46624d; border-radius: 48% 52% 20% 22% / 32% 34% 20% 20%; background: rgb(126 149 111 / 16%); transform: rotate(2deg); }
-  .highlights { display: grid; grid-template-columns: .85fr 1.14fr 1.08fr; gap: 28px; min-height: 23svh; padding: 2px 14px 28px; }
-  .achievement-panel, .current-panel, .gallery-panel { min-width: 0; }
+  .highlights { display: grid; box-sizing: border-box; grid-template-columns: .85fr 1.14fr 1.08fr; gap: 28px; align-items: stretch; height: clamp(270px, 38svh, 320px); min-height: 0; padding: 8px 14px 30px; }
+  .achievement-panel, .current-panel, .gallery-panel { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; }
   .achievement-panel h2, .panel-title h2 { margin: 0 0 10px; font-size: clamp(1.25rem, 1.7vw, 1.7rem); line-height: .95; }
-  .achievement-list { padding: 0; margin: 0; list-style: none; }
+  .achievement-list { display: grid; align-content: space-between; min-height: 0; padding: 0; margin: 0; list-style: none; }
   .achievement-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px; align-items: baseline; padding: 4px 0; }
   .achievement-list strong { font-size: .84rem; }
   .achievement-list span { color: #7a7169; font-size: .76rem; }
   .panel-title { margin-bottom: 10px; }
-  .current-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; height: 126px; }
+  .current-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; height: 100%; min-height: 0; }
   .current-grid article { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; }
   .current-grid :global(img) { display: block; width: 100%; height: 100%; min-height: 0; background: #eee7df; object-fit: contain; transition: filter 220ms ease, transform 300ms ease; }
   .current-grid strong { padding: 5px 1px 0; font-size: .8rem; line-height: 1.15; }
-  .photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 5px; height: 126px; }
+  .photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 5px; height: 100%; min-height: 0; }
   .photo-grid :global(img) { display: block; width: 100%; height: 100%; min-height: 0; background: #eee7df; object-fit: contain; transition: filter 200ms ease, transform 300ms ease; }
   .room-invitation { min-height: 50svh; background: #171615; color: #faf6f1; overflow: hidden; }
   .room-entry { display: grid; grid-template-columns: minmax(270px, .68fr) minmax(420px, 1.32fr); gap: clamp(34px, 7vw, 100px); align-items: center; min-height: 50svh; padding-top: 24px; padding-bottom: 24px; color: inherit; }
@@ -356,12 +356,12 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1.1fr .9fr; min-height: auto; padding: 30px 0; }
     .work-grid { grid-template-columns: 1fr 1fr; gap: 22px; }
-    .work-card--eldercare-robot { grid-column: 1 / -1; grid-template-rows: 320px auto; }
+    .work-card--eldercare-robot { grid-column: 1 / -1; grid-template-rows: 290px auto; }
     .field-notes-grid { grid-template-columns: 1fr 1fr; }
     .field-note { min-height: 276px; }
     .field-note--football { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; align-items: stretch; padding-top: 18px; }
-    .field-note--football .field-note-visual { min-height: 154px; }
-    .highlights { grid-template-columns: 1fr 1fr; min-height: auto; }
+    .field-note--football .field-note-visual { min-height: 130px; }
+    .highlights { grid-template-columns: 1fr 1fr; height: auto; min-height: auto; }
     .gallery-panel { grid-column: 1 / -1; padding-top: 10px; }
     .photo-grid { height: 170px; grid-template-columns: repeat(6, 1fr); grid-template-rows: 1fr; }
   }
@@ -388,7 +388,7 @@ const gallery = [galleryOne, galleryTwo, galleryThree, galleryFour, galleryFive,
     .field-note-copy h3 { font-size: 1.65rem; }
     .field-note-copy p { max-width: 43ch; font-size: .96rem; }
     .field-note--football .field-note-visual { min-height: 0; }
-    .highlights { grid-template-columns: 1fr; padding: 10px 8px; }
+    .highlights { grid-template-columns: 1fr; height: auto; min-height: 0; padding: 10px 8px; }
     .achievement-panel, .current-panel, .gallery-panel { padding: 8px 0; }
     .current-panel, .gallery-panel { margin-top: 12px; }
     .gallery-panel { grid-column: auto; }
