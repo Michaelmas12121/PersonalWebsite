@@ -8,6 +8,19 @@ summary: "I ran the society and taught it: machine learning foundations, how a n
 role: "President. I set the year's plan and taught the sessions myself."
 cover: "./turing-society/logo.png"
 coverAlt: "The Turing Society logo, drawn as a network forming the profile of a head"
+showcase:
+  - src: "./turing-society/classroom-session.jpg"
+    alt: "Teaching functions at the Turing Society classroom board"
+    fit: cover
+  - src: "./turing-society/why-ai-needs-matrices.png"
+    alt: "A lesson slide asking why artificial intelligence needs matrices"
+    fit: contain
+  - src: "./turing-society/matrices-in-neural-networks.png"
+    alt: "A lesson slide connecting matrices and neural networks"
+    fit: contain
+  - src: "./turing-society/logo.png"
+    alt: "The Turing Society network portrait logo"
+    fit: contain
 tags: ["teaching", "mathematics", "leadership"]
 ---
 

@@ -1,0 +1,171 @@
+---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  images: { src: ImageMetadata; alt: string; fit?: "cover" | "contain"; position?: string }[];
+  label: string;
+  rhythm?: number;
+  sizes?: string;
+}
+
+const { images, label, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
+// Larger collections move faster, with a quiet lower bound and distinct phases.
+const interval = Math.round(3000 + 11000 / (images.length + 1) + rhythm * 71);
+const frames = await Promise.all(images.map(async (frame) => {
+  const small = await getImage({ src: frame.src, width: Math.min(400, frame.src.width), format: "webp" });
+  const large = await getImage({ src: frame.src, width: Math.min(960, frame.src.width), format: "webp" });
+  return { ...frame, url: large.src, srcset: `${small.src} ${small.options.width}w, ${large.src} ${large.options.width}w` };
+}));
+---
+
+<image-window
+  role="group"
+  aria-label={`${label} photographs`}
+  aria-roledescription={frames.length > 1 ? "carousel" : undefined}
+  data-interval={interval}
+  data-delay={interval + rhythm * 430}
+>
+  <div class="window-viewport">
+    {frames.map((frame, index) => (
+      <div class:list={["window-frame", { "is-current": index === 0 }]} aria-hidden={index !== 0}>
+        <img
+          src={index === 0 ? frame.url : undefined}
+          srcset={index === 0 ? frame.srcset : undefined}
+          data-src={frame.url}
+          data-srcset={frame.srcset}
+          sizes={sizes}
+          alt={frame.alt}
+          width={frame.src.width}
+          height={frame.src.height}
+          loading="lazy"
+          decoding="async"
+          style={`object-fit: ${frame.fit ?? "contain"}; object-position: ${frame.position ?? "50% 50%"}`}
+        />
+      </div>
+    ))}
+  </div>
+  {frames.length > 1 && (
+    <div class="window-controls" hidden>
+      <span class="window-count" aria-live="off">1 / {frames.length}</span>
+      <button type="button" data-toggle aria-label={`Pause ${label} slideshow`}>Pause</button>
+      <button type="button" data-next aria-label={`Next ${label} photograph`}>Next <span aria-hidden="true">→</span></button>
+    </div>
+  )}
+</image-window>
+
+<script>
+  class ImageWindow extends HTMLElement {
+    connectedCallback() {
+      const frames = [...this.querySelectorAll<HTMLElement>(".window-frame")];
+      if (frames.length < 2) return;
+      const controls = this.querySelector<HTMLElement>(".window-controls")!;
+      const toggle = this.querySelector<HTMLButtonElement>("[data-toggle]")!;
+      const next = this.querySelector<HTMLButtonElement>("[data-next]")!;
+      const count = this.querySelector<HTMLElement>(".window-count")!;
+      const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const interval = Number(this.dataset.interval);
+      const events = new AbortController();
+      let current = 0;
+      let timer: number | undefined;
+      let visible = false;
+      let paused = motion.matches;
+      let first = true;
+      let busy = false;
+      let alive = true;
+      let revision = 0;
+      controls.hidden = false;
+
+      const load = async (index: number) => {
+        const img = frames[index].querySelector<HTMLImageElement>("img")!;
+        if (!img.hasAttribute("src")) {
+          img.loading = "eager";
+          img.srcset = img.dataset.srcset!;
+          img.src = img.dataset.src!;
+        }
+        try { await img.decode(); return img.naturalWidth > 0; }
+        catch { return false; }
+      };
+      const stop = () => { window.clearTimeout(timer); revision++; };
+      const updateButton = () => {
+        toggle.textContent = paused ? "Play" : "Pause";
+        toggle.setAttribute("aria-label", `${paused ? "Play" : "Pause"} ${this.getAttribute("aria-label")} slideshow`);
+      };
+      const schedule = () => {
+        stop();
+        if (!alive || paused || !visible || document.hidden) return;
+        void load((current + 1) % frames.length);
+        timer = window.setTimeout(() => { void advance(false); }, first ? Number(this.dataset.delay) : interval);
+      };
+      const advance = async (manual: boolean) => {
+        if (busy) return;
+        stop();
+        const ticket = revision;
+        busy = true;
+        // A failed image never replaces a visible photograph with an empty frame.
+        let target = (current + 1) % frames.length;
+        let ready = false;
+        for (let attempts = 0; attempts < frames.length - 1; attempts++) {
+          ready = await load(target);
+          if (ready || ticket !== revision || !alive) break;
+          target = (target + 1) % frames.length;
+        }
+        busy = false;
+        if (!alive || ticket !== revision) return;
+        if (ready && (manual || (!paused && visible && !document.hidden))) {
+          frames[current].classList.remove("is-current");
+          frames[current].setAttribute("aria-hidden", "true");
+          frames[target].classList.add("is-current");
+          frames[target].setAttribute("aria-hidden", "false");
+          current = target;
+          count.textContent = `${current + 1} / ${frames.length}`;
+          first = false;
+        }
+        schedule();
+      };
+      toggle.addEventListener("click", () => {
+        paused = !paused;
+        updateButton();
+        schedule();
+      }, { signal: events.signal });
+      next.addEventListener("click", () => {
+        // Manual browsing stays still until the visitor chooses Play.
+        paused = true;
+        updateButton();
+        void advance(true);
+      }, { signal: events.signal });
+      document.addEventListener("visibilitychange", schedule, { signal: events.signal });
+      motion.addEventListener("change", () => {
+        paused = motion.matches;
+        updateButton();
+        schedule();
+      }, { signal: events.signal });
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio >= 0.1;
+        schedule();
+      }, { threshold: 0.1 });
+      observer.observe(this);
+      updateButton();
+      this.cleanup = () => { alive = false; stop(); observer.disconnect(); events.abort(); };
+    }
+    private cleanup?: () => void;
+    disconnectedCallback() { this.cleanup?.(); }
+  }
+  if (!customElements.get("image-window")) customElements.define("image-window", ImageWindow);
+</script>
+
+<style>
+  image-window { display: block; width: 100%; min-width: 0; overflow: hidden; border: 1px solid #bcb0a2; border-radius: 5px; background: #eee7df; box-shadow: 5px 6px 0 rgb(99 79 60 / 9%); }
+  .window-viewport { position: relative; width: 100%; aspect-ratio: var(--window-ratio, 4 / 3); isolation: isolate; overflow: hidden; }
+  .window-frame { position: absolute; inset: 0; opacity: 0; transition: opacity 850ms ease-in-out; pointer-events: none; }
+  .window-frame.is-current { opacity: 1; }
+  .window-frame img { display: block; width: 100%; height: 100%; max-width: none; }
+  .window-controls { display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-height: 38px; padding: 0 7px; border-top: 1px solid rgb(99 79 60 / 14%); background: #f4eee6; color: #51473e; }
+  .window-controls[hidden] { display: flex; visibility: hidden; }
+  .window-count { margin-right: auto; padding-left: 3px; font-size: .7rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  button { min-height: 36px; padding: 5px 7px; border: 0; border-radius: 2px; background: transparent; color: inherit; font: inherit; font-size: .7rem; cursor: pointer; }
+  button:hover { background: #e7ddd0; }
+  button:focus-visible { outline: 2px solid #80563f; outline-offset: -2px; }
+  @media (max-width: 680px) { button { min-height: 44px; padding-inline: 10px; } }
+  @media (prefers-reduced-motion: reduce) { .window-frame { transition: none; } }
+</style>

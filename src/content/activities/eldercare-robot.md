@@ -8,6 +8,31 @@ summary: "I led the technical framework and built the project's website. Bronze 
 role: "Technical framework and website lead. I broke the product into its modules and designed how someone would move through it; I did not build the hardware."
 cover: "./eldercare-robot/prototype-overview.webp"
 coverAlt: "The ElderGo prototype beside a team member using a laptop"
+showcase:
+  - src: "./eldercare-robot/testing-distance.webp"
+    alt: "Testing the ElderGo robot at walking distance"
+    fit: cover
+  - src: "./eldercare-robot/testing-adjustment.webp"
+    alt: "Checking a lower connection on the ElderGo robot"
+    fit: contain
+  - src: "./eldercare-robot/prototype-overview.webp"
+    alt: "The assembled ElderGo robot beside the testing laptop"
+    fit: contain
+  - src: "./eldercare-robot/prototype-interior.webp"
+    alt: "The robot wheel assembly and internal wiring"
+    fit: contain
+  - src: "./eldercare-robot/sensor-array.webp"
+    alt: "The front camera and sensor assembly"
+    fit: contain
+  - src: "./eldercare-robot/testing-debugging.webp"
+    alt: "Tracing a connection from the rear of the robot"
+    fit: contain
+  - src: "./eldercare-robot/result-presentation.webp"
+    alt: "The robot at the Conrad Challenge presentation"
+    fit: contain
+  - src: "./eldercare-robot/conrad-finalists-stage.jpg"
+    alt: "Conrad Challenge finalists across the awards stage"
+    fit: contain
 tags: ["robotics", "eldercare", "team", "product"]
 ---
 

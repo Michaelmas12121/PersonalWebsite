@@ -22,6 +22,13 @@ const activities = defineCollection({
       // fall back to a plain block so the layout is honest about what is missing.
       cover: image().optional(),
       coverAlt: z.string().optional(),
+      // Independent homepage window; photographs remain owned by their activity.
+      showcase: z.array(z.object({
+        src: image(),
+        alt: z.string(),
+        fit: z.enum(["cover", "contain"]).default("contain"),
+        position: z.string().default("50% 50%"),
+      })).default([]),
       // For team projects, state plainly what this person did.
       role: z.string().optional(),
       // Short clip: 20 seconds or less, 10 MB or less, already compressed.
@@ -32,4 +39,18 @@ const activities = defineCollection({
     }),
 });
 
-export const collections = { activities };
+const showcases = defineCollection({
+  loader: glob({ pattern: "*.md", base: "./src/content/showcases" }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    order: z.number(),
+    images: z.array(z.object({
+      src: image(),
+      alt: z.string(),
+      fit: z.enum(["cover", "contain"]).default("contain"),
+      position: z.string().default("50% 50%"),
+    })).min(1),
+  }),
+});
+
+export const collections = { activities, showcases };

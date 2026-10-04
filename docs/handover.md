@@ -67,6 +67,14 @@ another parallel implementation here.
 
 ## Settled decisions
 
+- **The reading-first homepage has independent photo windows.** Conrad,
+  teaching, football, Metabolis, cycling and the gallery each use only their own
+  existing processed images. Activity selections live in Markdown frontmatter;
+  the other window selections live in `src/content/showcases/`. More photographs
+  mean a shorter interval, with distinct first-change delays. Fixed-ratio frames
+  crossfade gently, preserve complete maps and screenshots, and offer Pause and
+  Next controls. Single-image windows stay static; reduced motion disables
+  automatic playback, and offscreen or background windows suspend their timers.
 - **The room is the menu.** Navigation is fixed camera movement, not a scroll
   page or a free-roam world.
 - **Colour carries the visitor into every destination.** Hover remains

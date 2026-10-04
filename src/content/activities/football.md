@@ -7,6 +7,16 @@ order: 3
 summary: "Ninety minutes of stopping someone else from doing something, then getting forward anyway."
 cover: "./football/action-run.webp"
 coverAlt: "Yanlang, wearing number 6, runs alongside another player on the football pitch"
+showcase:
+  - src: "./football/action-run.webp"
+    alt: "Yanlang, number 6, defending on the football pitch"
+    fit: cover
+  - src: "./football/team-huddle.webp"
+    alt: "The football team linking arms before play"
+    fit: cover
+  - src: "./football/number-six.webp"
+    alt: "Yanlang holding his number 6 shirt and team certificate"
+    fit: contain
 tags: ["football", "team"]
 ---
 
