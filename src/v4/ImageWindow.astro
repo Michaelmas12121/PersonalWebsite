@@ -11,7 +11,7 @@ interface Props {
 
 const { images, label, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
 // Larger collections move faster, with a quiet lower bound and distinct phases.
-const interval = Math.round(3000 + 11000 / (images.length + 1) + rhythm * 71);
+const interval = Math.round(1800 + 6000 / (images.length + 1) + rhythm * 45);
 const frames = await Promise.all(images.map(async (frame) => {
   const small = await getImage({ src: frame.src, width: Math.min(400, frame.src.width), format: "webp" });
   const large = await getImage({ src: frame.src, width: Math.min(960, frame.src.width), format: "webp" });
@@ -24,7 +24,7 @@ const frames = await Promise.all(images.map(async (frame) => {
   aria-label={`${label} photographs`}
   aria-roledescription={frames.length > 1 ? "carousel" : undefined}
   data-interval={interval}
-  data-delay={interval + rhythm * 430}
+  data-delay={interval + rhythm * 180}
 >
   <div class="window-viewport">
     {frames.map((frame, index) => (
