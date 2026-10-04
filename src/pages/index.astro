@@ -1,21 +1,11 @@
 ---
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import "../styles/global.css";
 import ImageWindow from "../v4/ImageWindow.astro";
-import elderGoSensorArray from "../content/activities/eldercare-robot/sensor-array.webp";
-import turingMatrices from "../content/activities/turing-society/matrices-in-neural-networks.png";
-import footballHuddle from "../content/activities/football/team-huddle.webp";
 
 const activities = (await getCollection("activities")).sort(
   (left, right) => left.data.order - right.data.order,
 );
-
-const detailImages = new Map([
-  ["eldercare-robot", { src: elderGoSensorArray, alt: "The ElderGo prototype's front sensor array" }],
-  ["turing-society", { src: turingMatrices, alt: "A Turing Society lesson slide explaining matrices in neural networks" }],
-  ["football", { src: footballHuddle, alt: "The school football team linking arms before play" }],
-]);
 
 const achievements = [
   { award: "Outstanding", context: "IMMC · 2026" },
@@ -98,7 +88,6 @@ const gallery = showcases.find((entry) => entry.id === "gallery")!;
         <div class="field-notes-grid">
           {
             activities.map((activity) => {
-              const detailImage = detailImages.get(activity.id);
               const compactTitle = activity.data.title.split(" — ")[0];
               return (
                 <article class={`field-note field-note--${activity.id}`}>
@@ -107,17 +96,6 @@ const gallery = showcases.find((entry) => entry.id === "gallery")!;
                     <p>{activity.data.summary}</p>
                     {activity.data.role && <p class="field-note-role">{activity.data.role}</p>}
                   </div>
-                  {detailImage && (
-                    <div class="field-note-visual">
-                      <Image
-                        src={detailImage.src}
-                        alt={detailImage.alt}
-                        widths={[300, 480, 640]}
-                        sizes="(max-width: 680px) 88vw, (max-width: 900px) 45vw, 28vw"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
                 </article>
               );
             })
@@ -254,16 +232,10 @@ const gallery = showcases.find((entry) => entry.id === "gallery")!;
   .work-context { margin: 0; color: #776f68; font-size: .82rem; font-weight: 700; line-height: 1.35; }
   .field-notes { padding: 4px 14px 30px; }
   .field-notes-grid { display: grid; grid-template-columns: 1.2fr 1fr .96fr; gap: 26px; }
-  .field-note { display: grid; grid-template-rows: auto 130px; min-width: 0; min-height: 290px; gap: 15px; }
+  .field-note { min-width: 0; }
   .field-note-copy h3 { margin: 0 0 7px; font-size: clamp(1.3rem, 1.8vw, 1.85rem); line-height: .95; }
   .field-note-copy p { max-width: 39ch; margin: 0; color: #4f4842; font-size: .94rem; line-height: 1.42; }
   .field-note-copy .field-note-role { margin-top: 10px; color: #695f57; }
-  .field-note-visual { position: relative; display: grid; min-height: 0; place-items: center; isolation: isolate; }
-  .field-note-visual::before { position: absolute; z-index: -1; inset: 8% 3% 0; content: ""; background: rgb(213 168 74 / 16%); transform: rotate(-2deg); }
-  .field-note-visual :global(img) { position: absolute; inset: 9% 6%; display: block; width: 88% !important; height: 82% !important; max-width: none; object-fit: contain; }
-  .field-note--eldercare-robot .field-note-visual::before { border: 1px solid #463e38; border-radius: 45% 48% 16% 20% / 30% 32% 18% 20%; background: rgb(213 168 74 / 17%); transform: rotate(2deg); }
-  .field-note--turing-society .field-note-visual::before { background: rgb(63 82 107 / 16%); clip-path: polygon(7% 0, 100% 12%, 92% 100%, 0 83%); transform: rotate(-2deg); }
-  .field-note--football .field-note-visual::before { border: 1px solid #46624d; border-radius: 48% 52% 20% 22% / 32% 34% 20% 20%; background: rgb(126 149 111 / 16%); transform: rotate(2deg); }
   .highlights { display: grid; box-sizing: border-box; grid-template-columns: .85fr 1.6fr 1.08fr; gap: 24px; align-items: start; min-height: 0; padding: 8px 14px 30px; }
   .achievement-panel, .current-panel, .gallery-panel { display: grid; grid-template-rows: auto auto; min-width: 0; min-height: 0; }
   .achievement-panel h2, .panel-title h2 { margin: 0 0 10px; font-size: clamp(1.25rem, 1.7vw, 1.7rem); line-height: .95; }
@@ -324,9 +296,7 @@ const gallery = showcases.find((entry) => entry.id === "gallery")!;
     .work-grid { grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
     .work-card--eldercare-robot { grid-column: 1 / -1; --window-ratio: 16 / 9; }
     .field-notes-grid { grid-template-columns: 1fr 1fr; }
-    .field-note { min-height: 276px; }
-    .field-note--football { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; align-items: stretch; padding-top: 18px; }
-    .field-note--football .field-note-visual { min-height: 130px; }
+    .field-note--football { grid-column: 1 / -1; padding-top: 18px; }
     .highlights { grid-template-columns: .8fr 1.5fr; height: auto; min-height: auto; }
     .gallery-panel { grid-column: 1 / -1; padding-top: 10px; --window-ratio: 16 / 9; }
   }
@@ -346,12 +316,11 @@ const gallery = showcases.find((entry) => entry.id === "gallery")!;
     .work-copy h3 { font-size: clamp(1.6rem, 8vw, 2.2rem); }
     .field-notes { padding: 20px 8px 22px; }
     .field-notes-grid { grid-template-columns: 1fr; }
-    .field-note, .field-note--football { grid-column: auto; grid-template-columns: 1fr; grid-template-rows: auto 172px; min-height: 0; gap: 14px; padding: 18px 0; }
+    .field-note, .field-note--football { grid-column: auto; padding: 18px 0; }
     .field-note:first-child { padding-top: 0; }
     .field-note + .field-note { margin-top: 10px; }
     .field-note-copy h3 { font-size: 1.65rem; }
     .field-note-copy p { max-width: 43ch; font-size: .96rem; }
-    .field-note--football .field-note-visual { min-height: 0; }
     .highlights { grid-template-columns: 1fr; height: auto; min-height: 0; padding: 10px 8px; }
     .achievement-panel, .current-panel, .gallery-panel { padding: 8px 0; }
     .current-panel, .gallery-panel { margin-top: 12px; }

@@ -72,8 +72,9 @@ another parallel implementation here.
   existing processed images. Activity selections live in Markdown frontmatter;
   the other window selections live in `src/content/showcases/`. More photographs
   mean a shorter interval, with distinct first-change delays. Fixed-ratio frames
-  crossfade gently, preserve complete maps and screenshots, and offer Pause and
-  Next controls. Single-image windows stay static; reduced motion disables
+  crossfade gently and preserve complete maps and screenshots. The windows have
+  no control bar, and the old decorative photographs below the activity summaries
+  have been removed. Single-image windows stay static; reduced motion disables
   automatic playback, and offscreen or background windows suspend their timers.
 - **The room is the menu.** Navigation is fixed camera movement, not a scroll
   page or a free-roam world.
