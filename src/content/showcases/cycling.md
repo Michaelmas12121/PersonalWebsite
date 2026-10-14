@@ -1,6 +1,6 @@
 ---
-portfolio: {"title": "Cycling", "section": "others", "order": 2, "description": ["17 rides through Shenzhen, covering 327.3 km."]}
-title: "327.3 km of cycling"
+portfolio: {"title": "Cycling", "section": "others", "order": 2, "description": ["I like exploring Shenzhen by bike. Here are some of the routes I've taken along the way."]}
+title: "A record of biking"
 order: 2
 images:
   - src: "../../assets/continue/cycling/rides/ride-01.webp"
