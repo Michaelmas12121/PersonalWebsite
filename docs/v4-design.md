@@ -29,8 +29,10 @@ and showcase entries. A shared navigation component owns the four category
 links. All description paragraphs are visible at once; no item switching or text
 pagination is used. Old individual entry URLs redirect to their category. Photo
 windows retain their automatic crossfades with manual navigation and pause.
-Phones use compact category layouts and smaller type to keep the complete
-category in one viewport. The homepage door
+Desktop and tablet views keep the complete category in one viewport. Phones
+use a single-column layout with readable type and vertical scrolling within the
+same page, as explicitly approved by the user. The homepage itself remains a
+single-screen composition on phones. The homepage door
 is the clickable room entry and has an accessible name without visible copy.
 
 ## Visual direction

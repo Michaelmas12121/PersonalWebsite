@@ -94,47 +94,35 @@ const title = section.toUpperCase();
     .category-activities .has-media .entry-media, .category-others .has-media .entry-media { grid-column: 2; grid-row: 1 / 3; height: 100%; }
     .category-activities .has-media .entry-description, .category-others .has-media .entry-description { align-content: start; }
   }
-  @media (max-width: 600px) and (orientation: portrait) {
-    .category-page { padding: 12px; gap: 8px; }
-    header { font-size: 10px; }
+  @media (max-width: 700px), (max-width: 999px) and (orientation: landscape) {
+    :global(html), :global(body) { overflow: auto; }
+    .category-page { height: auto; min-height: 100svh; padding: 20px; gap: 28px; grid-template-rows: auto auto auto; }
+    header { font-size: 11px; }
     .home-link span { display: none; }
-    h1 { font-size: 30px; }
-    .category-heading > span { font-size: 10px; }
-    .category-grid { gap: 12px; }
-    .category-entry { padding-top: 8px; gap: 8px; }
-    .entry-heading { gap: 7px; }
-    .entry-number { font-size: 8px; }
-    h2, .category-projects h2, .category-honors h2 { font-size: clamp(12px, 2svh, 18px); }
-    p, .category-projects p, .category-honors p { font-size: min(2.9vw, 1.4svh); line-height: 1.35; }
-    .entry-description { gap: .5em; }
-    .category-projects .category-grid { grid-template-columns: 1fr; grid-template-rows: 1.4fr 1.05fr 1.3fr 1fr 1.15fr; gap: 6px; }
-    .category-projects .category-entry:last-child { grid-column: auto; }
-    .category-projects .has-media { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 12px; }
-    .category-projects .has-media .entry-heading { grid-column: 1; }
-    .category-projects .has-media .entry-media { grid-column: 2; grid-row: 1 / 3; height: 100%; }
-    .category-projects .has-media .entry-description { grid-column: 1; grid-row: 2; align-content: start; }
-    .category-projects p { font-size: min(2.65vw, 1.2svh); }
-    .category-honors .category-grid { gap: 12px; }
-    .category-honors .has-media { display: flex; gap: 6px; padding-top: 6px; }
-    .category-honors .has-media .entry-media { height: 6.5svh; flex-shrink: 0; }
-    .entry-media :global(.window-controls) { height: 26px; gap: 2px; font-size: 8px; }
-    .entry-media :global(.window-controls button) { min-width: 20px; height: 26px; }
-    .entry-media :global(.window-viewport) { height: calc(100% - 26px); }
-  }
-  @media (max-height: 500px) and (orientation: landscape) {
-    .category-page { padding: 12px 18px; gap: 10px; }
-    h1 { font-size: 26px; }
-    .category-grid { gap: 14px; }
-    .category-entry { padding-top: 7px; gap: 7px; }
-    h2, .category-honors h2 { font-size: 16px; }
-    p, .category-honors p { font-size: 8.5px; line-height: 1.3; }
-    .entry-heading { gap: 7px; }
-    .entry-number { font-size: 8px; }
-    .entry-description { gap: .45em; }
-    .category-projects .entry-media { height: 29svh; }
-    .category-honors .entry-media { height: 16svh; }
-    .entry-media :global(.window-controls) { height: 26px; gap: 4px; font-size: 9px; }
-    .entry-media :global(.window-controls button) { min-width: 22px; height: 26px; }
-    .entry-media :global(.window-viewport) { height: calc(100% - 26px); }
+    h1 { font-size: 42px; }
+    .category-heading > span { font-size: 12px; }
+    .category-grid,
+    .category-projects .category-grid,
+    .category-activities .category-grid,
+    .category-others .category-grid,
+    .category-honors .category-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; gap: 36px; }
+    .category-entry,
+    .category-activities .has-media,
+    .category-others .has-media,
+    .category-honors .has-media { display: flex; flex-direction: column; gap: 16px; padding-top: 20px; }
+    .category-projects .category-entry:nth-child(3),
+    .category-projects .category-entry:last-child { grid-column: auto; grid-row: auto; }
+    .entry-heading { gap: 10px; }
+    .entry-number { font-size: 10px; }
+    h2, .category-projects h2, .category-honors h2 { font-size: 25px; }
+    p, .category-projects p, .category-honors p { font-size: 16px; line-height: 1.6; }
+    .entry-description { gap: 12px; }
+    .entry-media,
+    .category-projects .entry-media,
+    .category-activities .has-media .entry-media,
+    .category-others .has-media .entry-media,
+    .category-honors .has-media .entry-media { height: clamp(220px, 65vw, 380px); flex-shrink: 0; }
+    .entry-media :global(.window-controls) { gap: 12px; font-size: 12px; }
+    .entry-media :global(.window-controls button) { min-width: 38px; }
   }
 </style>

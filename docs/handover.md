@@ -13,7 +13,8 @@ United States. The portrait-led homepage is served at `/` and fits a single view
 Four text-only links open Projects, Activities, Others and Honors; a line-drawn
 door opens the optional room. Each category has one static URL and shows every
 entry and all descriptions together, with no item switching, description paging
-or scrolling. Its optional interactive room, at
+or scrolling on desktop. Phones keep each category on one scrollable page with
+readable type. Its optional interactive room, at
 `/interactive`, is a warm monochrome drawing of his room. Navigation there is
 camera movement between fixed objects, while readable content remains ordinary
 HTML. The immersive destinations introduce natural room colour during camera
@@ -87,8 +88,9 @@ another parallel implementation here.
   and `/honors/` all eight award/publication entries. Every description paragraph
   is visible immediately. There is no entry picker, previous/next entry control
   or text pagination. Old entry URLs redirect to their category. Photos retain
-  independent crossfades and manual previous/next/pause controls. Smaller screens
-  use denser layouts; text becomes smaller to honor the no-scroll requirement.
+  independent crossfades and manual previous/next/pause controls. Desktop and
+  tablet views fit one viewport; phones use readable type and vertical scrolling
+  within the same category page, as explicitly approved by the user.
   No new imagery is invented for entries without supplied images.
 - **The room is the menu.** Navigation is fixed camera movement, not a scroll
   page or a free-roam world.
