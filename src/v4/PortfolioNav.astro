@@ -1,11 +1,11 @@
 ---
-import { entryUrl, sections, type PortfolioEntry, type Section } from "./portfolio";
-interface Props { entries: PortfolioEntry[]; active?: Section; home?: boolean }
-const { entries, active, home = false } = Astro.props;
+import { sectionUrl, sections, type Section } from "./portfolio";
+interface Props { active?: Section; home?: boolean }
+const { active, home = false } = Astro.props;
 ---
 <nav class:list={["portfolio-nav", { "home-nav": home }]} aria-label="Portfolio">
   {sections.map((section) => (
-    <a class={section} href={entryUrl(entries.find((entry) => entry.section === section)!)} aria-current={active === section ? "true" : undefined}>
+    <a class={section} href={sectionUrl(section)} aria-current={active === section ? "true" : undefined}>
       {section.toUpperCase()}
     </a>
   ))}

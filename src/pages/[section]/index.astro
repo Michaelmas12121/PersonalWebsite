@@ -1,0 +1,140 @@
+---
+import "../../styles/global.css";
+import "../../v4/portfolio.css";
+import PortfolioNav from "../../v4/PortfolioNav.astro";
+import ImageWindow from "../../v4/ImageWindow.astro";
+import { getPortfolio, sections } from "../../v4/portfolio";
+export async function getStaticPaths() {
+  const entries = await getPortfolio();
+  return sections.map((section) => ({ params: { section }, props: {
+    section, entries: entries.filter((entry) => entry.section === section),
+  } }));
+}
+const { section, entries } = Astro.props;
+const title = section.toUpperCase();
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={`All ${section} by Yanlang Liu, together in one view.`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title} — Yanlang Liu</title>
+  </head>
+  <body>
+    <main class={`category-page category-${section}`}>
+      <header>
+        <a class="home-link" href="/" aria-label="Back to homepage">← <span>Home</span></a>
+        <PortfolioNav active={section} />
+      </header>
+      <div class="category-heading"><h1>{title}</h1><span>{String(entries.length).padStart(2, "0")}</span></div>
+      <div class="category-grid">
+        {entries.map((entry, index) => (
+          <article id={entry.id} class:list={["category-entry", { "has-media": entry.images.length > 0 }]} aria-labelledby={`title-${entry.id}`}>
+            <div class="entry-heading"><span class="entry-number">{String(index + 1).padStart(2, "0")}</span><h2 id={`title-${entry.id}`}>{entry.title}</h2></div>
+            {entry.images.length > 0 && <div class="entry-media"><ImageWindow images={entry.images} label={entry.title} rhythm={index} sizes="(max-width: 700px) 90vw, 32vw" controls /></div>}
+            <div class="entry-description">{entry.description.map((paragraph) => <p>{paragraph}</p>)}</div>
+          </article>
+        ))}
+      </div>
+    </main>
+  </body>
+</html>
+<style>
+  :global(html), :global(body) { overflow: hidden; }
+  .category-page { height: 100svh; padding: clamp(18px, 2.8vw, 44px); display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: clamp(16px, 2.7vh, 28px); }
+  header { display: flex; align-items: center; justify-content: space-between; font-size: clamp(11px, 1vw, 15px); }
+  .home-link { display: flex; gap: 10px; align-items: center; }
+  .category-heading { display: flex; align-items: baseline; gap: 18px; }
+  h1 { font: 400 clamp(34px, 4.5vw, 68px)/1 "Anton", Impact, sans-serif; letter-spacing: -.02em; margin: 0; }
+  .category-heading > span { color: #8c8377; font-size: 13px; }
+  .category-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.6vw, 40px); min-height: 0; }
+  .category-entry { min-width: 0; min-height: 0; border-top: 1px solid #cfc7b9; padding-top: clamp(12px, 1.7vh, 20px); display: flex; flex-direction: column; gap: clamp(12px, 1.7vh, 20px); }
+  .entry-heading { display: flex; gap: 12px; align-items: baseline; }
+  .entry-number { font-size: 10px; color: #8c8377; flex-shrink: 0; }
+  h2 { font: 400 clamp(20px, 2.05vw, 32px)/1.15 "Anton", Impact, sans-serif; margin: 0; text-wrap: balance; }
+  .entry-description { display: grid; gap: .7em; }
+  p { margin: 0; font-size: clamp(13px, 1.04vw, 17px); line-height: 1.55; text-wrap: pretty; }
+  .entry-media { min-height: 0; height: clamp(140px, 40svh, 480px); flex-shrink: 1; }
+  .entry-media :global(image-window) { height: 100%; border: 0; border-radius: 0; box-shadow: none; background: #eeeae0; }
+  .entry-media :global(.window-viewport) { height: calc(100% - 42px); aspect-ratio: auto; }
+  .entry-media :global(.window-controls) { gap: 10px; }
+  .category-projects .category-grid { grid-template-columns: 1fr 1fr 1.06fr; grid-template-rows: repeat(2, minmax(0, 1fr)); }
+  .category-projects .category-entry:nth-child(3) { grid-column: 3; grid-row: 1 / 3; }
+  .category-projects .entry-media { height: 31svh; }
+  .category-others .entry-media { height: 49svh; }
+  .category-honors .category-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+  .category-honors .category-entry { gap: 12px; }
+  .category-honors .entry-media { height: 17svh; }
+  .category-honors h2 { font-size: clamp(20px, 1.8vw, 30px); }
+  .category-honors p { font-size: clamp(12px, .98vw, 16px); }
+  @media (max-height: 820px) and (min-width: 1000px) {
+    .category-page { padding-top: 20px; padding-bottom: 20px; gap: 16px; }
+    h1 { font-size: 42px; }
+    h2 { font-size: 24px; }
+    p { font-size: 13px; line-height: 1.45; }
+    .category-entry { gap: 12px; padding-top: 12px; }
+    .category-honors .entry-media { height: 16svh; }
+  }
+  @media (max-width: 999px) and (orientation: portrait) {
+    .category-page { padding: 22px; gap: 18px; }
+    .category-projects .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); }
+    .category-projects .category-entry:nth-child(3) { grid-column: auto; grid-row: auto; }
+    .category-projects .category-entry:last-child { grid-column: 1 / 3; }
+    .category-projects .entry-media { height: 12svh; }
+    .category-projects h2 { font-size: 22px; }
+    .category-projects p { font-size: 12px; line-height: 1.4; }
+    .category-honors .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); }
+    .category-honors .has-media { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; }
+    .category-honors .has-media .entry-heading { grid-column: 1 / 3; }
+    .category-honors .has-media .entry-media { height: 11svh; grid-column: 2; grid-row: 2; }
+    .category-honors .has-media .entry-description { grid-column: 1; grid-row: 2; }
+    .category-activities .category-grid, .category-others .category-grid { grid-template-columns: 1fr; grid-template-rows: repeat(3, minmax(0, 1fr)); }
+    .category-activities .has-media, .category-others .has-media { display: grid; grid-template-columns: 1fr 1.2fr; grid-template-rows: auto 1fr; align-content: start; }
+    .category-activities .has-media .entry-media, .category-others .has-media .entry-media { grid-column: 2; grid-row: 1 / 3; height: 100%; }
+    .category-activities .has-media .entry-description, .category-others .has-media .entry-description { align-content: start; }
+  }
+  @media (max-width: 600px) and (orientation: portrait) {
+    .category-page { padding: 12px; gap: 8px; }
+    header { font-size: 10px; }
+    .home-link span { display: none; }
+    h1 { font-size: 30px; }
+    .category-heading > span { font-size: 10px; }
+    .category-grid { gap: 12px; }
+    .category-entry { padding-top: 8px; gap: 8px; }
+    .entry-heading { gap: 7px; }
+    .entry-number { font-size: 8px; }
+    h2, .category-projects h2, .category-honors h2 { font-size: clamp(12px, 2svh, 18px); }
+    p, .category-projects p, .category-honors p { font-size: min(2.9vw, 1.4svh); line-height: 1.35; }
+    .entry-description { gap: .5em; }
+    .category-projects .category-grid { grid-template-columns: 1fr; grid-template-rows: 1.4fr 1.05fr 1.3fr 1fr 1.15fr; gap: 6px; }
+    .category-projects .category-entry:last-child { grid-column: auto; }
+    .category-projects .has-media { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 12px; }
+    .category-projects .has-media .entry-heading { grid-column: 1; }
+    .category-projects .has-media .entry-media { grid-column: 2; grid-row: 1 / 3; height: 100%; }
+    .category-projects .has-media .entry-description { grid-column: 1; grid-row: 2; align-content: start; }
+    .category-projects p { font-size: min(2.65vw, 1.2svh); }
+    .category-honors .category-grid { gap: 12px; }
+    .category-honors .has-media { display: flex; gap: 6px; padding-top: 6px; }
+    .category-honors .has-media .entry-media { height: 6.5svh; flex-shrink: 0; }
+    .entry-media :global(.window-controls) { height: 26px; gap: 2px; font-size: 8px; }
+    .entry-media :global(.window-controls button) { min-width: 20px; height: 26px; }
+    .entry-media :global(.window-viewport) { height: calc(100% - 26px); }
+  }
+  @media (max-height: 500px) and (orientation: landscape) {
+    .category-page { padding: 12px 18px; gap: 10px; }
+    h1 { font-size: 26px; }
+    .category-grid { gap: 14px; }
+    .category-entry { padding-top: 7px; gap: 7px; }
+    h2, .category-honors h2 { font-size: 16px; }
+    p, .category-honors p { font-size: 8.5px; line-height: 1.3; }
+    .entry-heading { gap: 7px; }
+    .entry-number { font-size: 8px; }
+    .entry-description { gap: .45em; }
+    .category-projects .entry-media { height: 29svh; }
+    .category-honors .entry-media { height: 16svh; }
+    .entry-media :global(.window-controls) { height: 26px; gap: 4px; font-size: 9px; }
+    .entry-media :global(.window-controls button) { min-width: 22px; height: 26px; }
+    .entry-media :global(.window-viewport) { height: calc(100% - 26px); }
+  }
+</style>

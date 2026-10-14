@@ -21,12 +21,16 @@ background; preserve identity, expression, age, hair, lighting and white polo;
 remove all page lettering, contours, backdrop and door; retain natural alpha
 edges. The resulting cutout is a visual asset, not an official identity image.
 
-Projects, Activities, Others and Honors open individual static entry URLs.
+Projects, Activities, Others and Honors open one static page per category,
+showing all five projects, three activities, three interests, or eight honors
+and publication entries together.
 Content is sourced from Markdown collections, including the existing activity
 and showcase entries. A shared navigation component owns the four category
-links. Entry and description paging keeps content in one viewport. Photo
+links. All description paragraphs are visible at once; no item switching or text
+pagination is used. Old individual entry URLs redirect to their category. Photo
 windows retain their automatic crossfades with manual navigation and pause.
-Phones use an entry selector and a stacked media/text layout. The homepage door
+Phones use compact category layouts and smaller type to keep the complete
+category in one viewport. The homepage door
 is the clickable room entry and has an accessible name without visible copy.
 
 ## Visual direction

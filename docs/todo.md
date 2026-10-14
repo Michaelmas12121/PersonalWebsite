@@ -40,7 +40,8 @@
       record.
 - [x] Add privacy-safe football photographs while keeping source photographs
       outside the repository.
-- [x] Give portfolio entries shareable static URLs with section and entry navigation.
+- [x] Give each category one shareable URL and show all its entries and complete
+      descriptions together; remove entry switching and description pagination.
 
 ## Files still needed
 

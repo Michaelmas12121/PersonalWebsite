@@ -29,4 +29,4 @@ export async function getPortfolio(): Promise<PortfolioEntry[]> {
   ].sort((a, b) => a.order - b.order);
 }
 
-export const entryUrl = (entry: PortfolioEntry) => `/${entry.section}/${entry.id}/`;
+export const sectionUrl = (section: Section) => `/${section}/`;

@@ -4,8 +4,6 @@ import "../styles/global.css";
 import "../v4/portfolio.css";
 import portrait from "../assets/portrait/yanlang-cutout.png";
 import PortfolioNav from "../v4/PortfolioNav.astro";
-import { getPortfolio } from "../v4/portfolio";
-const entries = await getPortfolio();
 ---
 <html lang="en">
   <head>
@@ -33,7 +31,7 @@ const entries = await getPortfolio();
       </svg>
       <h1 class="name">YANLANG LIU</h1>
       <Image class="portrait" src={portrait} alt="Yanlang Liu" widths={[640, 960, 1440]} sizes="(max-width: 700px) 210vw, 90vw" format="webp" quality={88} loading="eager" fetchpriority="high" />
-      <PortfolioNav entries={entries} home />
+      <PortfolioNav home />
       <a class="room-door" href="/interactive" aria-label="Enter my interactive room" title="Interactive room">
         <svg viewBox="0 0 80 130" fill="none" aria-hidden="true">
           <path d="M12 118V20H44" />
