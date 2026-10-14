@@ -43,6 +43,10 @@
 - [x] Give each category one shareable URL and show all its entries and complete
       descriptions together; remove entry switching and description pagination.
 
+- [x] Add selected community and ElderGo photos, AHAY2U branding and website,
+      Re:Think and AIME evidence, and four new-tab paper links. Keep USACO unchanged.
+- [x] Remove photograph arrows, counts and pause buttons; keep automatic crossfades.
+
 ## Files still needed
 
 - [x] Select two existing Metabolis screens from the read-only project folder.

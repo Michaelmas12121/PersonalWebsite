@@ -6,6 +6,10 @@ const portfolioFields = z.object({
   section: z.enum(["projects", "activities", "others", "honors"]),
   order: z.number(),
   description: z.array(z.string()).min(1),
+  links: z.array(z.object({
+    label: z.string(),
+    url: z.string().refine((url) => /^https:\/\//.test(url) || /^\/papers\/[a-z0-9-]+\.pdf$/.test(url), "Use an HTTPS URL or a local paper PDF"),
+  })).default([]),
 });
 
 /**
@@ -65,6 +69,7 @@ const showcases = defineCollection({
 const portfolio = defineCollection({
   loader: glob({ pattern: "*.md", base: "./src/content/portfolio" }),
   schema: ({ image }) => portfolioFields.extend({
+    logo: image().optional(),
     images: z.array(z.object({ src: image(), alt: z.string() })).default([]),
   }),
 });

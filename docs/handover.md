@@ -88,7 +88,7 @@ another parallel implementation here.
   and `/honors/` all eight award/publication entries. Every description paragraph
   is visible immediately. There is no entry picker, previous/next entry control
   or text pagination. Old entry URLs redirect to their category. Photos retain
-  independent crossfades and manual previous/next/pause controls. Desktop and
+  independent automatic crossfades without arrows, counters or pause buttons. Desktop and
   tablet views fit one viewport; phones use readable type and vertical scrolling
   within the same category page, as explicitly approved by the user.
   No new imagery is invented for entries without supplied images.
@@ -189,6 +189,21 @@ photographs.
 - University applications remain the main constraint, so avoid scope creep.
 
 ---
+
+## Latest portfolio media
+
+The category pages include three selected community-service photographs and
+three additional ElderGo event photographs, plus the supplied AHAY2U logo and
+website link. Re:Think and AIME have certificate/score-report images; AIME
+account, identification and school fields are pixelated. USACO stays unchanged
+at the user's explicit request, with no additional evidence uploaded.
+
+HiMCM, IMMC, Re:Think and AF-AdvGAN link to local PDFs in new tabs. Public paper
+copies omit source metadata and annotations. The AF-AdvGAN first page is
+rasterized with contact emails and the student affiliation removed; author names
+and paper content are retained. Original documents remain outside the repository.
+The two CR3 photographs use the full-resolution camera-embedded JPEG previews,
+resized and compressed as WebP without metadata.
 
 ## What to do next
 

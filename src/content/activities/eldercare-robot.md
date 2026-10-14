@@ -34,6 +34,15 @@ showcase:
   - src: "./eldercare-robot/conrad-finalists-stage.jpg"
     alt: "Conrad Challenge finalists across the awards stage"
     fit: contain
+  - src: "./eldercare-robot/conrad-team.webp"
+    alt: "The ElderGo team and prototype at the Conrad Challenge summit"
+    fit: contain
+  - src: "./eldercare-robot/conrad-presentation.webp"
+    alt: "Presenting ElderGo at the Conrad Challenge"
+    fit: contain
+  - src: "./eldercare-robot/conrad-prototype-team.webp"
+    alt: "The team with the ElderGo prototype outside the presentation hall"
+    fit: contain
 tags: ["robotics", "eldercare", "team", "product"]
 ---
 

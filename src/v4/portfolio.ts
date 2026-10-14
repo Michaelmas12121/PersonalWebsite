@@ -9,6 +9,8 @@ export interface PortfolioEntry {
   section: Section;
   order: number;
   description: string[];
+  links: { label: string; url: string }[];
+  logo?: ImageMetadata;
   images: { src: ImageMetadata; alt: string; fit?: "cover" | "contain"; position?: string }[];
 }
 
