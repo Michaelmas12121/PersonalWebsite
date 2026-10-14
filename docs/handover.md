@@ -9,8 +9,10 @@ longer live in the working tree.
 ## What this is
 
 This is a personal site for a 17-year-old applying to universities in the
-United States. The reading-first homepage is served at `/` and presents his
-work as a direct, scrollable portfolio. Its optional interactive room, at
+United States. The portrait-led homepage is served at `/` and fits a single viewport.
+Four text-only links open Projects, Activities, Others and Honors; a line-drawn
+door opens the optional room. Section entries use static URLs and previous/next
+navigation, with no scrolling. Its optional interactive room, at
 `/interactive`, is a warm monochrome drawing of his room. Navigation there is
 camera movement between fixed objects, while readable content remains ordinary
 HTML. The immersive destinations introduce natural room colour during camera
@@ -24,7 +26,8 @@ retained only in the private history backup.
 
 ## Where things stand
 
-**Complete foundations:** the reading-first homepage; the independent
+**Complete foundations:** the portrait-led, single-screen homepage; the four
+resume-based portfolio sections with photo and description paging; the independent
 interactive route; code-native room geometry;
 fixed camera navigation; five interactive objects; the monochrome-to-colour
 state rule; the capability gate; the CSS narrow-screen fallback; the stylised
@@ -39,9 +42,9 @@ media; and four privacy-safe certificate copies.
 floor-to-ceiling window and update the narrow-screen drawing to match. The user
 explicitly postponed this while completing content.
 
-**Incomplete content:** the Who am I text, the decision about shareable section
-URLs, and the eventual Load Game links to separately hosted archives. Activity
-accounts do not require additional reflection sections.
+**Incomplete content:** the Who am I text and the eventual Load Game links to
+separately hosted archives. Activity accounts do not require additional
+reflection sections.
 
 ---
 
@@ -67,15 +70,23 @@ another parallel implementation here.
 
 ## Settled decisions
 
-- **The reading-first homepage has independent photo windows.** Conrad,
-  teaching, football, Metabolis, cycling and the gallery each use only their own
-  existing processed images. Activity selections live in Markdown frontmatter;
-  the other window selections live in `src/content/showcases/`. More photographs
-  mean a shorter interval, with distinct first-change delays. Fixed-ratio frames
-  crossfade gently and preserve complete maps and screenshots. The windows have
-  no control bar, and the old decorative photographs below the activity summaries
-  have been removed. Single-image windows stay static; reduced motion disables
-  automatic playback, and offscreen or background windows suspend their timers.
+- **The homepage is a single-screen portrait navigation page.** Its approved
+  design uses a cutout portrait, oversized pale name, four text-only category
+  links and a fine-line door. No subtitles, logo, header branding or room-entry
+  text. On phones the category links sit above the portrait. The room remains
+  at `/interactive` and its implementation is unchanged.
+- **Portfolio content is grouped by the supplied resume.** Projects contains
+  five entries, Activities three, Others photography/cycling/game development,
+  and Honors includes awards and publication. Resume descriptions omit years.
+  Existing activity/showcase Markdown owns its own portfolio metadata and media;
+  additional entries live in `src/content/portfolio/`. The section navigation
+  is shared in `src/v4/PortfolioNav.astro`.
+- **Content screens use explicit paging.** Static section/entry URLs show one
+  entry at a time; descriptions with two paragraphs have previous/next controls.
+  Photo windows reuse existing processed media with independent crossfades,
+  previous/next and pause controls. Reduced motion starts playback paused;
+  offscreen and background windows suspend timers. No new project imagery is
+  invented for entries without supplied images.
 - **The room is the menu.** Navigation is fixed camera movement, not a scroll
   page or a free-roam world.
 - **Colour carries the visitor into every destination.** Hover remains

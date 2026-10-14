@@ -1,4 +1,5 @@
 ---
+portfolio: {"title": "Football & the inter-school league", "section": "activities", "order": 3, "description": ["Trained and competed as a left-back; helped plan the Shenzhen International High School Football League, including venue selection and match schedules for 20+ teams."]}
 title: "Fullback"
 context: "School football team"
 category: "Teamwork & Sport"

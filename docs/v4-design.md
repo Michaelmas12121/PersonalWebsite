@@ -1,9 +1,33 @@
 # Version 4 — Interactive Colour Line Room
 
-Version 4 is the only active site in this repository. The reading-first
+Version 4 is the only active site in this repository. The single-screen portrait
 portfolio is served at `/`; its optional interactive room is served at
 `/interactive`. Earlier versions have been removed from the working tree and
 will be archived separately after version 4 is stable.
+
+## Portrait homepage and portfolio navigation
+
+The homepage is a fixed, viewport-sized composition: a transparent portrait of
+Yanlang, a large pale name behind it, four category links and a line-art door.
+The approved reference is the portrait-led preview, with the realistic glowing
+door replaced by a fine dark outline. The portrait is an ImageGen derivative
+of the user-approved preview, stored at `src/assets/portrait/yanlang-cutout.png`.
+The original identity photograph is not copied into the repository. Astro serves
+responsive WebP derivatives. Anton is self-hosted with its OFL license.
+
+The portrait was made with the built-in ImageGen tool. Generation brief: extract
+only the central portrait from the approved preview onto a true transparent
+background; preserve identity, expression, age, hair, lighting and white polo;
+remove all page lettering, contours, backdrop and door; retain natural alpha
+edges. The resulting cutout is a visual asset, not an official identity image.
+
+Projects, Activities, Others and Honors open individual static entry URLs.
+Content is sourced from Markdown collections, including the existing activity
+and showcase entries. A shared navigation component owns the four category
+links. Entry and description paging keeps content in one viewport. Photo
+windows retain their automatic crossfades with manual navigation and pause.
+Phones use an entry selector and a stacked media/text layout. The homepage door
+is the clickable room entry and has an accessible name without visible copy.
 
 ## Visual direction
 

@@ -5,8 +5,10 @@
 - [x] Keep version 4 as the only active site in this repository.
 - [x] Remove versions 1, 2 and 3 from the working tree while preserving Git
       history and local-only experiments.
-- [x] Make `/` a direct, reading-first homepage and serve the optional room at
-      `/interactive`.
+- [x] Make `/` the approved single-screen portrait homepage, with four category
+      destinations and a line-art door to `/interactive`.
+- [x] Add resume-based project, activity and honor entries without years, plus
+      photography, cycling and game development; retain independent photo windows.
 - [x] Keep three.js behind the capability gate and dynamic import.
 - [x] Keep the code-native narrow-screen fallback.
 
@@ -38,8 +40,7 @@
       record.
 - [x] Add privacy-safe football photographs while keeping source photographs
       outside the repository.
-- [ ] Decide whether each major section needs its own shareable URL rather than
-      existing only as an overlay.
+- [x] Give portfolio entries shareable static URLs with section and entry navigation.
 
 ## Files still needed
 

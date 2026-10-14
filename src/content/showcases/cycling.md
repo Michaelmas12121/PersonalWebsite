@@ -1,4 +1,5 @@
 ---
+portfolio: {"title": "Cycling", "section": "others", "order": 2, "description": ["17 rides through Shenzhen, covering 327.3 km."]}
 title: "327.3 km of cycling"
 order: 2
 images:

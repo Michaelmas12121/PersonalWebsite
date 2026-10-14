@@ -7,9 +7,10 @@ interface Props {
   label: string;
   rhythm?: number;
   sizes?: string;
+  controls?: boolean;
 }
 
-const { images, label, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
+const { images, label, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw", controls = false } = Astro.props;
 // Larger collections move faster, with a quiet lower bound and distinct phases.
 const interval = Math.round(1800 + 6000 / (images.length + 1) + rhythm * 45);
 const frames = await Promise.all(images.map(async (frame) => {
@@ -45,6 +46,12 @@ const frames = await Promise.all(images.map(async (frame) => {
       </div>
     ))}
   </div>
+  {controls && <div class="window-controls">
+    <button type="button" data-image-back aria-label="Previous photograph" disabled={frames.length < 2}>←</button>
+    <span data-image-count>1 / {frames.length}</span>
+    <button type="button" data-image-next aria-label="Next photograph" disabled={frames.length < 2}>→</button>
+    {frames.length > 1 && <button type="button" data-image-pause aria-label="Pause photograph slideshow">Pause</button>}
+  </div>}
 </image-window>
 
 <script>
@@ -62,6 +69,15 @@ const frames = await Promise.all(images.map(async (frame) => {
       let busy = false;
       let alive = true;
       let revision = 0;
+      let paused = motion.matches;
+      const pauseButton = this.querySelector<HTMLButtonElement>("[data-image-pause]");
+      const count = this.querySelector<HTMLElement>("[data-image-count]");
+      const updatePause = () => {
+        if (!pauseButton) return;
+        pauseButton.textContent = paused ? "Play" : "Pause";
+        pauseButton.setAttribute("aria-label", `${paused ? "Play" : "Pause"} photograph slideshow`);
+      };
+      updatePause();
 
       const load = async (index: number) => {
         const img = frames[index].querySelector<HTMLImageElement>("img")!;
@@ -76,37 +92,41 @@ const frames = await Promise.all(images.map(async (frame) => {
       const stop = () => { window.clearTimeout(timer); revision++; };
       const schedule = () => {
         stop();
-        if (!alive || motion.matches || !visible || document.hidden) return;
+        if (!alive || paused || !visible || document.hidden) return;
         void load((current + 1) % frames.length);
         timer = window.setTimeout(() => { void advance(); }, first ? Number(this.dataset.delay) : interval);
       };
-      const advance = async () => {
+      const advance = async (direction = 1, manual = false) => {
         if (busy) return;
         stop();
         const ticket = revision;
         busy = true;
         // A failed image never replaces a visible photograph with an empty frame.
-        let target = (current + 1) % frames.length;
+        let target = (current + direction + frames.length) % frames.length;
         let ready = false;
         for (let attempts = 0; attempts < frames.length - 1; attempts++) {
           ready = await load(target);
           if (ready || ticket !== revision || !alive) break;
-          target = (target + 1) % frames.length;
+          target = (target + direction + frames.length) % frames.length;
         }
         busy = false;
         if (!alive || ticket !== revision) return;
-        if (ready && !motion.matches && visible && !document.hidden) {
+        if (ready && (manual || (!paused && visible && !document.hidden))) {
           frames[current].classList.remove("is-current");
           frames[current].setAttribute("aria-hidden", "true");
           frames[target].classList.add("is-current");
           frames[target].setAttribute("aria-hidden", "false");
           current = target;
           first = false;
+          if (count) count.textContent = `${current + 1} / ${frames.length}`;
         }
         schedule();
       };
       document.addEventListener("visibilitychange", schedule, { signal: events.signal });
-      motion.addEventListener("change", schedule, { signal: events.signal });
+      motion.addEventListener("change", () => { paused = motion.matches; updatePause(); schedule(); }, { signal: events.signal });
+      this.querySelector("[data-image-back]")?.addEventListener("click", () => { void advance(-1, true); }, { signal: events.signal });
+      this.querySelector("[data-image-next]")?.addEventListener("click", () => { void advance(1, true); }, { signal: events.signal });
+      pauseButton?.addEventListener("click", () => { paused = !paused; updatePause(); schedule(); }, { signal: events.signal });
       const observer = new IntersectionObserver(([entry]) => {
         visible = entry.isIntersecting && entry.intersectionRatio >= 0.1;
         schedule();
@@ -126,5 +146,9 @@ const frames = await Promise.all(images.map(async (frame) => {
   .window-frame { position: absolute; inset: 0; opacity: 0; transition: opacity 850ms ease-in-out; pointer-events: none; }
   .window-frame.is-current { opacity: 1; }
   .window-frame img { display: block; width: 100%; height: 100%; max-width: none; }
+  .window-controls { display: flex; align-items: center; justify-content: center; gap: 20px; height: 42px; font-size: 12px; background: #fcfaf5; }
+  .window-controls button { min-width: 36px; height: 36px; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+  .window-controls button:disabled { opacity: .3; cursor: default; }
+  .window-controls button:last-child:not([data-image-next]) { margin-left: auto; }
   @media (prefers-reduced-motion: reduce) { .window-frame { transition: none; } }
 </style>

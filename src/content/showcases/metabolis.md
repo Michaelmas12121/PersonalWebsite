@@ -1,4 +1,5 @@
 ---
+portfolio: {"title": "Game development", "section": "others", "order": 3, "description": ["Metabolis: a game about building networks and transporting biological resources."]}
 title: "Metabolis"
 order: 1
 images:

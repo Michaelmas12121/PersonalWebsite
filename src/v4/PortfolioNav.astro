@@ -1,0 +1,30 @@
+---
+import { entryUrl, sections, type PortfolioEntry, type Section } from "./portfolio";
+interface Props { entries: PortfolioEntry[]; active?: Section; home?: boolean }
+const { entries, active, home = false } = Astro.props;
+---
+<nav class:list={["portfolio-nav", { "home-nav": home }]} aria-label="Portfolio">
+  {sections.map((section) => (
+    <a class={section} href={entryUrl(entries.find((entry) => entry.section === section)!)} aria-current={active === section ? "true" : undefined}>
+      {section.toUpperCase()}
+    </a>
+  ))}
+</nav>
+<style>
+  .portfolio-nav { display: flex; align-items: center; gap: clamp(12px, 2.4vw, 40px); }
+  a { transition: color 180ms ease; }
+  a:hover, a[aria-current] { color: #8a6450; }
+  a:focus-visible { outline: 2px solid currentColor; outline-offset: 8px; }
+  .home-nav a { position: absolute; z-index: 3; font-family: "Anton", Impact, sans-serif; font-size: clamp(30px, 5.45vw, 104px); line-height: 1.12; letter-spacing: -.035em; }
+  .home-nav .projects, .home-nav .others { left: 8.4%; }
+  .home-nav .activities, .home-nav .honors { left: 71.7%; }
+  .home-nav .projects, .home-nav .activities { top: 48%; }
+  .home-nav .others, .home-nav .honors { top: 67.5%; }
+  @media (max-width: 700px) and (orientation: portrait) {
+    .home-nav a { font-size: clamp(27px, 6.7vw, 46px); }
+    .home-nav .projects, .home-nav .others { left: 6%; }
+    .home-nav .activities, .home-nav .honors { left: auto; right: 6%; }
+    .home-nav .projects, .home-nav .activities { top: 25%; }
+    .home-nav .others, .home-nav .honors { top: 35%; }
+  }
+</style>

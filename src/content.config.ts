@@ -1,6 +1,13 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+const portfolioFields = z.object({
+  title: z.string(),
+  section: z.enum(["projects", "activities", "others", "honors"]),
+  order: z.number(),
+  description: z.array(z.string()).min(1),
+});
+
 /**
  * One Markdown file per activity, living in src/content/activities/ alongside
  * its images. Adding an activity means adding one file here — no page template
@@ -11,6 +18,7 @@ const activities = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      portfolio: portfolioFields.optional(),
       // Shown above the title in small caps, e.g. "Conrad Challenge".
       context: z.string(),
       // Used to group entries on the reading-first homepage.
@@ -43,6 +51,7 @@ const showcases = defineCollection({
   loader: glob({ pattern: "*.md", base: "./src/content/showcases" }),
   schema: ({ image }) => z.object({
     title: z.string(),
+    portfolio: portfolioFields.optional(),
     order: z.number(),
     images: z.array(z.object({
       src: image(),
@@ -53,4 +62,11 @@ const showcases = defineCollection({
   }),
 });
 
-export const collections = { activities, showcases };
+const portfolio = defineCollection({
+  loader: glob({ pattern: "*.md", base: "./src/content/portfolio" }),
+  schema: ({ image }) => portfolioFields.extend({
+    images: z.array(z.object({ src: image(), alt: z.string() })).default([]),
+  }),
+});
+
+export const collections = { activities, showcases, portfolio };

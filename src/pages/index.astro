@@ -1,336 +1,65 @@
 ---
-import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import "../styles/global.css";
-import ImageWindow from "../v4/ImageWindow.astro";
-
-const activities = (await getCollection("activities")).sort(
-  (left, right) => left.data.order - right.data.order,
-);
-
-const achievements = [
-  { award: "Outstanding", context: "IMMC · 2026" },
-  { award: "Finalist", context: "IMMC · 2026" },
-  { award: "Meritorious", context: "HiMCM · 2025" },
-  { award: "AIME II qualifier", context: "AIME · 2026" },
-];
-
-const showcases = (await getCollection("showcases")).sort((a, b) => a.data.order - b.data.order);
-const currentShowcases = showcases.filter((entry) => entry.id !== "gallery");
-const gallery = showcases.find((entry) => entry.id === "gallery")!;
+import "../v4/portfolio.css";
+import portrait from "../assets/portrait/yanlang-cutout.png";
+import PortfolioNav from "../v4/PortfolioNav.astro";
+import { getPortfolio } from "../v4/portfolio";
+const entries = await getPortfolio();
 ---
-
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="description" content="Yanlang Liu — mathematics, artificial intelligence, research, and teaching." />
+    <meta name="description" content="Yanlang Liu — projects, activities, photography, cycling, game development, and honors." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/anton.ttf" as="font" type="font/ttf" crossorigin />
     <title>Yanlang Liu</title>
   </head>
-
   <body>
-    <div class="cursor-glow" aria-hidden="true"></div>
-    <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="Back to the top">YL</a>
-      <nav aria-label="Primary navigation">
-        <a href="#work">Work</a>
-        <a href="#highlights">Highlights</a>
-        <a href="#room">Interactive room</a>
-      </nav>
-      <a class="room-link" data-room-entry href="/interactive">Explore <span aria-hidden="true">↗</span></a>
-    </header>
-
-    <main id="top">
-      <div class="poster page-width">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-main">
-          <p class="hero-location">Student portfolio · Shenzhen, China</p>
-          <h1 id="hero-title">Yanlang<br />Liu</h1>
-          <p class="hero-statement">Mathematics and artificial intelligence, explored through building, teaching, and working with others.</p>
-        </div>
-        <div class="about-card">
-          <h2>Learning how systems connect.</h2>
-          <p>I study at Shenzhen Middle School. I enjoy taking a difficult idea apart, finding the structure underneath it, and making it understandable to someone else.</p>
-        </div>
-      </section>
-
-      <section class="work" id="work" aria-labelledby="work-title">
-        <div class="section-heading">
-          <div>
-            <h2 id="work-title">Selected work.</h2>
-          </div>
-        </div>
-
-        <div class="work-grid">
-          {
-            activities.map((activity, index) => {
-              const images = activity.data.showcase.length ? activity.data.showcase : activity.data.cover
-                ? [{ src: activity.data.cover, alt: activity.data.coverAlt ?? activity.data.title }]
-                : [];
-              const compactTitle = activity.data.title.split(" — ")[0];
-              return (
-                <article class={`work-card work-card--${activity.id}`}>
-                  <div class="work-visual">
-                    {images.length > 0 && <ImageWindow images={images} label={activity.data.context} rhythm={index} />}
-                  </div>
-                  <div class="work-copy">
-                    <p class="work-context">{activity.data.context}</p>
-                    <h3>{compactTitle}</h3>
-                  </div>
-                </article>
-              );
-            })
-          }
-        </div>
-      </section>
-
-      <section class="field-notes" aria-label="Supporting context for selected work">
-        <div class="field-notes-grid">
-          {
-            activities.map((activity) => {
-              const compactTitle = activity.data.title.split(" — ")[0];
-              return (
-                <article class={`field-note field-note--${activity.id}`}>
-                  <div class="field-note-copy">
-                    <h3>{compactTitle}</h3>
-                    <p>{activity.data.summary}</p>
-                    {activity.data.role && <p class="field-note-role">{activity.data.role}</p>}
-                  </div>
-                </article>
-              );
-            })
-          }
-        </div>
-      </section>
-
-      <section class="highlights" id="highlights" aria-label="More portfolio highlights">
-        <div class="achievement-panel">
-          <h2>Awards.</h2>
-          <ul class="achievement-list">
-            {achievements.map((achievement) => (
-              <li>
-                <strong>{achievement.award}</strong>
-                <span>{achievement.context}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div class="current-panel">
-          <div class="panel-title"><h2>Building now.</h2></div>
-          <div class="current-grid">
-            {currentShowcases.map((entry, index) => (
-              <article>
-                <ImageWindow images={entry.data.images} label={entry.data.title} rhythm={index + 3} sizes="(max-width: 680px) 88vw, (max-width: 900px) 25vw, 20vw" />
-                <strong>{entry.data.title}</strong>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div class="gallery-panel">
-          <div class="panel-title"><h2>{gallery.data.title}</h2></div>
-          <ImageWindow images={gallery.data.images} label="Gallery" rhythm={5} sizes="(max-width: 680px) 88vw, (max-width: 900px) 90vw, 25vw" />
-        </div>
-      </section>
-      </div>
-
-      <section class="room-invitation" id="room" aria-labelledby="room-title">
-        <a class="room-entry page-width" data-room-entry href="/interactive">
-          <div class="room-copy">
-            <p class="room-kicker">Optional creative version · Allow a little time to explore</p>
-            <h2 id="room-title">Enter my<br />interactive room.</h2>
-            <p>The same portfolio becomes a personal space: move between the desk, the projects, the certificates, and the window.</p>
-            <span class="room-button">Open the room <span aria-hidden="true">↗</span></span>
-          </div>
-          <div class="door-scene" aria-hidden="true">
-            <div class="door-frame">
-              <div class="door-opening"><span>Explore</span></div>
-              <div class="door-panel">
-                <i class="door-inset door-inset-top"></i>
-                <i class="door-inset door-inset-bottom"></i>
-                <i class="door-handle"></i>
-              </div>
-            </div>
-            <span class="door-floor-line"></span>
-          </div>
-        </a>
-      </section>
+    <main class="portrait-home">
+      <svg class="contours" viewBox="0 0 1680 950" preserveAspectRatio="none" fill="none" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="1">
+          <path d="M270 -40C290 190 380 200 560 335S720 510 855 470 1000 350 1115 422 1460 520 1740 255" />
+          <path d="M435 -40C470 180 570 255 725 267S1030 65 1120 -30" />
+          <path d="M1320 -30C1170 170 1200 360 1390 365S1580 310 1740 205" />
+          <path d="M1490 -30C1340 135 1390 240 1570 232S1690 200 1730 145" />
+          <path d="M-50 190C160 290 155 450 40 548S60 787 255 760 565 510 624 645 720 900 440 1000" />
+          <path d="M-60 300C90 325 55 435 -30 491" />
+          <path d="M-30 583C125 470 215 615 425 574S535 650 355 702 40 642 -30 761" />
+          <path d="M-30 830C125 868 245 933 290 980" />
+          <path d="M1035 606C1120 650 1160 816 1055 916S1160 985 1260 861 1350 700 1510 654 1660 560 1730 565" />
+        </g>
+      </svg>
+      <h1 class="name">YANLANG LIU</h1>
+      <Image class="portrait" src={portrait} alt="Yanlang Liu" widths={[640, 960, 1440]} sizes="(max-width: 700px) 210vw, 90vw" format="webp" quality={88} loading="eager" fetchpriority="high" />
+      <PortfolioNav entries={entries} home />
+      <a class="room-door" href="/interactive" aria-label="Enter my interactive room" title="Interactive room">
+        <svg viewBox="0 0 80 130" fill="none" aria-hidden="true">
+          <path d="M12 118V20H44" />
+          <g class="door-leaf"><path d="M44 20L69 11V124L44 116Z" /><path d="M44 70H50" /></g>
+        </svg>
+      </a>
     </main>
-
-    <footer class="site-footer page-width">
-      <p>Yanlang Liu · Shenzhen, China</p>
-      <a href="#top">Back to top ↑</a>
-    </footer>
-
-    <script>
-      const supportsFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      if (supportsFinePointer.matches && !prefersReducedMotion.matches) {
-        document.body.classList.add("has-pointer-glow");
-        window.addEventListener("pointermove", (event) => {
-          document.documentElement.style.setProperty("--pointer-x", `${event.clientX}px`);
-          document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`);
-        }, { passive: true });
-      }
-
-      let roomTransitionInProgress = false;
-      document.querySelectorAll<HTMLAnchorElement>("[data-room-entry]").forEach((link) => {
-        link.addEventListener("click", (event) => {
-          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-          event.preventDefault();
-          if (roomTransitionInProgress) return;
-
-          roomTransitionInProgress = true;
-          document.body.classList.add("is-entering-room");
-          window.setTimeout(() => window.location.assign(link.href), prefersReducedMotion.matches ? 0 : 480);
-        });
-      });
-    </script>
   </body>
 </html>
-
 <style>
-  :global(html) { scroll-behavior: smooth; }
-  :global(body) { --display-font: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; --meta-font: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: #faf6f1; }
-  .cursor-glow { position: fixed; z-index: 0; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(380px circle at var(--pointer-x, 50vw) var(--pointer-y, -20vh), rgb(200 85 47 / 9%), transparent 70%); transition: opacity 280ms ease; }
-  :global(body.has-pointer-glow) .cursor-glow { opacity: 1; }
-  :global(body) > :not(.cursor-glow) { position: relative; z-index: 1; }
-  .page-width { width: min(1280px, calc(100% - 40px)); margin: 0 auto; }
-  .poster { background: linear-gradient(135deg, rgb(255 253 250 / 52%), rgb(250 246 241 / 18%)); }
-  .site-header { position: sticky; z-index: 10; top: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: min(1300px, calc(100% - 36px)); min-height: 48px; margin: 0 auto; background: color-mix(in srgb, #faf6f1 94%, transparent); backdrop-filter: blur(14px); }
-  .wordmark { width: max-content; font-size: .9rem; font-weight: 800; letter-spacing: -.07em; }
-  nav { display: flex; gap: 22px; font-size: .78rem; }
-  nav a, .room-link, .site-footer a { transition: color 180ms ease; }
-  nav a:hover, .room-link:hover, .site-footer a:hover { color: #c8552f; }
-  .room-link { justify-self: end; font-size: .8rem; font-weight: 700; }
-  .room-link span, .room-button span { display: inline-block; transition: transform 220ms ease; }
-  h1, h2, h3, p { margin-top: 0; }
-  h1, h2, h3 { letter-spacing: -.055em; }
-  h1, h2 { font-family: var(--display-font); }
-  h1 { margin: 5px 0 7px; color: #131211; font-size: clamp(4.2rem, 7.6vw, 7rem); font-weight: 700; letter-spacing: -.08em; line-height: .7; text-shadow: .04em .04em 0 #e7c9b6, .08em .08em 0 rgb(213 168 74 / 38%); }
-  h2 { margin-bottom: 0; font-size: clamp(1.75rem, 2.9vw, 2.65rem); font-weight: 700; line-height: .88; }
-  h3 { margin: 4px 0 3px; font-size: clamp(1rem, 1.3vw, 1.28rem); line-height: 1; }
-  .hero { display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(280px, .58fr); gap: clamp(26px, 4vw, 58px); align-items: end; min-height: 26svh; padding: 22px 14px 24px; }
-  .hero-main { position: relative; }
-  .hero-main::after { position: absolute; z-index: -1; right: 8%; bottom: 8%; width: clamp(130px, 15vw, 210px); aspect-ratio: 1.45; content: ""; background: linear-gradient(135deg, rgb(213 168 74 / 28%), rgb(200 85 47 / 12%)); transform: rotate(-5deg); }
-  .hero-location { margin: 0; color: #7c746d; font-size: .82rem; font-weight: 700; letter-spacing: .02em; }
-  .hero-statement { max-width: 620px; margin: 0; color: #554f49; font-size: clamp(.88rem, 1.1vw, 1rem); line-height: 1.38; }
-  .about-card { padding: 0 0 2px 18px; }
-  .about-card h2 { max-width: 450px; margin: 0 0 9px; font-size: clamp(1.7rem, 2.45vw, 2.35rem); }
-  .about-card > p { max-width: 500px; margin-bottom: 0; color: #554f49; font-size: .84rem; line-height: 1.45; }
-  .work { padding: 2px 14px 25px; }
-  .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
-  .section-heading h2 { margin-top: 3px; font-size: clamp(1.8rem, 3vw, 2.7rem); }
-  .work-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: clamp(16px, 2vw, 28px); align-items: end; margin-top: 24px; }
-  .work-card { min-width: 0; padding-bottom: 8px; }
-  .work-visual { min-width: 0; }
-  .work-card--eldercare-robot { --window-ratio: 4 / 3; }
-  .work-card--turing-society, .work-card--football { --window-ratio: 4 / 3; }
-  .work-copy { position: relative; z-index: 3; padding: 10px 4px 0; }
-  .work-copy h3 { margin: 3px 0 6px; font-size: clamp(1.35rem, 2vw, 2.25rem); line-height: .92; }
-  .work-context { margin: 0; color: #776f68; font-size: .82rem; font-weight: 700; line-height: 1.35; }
-  .field-notes { padding: 4px 14px 30px; }
-  .field-notes-grid { display: grid; grid-template-columns: 1.2fr 1fr .96fr; gap: 26px; }
-  .field-note { min-width: 0; }
-  .field-note-copy h3 { margin: 0 0 7px; font-size: clamp(1.3rem, 1.8vw, 1.85rem); line-height: .95; }
-  .field-note-copy p { max-width: 39ch; margin: 0; color: #4f4842; font-size: .94rem; line-height: 1.42; }
-  .field-note-copy .field-note-role { margin-top: 10px; color: #695f57; }
-  .highlights { display: grid; box-sizing: border-box; grid-template-columns: .85fr 1.6fr 1.08fr; gap: 24px; align-items: start; min-height: 0; padding: 8px 14px 30px; }
-  .achievement-panel, .current-panel, .gallery-panel { display: grid; grid-template-rows: auto auto; min-width: 0; min-height: 0; }
-  .achievement-panel h2, .panel-title h2 { margin: 0 0 10px; font-size: clamp(1.25rem, 1.7vw, 1.7rem); line-height: .95; }
-  .achievement-list { display: grid; align-content: space-between; min-height: 0; padding: 0; margin: 0; list-style: none; }
-  .achievement-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px; align-items: baseline; padding: 4px 0; }
-  .achievement-list strong { font-size: .84rem; }
-  .achievement-list span { color: #7a7169; font-size: .76rem; }
-  .panel-title { margin-bottom: 10px; }
-  .current-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; min-height: 0; }
-  .current-grid article { min-width: 0; --window-ratio: 4 / 3; }
-  .current-grid strong { display: block; padding: 12px 1px 0; font-size: .8rem; line-height: 1.15; }
-  .room-invitation { min-height: 50svh; background: #171615; color: #faf6f1; overflow: hidden; }
-  .room-entry { display: grid; grid-template-columns: minmax(270px, .68fr) minmax(420px, 1.32fr); gap: clamp(34px, 7vw, 100px); align-items: center; min-height: 50svh; padding-top: 24px; padding-bottom: 24px; color: inherit; transition: opacity 360ms ease, transform 420ms cubic-bezier(.2, .72, .2, 1); }
-  .room-entry:focus-visible { outline: 2px solid #d5a84a; outline-offset: -2px; }
-  .room-kicker { margin: 0; color: #c3b8ae; font-size: .78rem; font-weight: 700; line-height: 1.35; }
-  .room-copy h2 { margin: 9px 0 12px; font-size: clamp(2.8rem, 5.4vw, 5.5rem); line-height: .78; text-shadow: .04em .04em 0 #6d3e30, .08em .08em 0 rgb(213 168 74 / 40%); }
-  .room-copy > p:not(.room-kicker) { max-width: 440px; margin-bottom: 16px; color: #cfc5bb; font-size: .84rem; line-height: 1.48; }
-  .room-button { display: inline-flex; gap: 12px; align-items: center; padding: 9px 12px; border: 1px solid #faf6f1; font-size: .78rem; font-weight: 700; transition: background 180ms ease, color 180ms ease; }
-  .door-scene { position: relative; height: min(37svh, 350px); border: 1px solid #5f5953; background: radial-gradient(circle at 58% 45%, rgb(213 168 74 / 9%), transparent 33%), linear-gradient(150deg, #211f1d, #131211); box-shadow: 18px 18px 0 rgb(200 85 47 / 13%); perspective: 1000px; transition: border-color 240ms ease, transform 340ms cubic-bezier(.2, .65, .2, 1); }
-  .door-frame { position: absolute; top: 7%; bottom: 8%; left: 50%; width: min(36%, 220px); border: 3px solid #9c9186; border-bottom-width: 5px; box-shadow: 0 0 0 1px #302d2a, 0 0 34px rgb(213 168 74 / 6%); transform: translateX(-50%); perspective: 900px; }
-  .door-opening { position: absolute; inset: 0; display: grid; place-items: center; background: linear-gradient(145deg, #d5a84a 0%, #b97865 36%, #3f526b 100%); overflow: hidden; }
-  .door-opening::before { position: absolute; inset: 0; content: ""; background: linear-gradient(115deg, transparent 18%, rgb(250 246 241 / 28%) 49%, transparent 68%); transform: translateX(-80%); transition: transform 650ms ease; }
-  .door-opening span { color: rgb(250 246 241 / 88%); font-family: var(--display-font); font-size: clamp(1.25rem, 2vw, 2rem); letter-spacing: -.04em; text-shadow: 0 2px 14px rgb(23 22 21 / 38%); }
-  .door-panel { position: absolute; inset: 0; border: 1px solid #aea298; background: linear-gradient(115deg, #262320, #171615 65%); box-shadow: inset -14px 0 28px rgb(0 0 0 / 26%); transform: rotateY(0deg); transform-origin: left center; transform-style: preserve-3d; transition: transform 620ms cubic-bezier(.2, .72, .2, 1), box-shadow 400ms ease; }
-  .door-inset { position: absolute; right: 13%; left: 13%; display: block; border: 1px solid #5f5953; box-shadow: inset 0 0 0 5px #1b1917; }
-  .door-inset-top { top: 18%; height: 28%; }
-  .door-inset-bottom { bottom: 10%; height: 32%; }
-  .door-handle { position: absolute; top: 52%; right: 9%; width: 8px; aspect-ratio: 1; border: 2px solid #d5a84a; border-radius: 50%; box-shadow: 0 0 0 4px rgb(213 168 74 / 10%); }
-  .door-handle::after { position: absolute; top: 2px; left: 7px; width: 19px; height: 2px; content: ""; background: #d5a84a; transform: rotate(-8deg); transform-origin: left; }
-  .door-floor-line { position: absolute; right: 7%; bottom: 7%; left: 7%; height: 1px; background: #5f5953; transform: rotate(-3deg); transform-origin: right; }
-  .site-footer { display: flex; justify-content: space-between; gap: 24px; padding: 16px 0 14px; color: #8a817a; font-size: .8rem; }
-  .site-footer p { margin-bottom: 0; }
-  :global(body.is-entering-room) { overflow: hidden; }
-  :global(body.is-entering-room) .poster, :global(body.is-entering-room) .site-header, :global(body.is-entering-room) .site-footer { animation: poster-depart 440ms cubic-bezier(.3, .05, .2, 1) forwards; pointer-events: none; }
-  :global(body.is-entering-room) .room-invitation { animation: room-invitation-depart 440ms cubic-bezier(.2, .72, .2, 1) forwards; pointer-events: none; }
-  :global(body.is-entering-room) .room-entry { transform: translateY(-6px) scale(1.012); }
-  :global(body.is-entering-room) .room-link span, :global(body.is-entering-room) .room-button span { transform: translate(4px, -4px); }
-  :global(body.is-entering-room) .door-scene { border-color: #d5a84a; box-shadow: 0 0 0 1px rgb(213 168 74 / 28%), 22px 18px 0 rgb(200 85 47 / 16%), 0 0 52px rgb(213 168 74 / 19%); }
-  :global(body.is-entering-room) .door-opening { animation: doorway-brighten 460ms ease-out forwards; }
-  :global(body.is-entering-room) .door-opening::before { transform: translateX(125%); transition-duration: 450ms; }
-  :global(body.is-entering-room) .door-panel { box-shadow: 28px 0 45px rgb(0 0 0 / 38%); transform: rotateY(-88deg); }
-  @keyframes poster-depart { to { opacity: 0; filter: blur(1.4px); transform: scale(.982); } }
-  @keyframes room-invitation-depart { to { filter: brightness(1.15); transform: scale(1.018); } }
-  @keyframes doorway-brighten { 55% { filter: brightness(1.28) saturate(1.08); } 100% { filter: brightness(1.12) saturate(1.04); } }
-  @media (hover: hover) and (pointer: fine) {
-    nav a { position: relative; }
-    nav a::after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; content: ""; background: currentcolor; transform: scaleX(0); transform-origin: right; transition: transform 180ms ease; }
-    nav a:hover::after { transform: scaleX(1); transform-origin: left; }
-    .room-link:hover span { transform: translate(3px, -3px); }
-    .room-entry:hover .room-button { background: #faf6f1; color: #171615; }
-    .room-entry:hover .room-button span { transform: translate(3px, -3px); }
-    .room-entry:hover .door-scene { border-color: #d5a84a; transform: translate(-7px, -5px) rotate(-.5deg); }
-    .room-entry:hover .door-panel { box-shadow: 18px 0 35px rgb(0 0 0 / 34%); transform: rotateY(-28deg); }
-    .room-entry:hover .door-opening::before { transform: translateX(85%); }
+  :global(html), :global(body) { margin: 0; overflow: hidden; }
+  .portrait-home { position: relative; width: 100%; height: 100svh; min-height: 0; overflow: hidden; isolation: isolate; }
+  .contours { position: absolute; inset: 0; width: 100%; height: 100%; color: #dcd5c6; z-index: -1; pointer-events: none; }
+  .name { position: absolute; top: 2.5%; left: 2%; width: 96%; margin: 0; color: #e2ded2; font: 400 24.5vw/.95 "Anton", Impact, sans-serif; letter-spacing: -.025em; white-space: nowrap; transform: scaleX(.91); transform-origin: left top; z-index: -2; }
+  .portrait { position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); height: 86%; width: auto; max-width: none; object-fit: contain; object-position: bottom; pointer-events: none; }
+  .room-door { position: absolute; z-index: 4; bottom: 8%; right: 5%; width: clamp(50px, 5.5vw, 94px); color: #35352f; }
+  .room-door svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .door-leaf { transform-origin: 44px 70px; transition: transform 300ms ease; }
+  .room-door:hover .door-leaf, .room-door:focus-visible .door-leaf { transform: skewY(-5deg) scaleX(.78); }
+  @media (max-width: 700px) and (orientation: portrait) {
+    .name { font-size: 25vw; top: 5%; left: 4%; transform: scaleX(.88) scaleY(1.4); }
+    .portrait { height: 57%; width: auto; max-height: none; }
+    .room-door { bottom: 4%; right: 6%; width: 45px; padding: 5px; }
   }
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1.1fr .9fr; min-height: auto; padding: 30px 0; }
-    .work-grid { grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
-    .work-card--eldercare-robot { grid-column: 1 / -1; --window-ratio: 16 / 9; }
-    .field-notes-grid { grid-template-columns: 1fr 1fr; }
-    .field-note--football { grid-column: 1 / -1; padding-top: 18px; }
-    .highlights { grid-template-columns: .8fr 1.5fr; height: auto; min-height: auto; }
-    .gallery-panel { grid-column: 1 / -1; padding-top: 10px; --window-ratio: 16 / 9; }
+  @media (max-height: 500px) and (orientation: landscape) {
+    .name { font-size: 21vw; }
+    .room-door { width: 42px; bottom: 5%; }
   }
-  @media (max-width: 680px) {
-    .page-width { width: min(100% - 28px, 540px); }
-    .site-header { grid-template-columns: 1fr auto; width: min(100% - 24px, 570px); min-height: 46px; }
-    .site-header nav { display: none; }
-    .poster { width: min(100% - 20px, 560px); }
-    .hero { grid-template-columns: 1fr; gap: 18px; padding: 20px 8px 16px; }
-    h1 { font-size: clamp(4.1rem, 20vw, 5.5rem); }
-    .about-card { padding-left: 14px; }
-    .work { padding: 10px 8px; }
-    .section-heading { align-items: start; }
-    .work-grid { grid-template-columns: 1fr; }
-    .work-card--eldercare-robot { grid-column: auto; --window-ratio: 4 / 3; }
-    .work-card + .work-card { padding-top: 24px; }
-    .work-copy h3 { font-size: clamp(1.6rem, 8vw, 2.2rem); }
-    .field-notes { padding: 20px 8px 22px; }
-    .field-notes-grid { grid-template-columns: 1fr; }
-    .field-note, .field-note--football { grid-column: auto; padding: 18px 0; }
-    .field-note:first-child { padding-top: 0; }
-    .field-note + .field-note { margin-top: 10px; }
-    .field-note-copy h3 { font-size: 1.65rem; }
-    .field-note-copy p { max-width: 43ch; font-size: .96rem; }
-    .highlights { grid-template-columns: 1fr; height: auto; min-height: 0; padding: 10px 8px; }
-    .achievement-panel, .current-panel, .gallery-panel { padding: 8px 0; }
-    .current-panel, .gallery-panel { margin-top: 12px; }
-    .gallery-panel { grid-column: auto; }
-    .current-grid { grid-template-columns: 1fr; gap: 22px; }
-    .current-grid article, .gallery-panel { --window-ratio: 3 / 2; }
-    .room-entry { grid-template-columns: 1fr; gap: 24px; min-height: auto; padding-top: 34px; padding-bottom: 38px; }
-    .room-copy h2 { font-size: clamp(3rem, 15vw, 4.4rem); }
-    .door-scene { order: -1; height: 230px; }
-    .door-frame { width: min(42%, 154px); }
-  }
-  @media (prefers-reduced-motion: reduce) { :global(html) { scroll-behavior: auto; } .cursor-glow { display: none; } .room-link span, .room-button span, .room-entry, .door-panel, .door-opening::before { transition: none; } :global(body.is-entering-room) .poster, :global(body.is-entering-room) .site-header, :global(body.is-entering-room) .site-footer, :global(body.is-entering-room) .room-invitation, :global(body.is-entering-room) .door-opening { animation: none; } }
 </style>

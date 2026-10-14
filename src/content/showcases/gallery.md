@@ -1,4 +1,5 @@
 ---
+portfolio: {"title": "Photography", "section": "others", "order": 1, "description": ["A selection of photographs from my personal gallery."]}
 title: "A few frames."
 order: 3
 images:

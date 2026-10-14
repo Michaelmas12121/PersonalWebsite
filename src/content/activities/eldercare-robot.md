@@ -1,4 +1,5 @@
 ---
+portfolio: {"title": "ElderGo", "section": "projects", "order": 3, "description": ["Co-developed an AI-assisted fall-prediction robot with 3 members; modeled fall dynamics; led testing and safety evaluation.", "Organized user research and recruited seniors from two communities for pilot testing; used feedback to examine the system's suitability for older adults."]}
 title: "ElderGo — a companion robot for older people living alone"
 context: "Conrad Challenge"
 category: "Research & Building"

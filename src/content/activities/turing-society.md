@@ -1,4 +1,5 @@
 ---
+portfolio: {"title": "Turing Club", "section": "activities", "order": 1, "description": ["Grew membership to 70+ and taught mathematical foundations of AI; mentored 25+ peers in image-recognition projects and organized a technical exchange visit to UBTECH."]}
 title: "Teaching the mathematics behind AI"
 context: "Turing Society — president and instructor"
 category: "Leadership & Teaching"
