@@ -1,0 +1,93 @@
+<dialog class="certificate-viewer" aria-labelledby="certificate-heading">
+  <header>
+    <h2 id="certificate-heading">Certificate</h2>
+    <div class="viewer-actions">
+      <button type="button" data-certificate-zoom aria-pressed="false">Zoom in</button>
+      <button type="button" data-certificate-close autofocus>Close ×</button>
+    </div>
+  </header>
+  <div class="certificate-scroll"><img alt="" decoding="async" /></div>
+  <footer hidden>
+    <button type="button" data-certificate-previous>← Previous certificate</button>
+    <button type="button" data-certificate-next>Next certificate →</button>
+  </footer>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>(".certificate-viewer")!;
+  const image = dialog.querySelector<HTMLImageElement>("img")!;
+  const heading = dialog.querySelector<HTMLElement>("h2")!;
+  const zoom = dialog.querySelector<HTMLButtonElement>("[data-certificate-zoom]")!;
+  const scroll = dialog.querySelector<HTMLElement>(".certificate-scroll")!;
+  let source: HTMLElement | undefined;
+  let frames: HTMLImageElement[] = [];
+  let index = 0;
+  let request = 0;
+  function resetZoom() {
+    dialog.classList.remove("is-zoomed");
+    zoom.textContent = "Zoom in";
+    zoom.setAttribute("aria-pressed", "false");
+    scroll.scrollTo(0, 0);
+  }
+  function show() {
+    request++;
+    const ticket = request;
+    const frame = frames[index];
+    resetZoom();
+    image.src = frame.currentSrc || frame.dataset.src!;
+    image.alt = frame.alt;
+    heading.textContent = source?.closest("article")?.querySelector("h2")?.textContent ?? "Certificate";
+    const full = new Image();
+    full.src = frame.dataset.full!;
+    void full.decode().then(() => { if (ticket === request && dialog.open) image.src = full.src; }).catch(() => undefined);
+  }
+  document.addEventListener("click", (event) => {
+    const button = (event.target as Element).closest<HTMLElement>("[data-certificate-open]");
+    if (!button) return;
+    source = button;
+    frames = [...button.closest("image-window")!.querySelectorAll<HTMLImageElement>(".window-frame img")];
+    index = frames.findIndex((frame) => frame.parentElement!.classList.contains("is-current"));
+    dialog.querySelector<HTMLElement>("footer")!.hidden = frames.length < 2;
+    dialog.showModal();
+    document.documentElement.classList.add("certificate-visible");
+    window.dispatchEvent(new CustomEvent("certificate-state", { detail: true }));
+    show();
+  });
+  dialog.querySelector("[data-certificate-close]")!.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener("close", () => {
+    request++;
+    document.documentElement.classList.remove("certificate-visible");
+    window.dispatchEvent(new CustomEvent("certificate-state", { detail: false }));
+    image.removeAttribute("src");
+    source?.focus({ preventScroll: true });
+  });
+  function toggleZoom() {
+    const enlarged = dialog.classList.toggle("is-zoomed");
+    zoom.textContent = enlarged ? "Fit to screen" : "Zoom in";
+    zoom.setAttribute("aria-pressed", String(enlarged));
+    if (!enlarged) scroll.scrollTo(0, 0);
+  }
+  zoom.addEventListener("click", toggleZoom);
+  image.addEventListener("click", toggleZoom);
+  for (const [selector, direction] of [["[data-certificate-previous]", -1], ["[data-certificate-next]", 1]] as const) {
+    dialog.querySelector(selector)!.addEventListener("click", () => { index = (index + direction + frames.length) % frames.length; show(); });
+  }
+</script>
+<style>
+  :global(html.certificate-visible) { overflow: hidden !important; }
+  dialog { position: fixed; inset: 0; width: min(1200px, 94vw); max-width: 94vw; height: 92svh; max-height: 92svh; margin: auto; padding: 20px; border: 1px solid #cfc7b9; background: #fcfaf5; color: #242420; }
+  dialog[open] { display: flex; flex-direction: column; gap: 16px; animation: viewer-in 180ms ease-out; }
+  dialog::backdrop { background: rgb(24 24 20 / 76%); }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  h2 { font: 500 15px/1.4 Arial, sans-serif; margin: 0; }
+  .viewer-actions, footer { display: flex; gap: 16px; justify-content: space-between; }
+  footer[hidden] { display: none; }
+  button { flex-shrink: 0; background: transparent; border: 0; padding: 8px; font: 14px Arial, sans-serif; cursor: pointer; }
+  button:hover { color: #8a6450; }
+  .certificate-scroll { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; background: #eeeae0; }
+  img { display: block; width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; }
+  .is-zoomed img { width: max(100%, 1400px); height: auto; max-width: none; cursor: zoom-out; }
+  @keyframes viewer-in { from { opacity: 0; transform: translateY(8px); } }
+  @media (max-width: 700px) { dialog { padding: 12px; gap: 10px; } header { align-items: flex-start; flex-direction: column; gap: 8px; } .viewer-actions { width: 100%; } footer { gap: 4px; } footer button { font-size: 12px; } }
+  @media (prefers-reduced-motion: reduce) { dialog[open] { animation: none; } }
+</style>

@@ -1,18 +1,33 @@
 ---
-import { sectionUrl, sections, type Section } from "./portfolio";
+import { getImage } from "astro:assets";
+import { getPortfolio, sectionUrl, sections, type Section } from "./portfolio";
 interface Props { active?: Section; home?: boolean }
 const { active, home = false } = Astro.props;
+const entries = await getPortfolio();
+const previews = Object.fromEntries(await Promise.all(sections.map(async (section) => [section,
+  await Promise.all(entries.filter((entry) => entry.section === section && entry.images.length).slice(0, 3).map(async (entry) => {
+    const src = entry.images[0].src;
+    const small = await getImage({ src, width: Math.min(400, src.width), format: "webp" });
+    const large = await getImage({ src, width: Math.min(960, src.width), format: "webp" });
+    return { src: large.src, srcset: `${small.src} ${small.options.width}w, ${large.src} ${large.options.width}w`, sizes: section === "honors" ? "(max-width: 700px) 90vw, 24vw" : "(max-width: 700px) 90vw, 32vw" };
+  })),
+])));
 ---
 <nav class:list={["portfolio-nav", { "home-nav": home }]} aria-label="Portfolio">
   {sections.map((section) => (
-    <a class={section} href={sectionUrl(section)} aria-current={active === section ? "true" : undefined}>
+    <a class={section} href={sectionUrl(section)} data-astro-prefetch="hover" data-preview-images={JSON.stringify(previews[section])} style={home ? `view-transition-name: section-${section}` : undefined} aria-current={active === section ? "true" : undefined}>
       {section.toUpperCase()}
+      {!home && active === section && <span class="active-mark" aria-hidden="true"></span>}
     </a>
   ))}
 </nav>
 <style>
   .portfolio-nav { display: flex; align-items: center; gap: clamp(12px, 2.4vw, 40px); }
-  a { transition: color 180ms ease; }
+  a { position: relative; transition: color 180ms ease, transform 180ms ease; }
+  .active-mark { position: absolute; left: 0; right: 0; bottom: -7px; height: 1px; background: currentColor; view-transition-name: current-section; }
+  .home-nav a::after { content: ""; position: absolute; bottom: -.12em; left: 0; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 220ms ease; }
+  .home-nav a:hover, .home-nav a:focus-visible { transform: translateY(-3px); }
+  .home-nav a:hover::after, .home-nav a:focus-visible::after { transform: scaleX(1); }
   a:hover, a[aria-current] { color: #8a6450; }
   a:focus-visible { outline: 2px solid currentColor; outline-offset: 8px; }
   .home-nav a { position: absolute; z-index: 3; font-family: "Anton", Impact, sans-serif; font-size: clamp(30px, 5.45vw, 104px); line-height: 1.12; letter-spacing: -.035em; }
@@ -20,6 +35,7 @@ const { active, home = false } = Astro.props;
   .home-nav .activities, .home-nav .honors { left: 71.7%; }
   .home-nav .projects, .home-nav .activities { top: 48%; }
   .home-nav .others, .home-nav .honors { top: 67.5%; }
+  @media (prefers-reduced-motion: reduce) { .home-nav a:hover, .home-nav a:focus-visible { transform: none; } }
   @media (max-width: 700px) and (orientation: portrait) {
     .home-nav a { font-size: clamp(27px, 6.7vw, 46px); }
     .home-nav .projects, .home-nav .others { left: 6%; }

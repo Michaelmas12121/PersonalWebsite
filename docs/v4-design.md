@@ -35,6 +35,24 @@ same page, as explicitly approved by the user. The homepage itself remains a
 single-screen composition on phones. The homepage door
 is the clickable room entry and has an accessible name without visible copy.
 
+## Portfolio transitions and certificate reading
+
+The homepage background name and contours move by a few pixels with a fine
+pointer; the portrait stays stable. Hover raises each category label slightly
+and draws a fine underline. Native shared-element transitions carry the chosen
+label into the category heading. Category changes keep navigation stable and
+move the active marker while the whole content grid fades/slides over 280 ms.
+The homepage door opens before departure, and the room is revealed from its
+screen position over 700 ms. These effects do not delay navigation with timers.
+Reduced motion disables spatial transitions; unsupported browsers keep functional
+links and a brief arrival fade. Desktop single-screen and phone scrolling rules
+remain unchanged.
+
+Certificate thumbnails in Honors are clickable, without a new visible control
+bar. A modal fits the full certificate to the screen, offers further zoom, and
+returns focus to the original thumbnail on close. Multi-certificate entries can
+be browsed inside the modal. This does not add controls to photograph carousels.
+
 ## Visual direction
 
 The room is a warm, modern black-and-white interior drawing based on the real

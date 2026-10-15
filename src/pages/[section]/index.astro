@@ -1,6 +1,8 @@
 ---
 import "../../styles/global.css";
 import "../../v4/portfolio.css";
+import PageMotion from "../../v4/PageMotion.astro";
+import CertificateViewer from "../../v4/CertificateViewer.astro";
 import PortfolioNav from "../../v4/PortfolioNav.astro";
 import ImageWindow from "../../v4/ImageWindow.astro";
 import { Image } from "astro:assets";
@@ -20,20 +22,22 @@ const title = section.toUpperCase();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={`All ${section} by Yanlang Liu, together in one view.`} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <PageMotion />
+    <link rel="preload" href="/fonts/anton.woff" as="font" type="font/woff" crossorigin />
     <title>{title} — Yanlang Liu</title>
   </head>
   <body>
     <main class={`category-page category-${section}`}>
-      <header>
+      <header style="view-transition-name: category-header">
         <a class="home-link" href="/" aria-label="Back to homepage">← <span>Home</span></a>
         <PortfolioNav active={section} />
       </header>
-      <div class="category-heading"><h1>{title}</h1><span>{String(entries.length).padStart(2, "0")}</span></div>
-      <div class="category-grid">
+      <div class="category-heading"><h1 style={`view-transition-name: section-${section}`}>{title}</h1><span>{String(entries.length).padStart(2, "0")}</span></div>
+      <div class="category-grid" style="view-transition-name: category-content">
         {entries.map((entry, index) => (
           <article id={entry.id} class:list={["category-entry", { "has-media": entry.images.length > 0 }]} aria-labelledby={`title-${entry.id}`}>
             <div class="entry-heading"><span class="entry-number">{String(index + 1).padStart(2, "0")}</span><h2 id={`title-${entry.id}`}>{entry.title}</h2></div>
-            {entry.images.length > 0 && <div class="entry-media"><ImageWindow images={entry.images} label={entry.title} rhythm={index} sizes="(max-width: 700px) 90vw, 32vw" /></div>}
+            {entry.images.length > 0 && <div class="entry-media"><ImageWindow images={entry.images} label={entry.title} rhythm={index} sizes={section === "honors" ? "(max-width: 700px) 90vw, 24vw" : "(max-width: 700px) 90vw, 32vw"} eager={index === entries.findIndex((item) => item.images.length > 0)} zoomable={section === "honors"} /></div>}
             <div class="entry-description">
               {entry.description.map((paragraph) => <p>{paragraph}</p>)}
               {entry.links.length > 0 && <div class="entry-links">{entry.links.map((link) => <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={`${entry.title}: ${link.label} (opens in a new tab)`}>
@@ -45,6 +49,7 @@ const title = section.toUpperCase();
         ))}
       </div>
     </main>
+    {section === "honors" && <CertificateViewer />}
   </body>
 </html>
 <style>

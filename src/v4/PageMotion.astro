@@ -1,0 +1,63 @@
+---
+import "./page-motion.css";
+---
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const order = ["projects", "activities", "others", "honors"];
+    const part = (url) => new URL(url, location.href).pathname.split("/").filter(Boolean)[0] || "home";
+    const apply = (state) => {
+      root.dataset.navigation = state.kind;
+      root.style.setProperty("--travel", `${state.direction * 18}px`);
+      if (state.door) root.style.setProperty("--door-inset", state.door);
+    };
+    const stateFor = (from, to) => {
+      const a = part(from), b = part(to);
+      const rect = document.querySelector(".room-door")?.getBoundingClientRect();
+      return {
+        to: new URL(to, location.href).pathname, time: Date.now(),
+        kind: a === "home" && b === "interactive" ? "door" : "page",
+        direction: order.indexOf(b) < order.indexOf(a) ? -1 : 1,
+        door: rect ? `${rect.top}px ${innerWidth - rect.right}px ${innerHeight - rect.bottom}px ${rect.left}px` : undefined,
+      };
+    };
+    const remember = (state) => {
+      apply(state);
+      try { sessionStorage.setItem("portfolio-navigation", JSON.stringify(state)); } catch {}
+    };
+    const restore = () => {
+      try {
+        const state = JSON.parse(sessionStorage.getItem("portfolio-navigation") || "null");
+        sessionStorage.removeItem("portfolio-navigation");
+        if (state && state.to.replace(/\/$/, "") === location.pathname.replace(/\/$/, "") && Date.now() - state.time < 15000) apply(state);
+      } catch {}
+    };
+    restore();
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target || link.download) return;
+      const url = new URL(link.href);
+      if (url.origin !== location.origin || url.pathname === location.pathname) return;
+      remember(stateFor(location.href, url.href));
+    });
+    addEventListener("pageswap", (event) => {
+      if (event.activation) remember(stateFor(location.href, event.activation.entry.url));
+    });
+    addEventListener("pagereveal", (event) => {
+      restore();
+      if (event.viewTransition) {
+        root.dataset.nativeTransition = "true";
+        event.viewTransition.finished.finally(() => {
+          delete root.dataset.navigation;
+          delete root.dataset.nativeTransition;
+        });
+      }
+    });
+    addEventListener("pageshow", (event) => {
+      if (event.persisted) delete root.dataset.navigation;
+    });
+  })();
+</script>
+<script>
+  import "./page-motion";
+</script>

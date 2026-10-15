@@ -1,4 +1,5 @@
 ---
+import PageMotion from "../../v4/PageMotion.astro";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import aimeCertificate from "../../assets/certificates/v4/aime-2026.webp";
@@ -160,6 +161,7 @@ const entries: Entry[] = [
       name="description"
       content="Yanlang Liu — interactive room study."
     />
+    <PageMotion />
     <title>Yanlang Liu — Interactive Room</title>
   </head>
 
@@ -287,7 +289,7 @@ const entries: Entry[] = [
                       poster={metabolisTitleScreen.src}
                       muted
                       playsinline
-                      preload="metadata"
+                      preload="none"
                       aria-label="Metabolis title animation"
                     ></video>
                     <div class="slide-shade" aria-hidden="true"></div>
@@ -298,7 +300,7 @@ const entries: Entry[] = [
                     </div>
                   </article>
                   <article class="metabolis-slide" data-metabolis-panel="1">
-                    <video src={metabolisCirculationVideo} muted playsinline preload="metadata"></video>
+                    <video src={metabolisCirculationVideo} muted playsinline preload="none"></video>
                     <div class="slide-copy">
                       <p>02 · Circulation</p>
                       <h3>Build the network</h3>
@@ -306,7 +308,7 @@ const entries: Entry[] = [
                     </div>
                   </article>
                   <article class="metabolis-slide" data-metabolis-panel="2">
-                    <video src={metabolisNetworkVideo} muted playsinline preload="metadata"></video>
+                    <video src={metabolisNetworkVideo} muted playsinline preload="none"></video>
                     <div class="slide-copy">
                       <p>03 · Network building</p>
                       <h3>Link each system</h3>
@@ -314,7 +316,7 @@ const entries: Entry[] = [
                     </div>
                   </article>
                   <article class="metabolis-slide" data-metabolis-panel="3">
-                    <video src={metabolisOverviewVideo} muted playsinline preload="metadata"></video>
+                    <video src={metabolisOverviewVideo} muted playsinline preload="none"></video>
                     <div class="slide-copy">
                       <p>04 · System overview</p>
                       <h3>Watch the city live</h3>
@@ -381,7 +383,7 @@ const entries: Entry[] = [
                           alt={`Privacy-cropped route from ${ride.label.toLowerCase()} through Shenzhen`}
                           widths={[760, 1100]}
                           sizes="(max-width: 899px) 100vw, 72vw"
-                          loading={index === 0 ? "eager" : "lazy"}
+                          loading="lazy"
                         />
                         <div class="route-label">
                           <span>{ride.label}</span>
@@ -1186,37 +1188,42 @@ const entries: Entry[] = [
       });
 
       if (canRenderRoom()) {
-        // Keep three.js behind this dynamic import. Phones never request it.
-        const { createRoom } = await import("../../v4/room/scene");
-        body.dataset.mode = "room";
-        canvas.hidden = false;
+        try {
+          // Keep three.js behind this dynamic import. Phones never request it.
+          const { createRoom } = await import("../../v4/room/scene");
+          canvas.hidden = false;
 
-        const room = createRoom({
-          canvas,
-          initialView: location.hash.slice(1) || undefined,
-          onLeave() {
-            hidePanel();
-          },
-          onArrive(view) {
-            if (view === "wide") {
-              back.hidden = true;
-              hint.textContent = "Choose an object. Colour travels through the room as you enter.";
-              return;
-            }
-            hint.textContent = "";
-            showPanel(view as ViewName);
-          },
-          onHover(label) {
-            hover.textContent = label ?? "";
-            hover.classList.toggle("on", Boolean(label));
-          },
-          onPortalFrame(_view, frame) {
-            setPortalFrame(frame);
-          },
-        });
+          const room = createRoom({
+            canvas,
+            initialView: location.hash.slice(1) || undefined,
+            onLeave() {
+              hidePanel();
+            },
+            onArrive(view) {
+              if (view === "wide") {
+                back.hidden = true;
+                hint.textContent = "Choose an object. Colour travels through the room as you enter.";
+                return;
+              }
+              hint.textContent = "";
+              showPanel(view as ViewName);
+            },
+            onHover(label) {
+              hover.textContent = label ?? "";
+              hover.classList.toggle("on", Boolean(label));
+            },
+            onPortalFrame(_view, frame) {
+              setPortalFrame(frame);
+            },
+          });
 
-        open = (view) => room.goTo(view);
-        close = () => room.back();
+          requestAnimationFrame(() => { body.dataset.mode = "room"; });
+          open = (view) => room.goTo(view);
+          close = () => room.back();
+        } catch {
+          canvas.hidden = true;
+          body.dataset.mode = "flat";
+        }
       }
     </script>
 

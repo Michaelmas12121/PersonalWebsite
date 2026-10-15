@@ -76,7 +76,7 @@ another parallel implementation here.
   design uses a cutout portrait, oversized pale name, four text-only category
   links and a fine-line door. No subtitles, logo, header branding or room-entry
   text. On phones the category links sit above the portrait. The room remains
-  at `/interactive` and its implementation is unchanged.
+  at `/interactive`; its camera and room navigation retain their original behavior.
 - **Portfolio content is grouped by the supplied resume.** Projects contains
   five entries, Activities three, Others photography/cycling/game development,
   and Honors includes awards and publication. Resume descriptions omit years.
@@ -204,6 +204,42 @@ rasterized with contact emails and the student affiliation removed; author names
 and paper content are retained. Original documents remain outside the repository.
 The two CR3 photographs use the full-resolution camera-embedded JPEG previews,
 resized and compressed as WebP without metadata.
+
+## Portfolio motion and loading
+
+The homepage background has small pointer-driven depth on fine-pointer devices.
+Home category labels share native cross-document transition names with category
+headings. Category navigation retains its header and moves its active underline;
+content changes together with a short directional transition. The door opens on
+intent and reveals the room through an expanding aperture. Standard links and
+browser history remain intact; unsupported browsers use a short arrival effect,
+and reduced-motion users get immediate navigation.
+
+`PageMotion.astro`, `page-motion.ts` and `page-motion.css` own this shared behavior.
+Do not replace it with a client router without accounting for the room lifecycle.
+Astro prefetches internal pages on intent; first-frame previews are warmed at low
+priority. The room module stays behind dynamic import and the existing capability
+gate, including when warmed from the door. Failed room initialization preserves
+the CSS room. No new dependency was added.
+
+The first category photograph has priority; later carousel frames wait until
+needed. Hidden room videos use no preload, and hidden cycling maps are lazy.
+Anton is served as a losslessly wrapped WOFF (63,552 bytes versus 130,324 bytes
+for the original TTF), retaining the original font and license. Homepage portrait
+sizes follow its actual height-based layout, with quality 82 WebP derivatives.
+The local development toolbar is disabled to avoid its extra downloads.
+
+Honors certificates open a native modal dialog with a larger processed image
+loaded only on demand, zoom/fit, Escape/backdrop/close dismissal and focus return.
+Multiple certificates remain reachable inside the dialog, including with reduced
+motion. Background slideshows pause while a certificate is open.
+
+Production smoke checks cover native transitions, history, automatic photographs,
+certificate zoom and focus, phone gating, reduced motion and eight layout sizes.
+Cold-load resource comparisons use isolated builds on the same local static server
+and simulated 40 ms latency / 10 Mbps; these are not public-host speed guarantees.
+No hosting cache policy was changed: no active deployment configuration is present
+in this repository. Verify long-lived caching for hashed assets at deployment.
 
 ## What to do next
 

@@ -1,4 +1,4 @@
-@font-face { font-family: "Anton"; src: url("/fonts/anton.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Anton"; src: url("/fonts/anton.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
 html { background: #fcfaf5; }
 body { background: #fcfaf5; color: #242420; }
 * { box-sizing: border-box; }

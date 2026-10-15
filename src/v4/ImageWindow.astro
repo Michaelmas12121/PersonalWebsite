@@ -6,16 +6,19 @@ interface Props {
   images: { src: ImageMetadata; alt: string; fit?: "cover" | "contain"; position?: string }[];
   label: string;
   rhythm?: number;
+  eager?: boolean;
+  zoomable?: boolean;
   sizes?: string;
 }
 
-const { images, label, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
+const { images, label, eager = false, zoomable = false, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
 // Larger collections move faster, with a quiet lower bound and distinct phases.
 const interval = Math.round(1800 + 6000 / (images.length + 1) + rhythm * 45);
 const frames = await Promise.all(images.map(async (frame) => {
   const small = await getImage({ src: frame.src, width: Math.min(400, frame.src.width), format: "webp" });
   const large = await getImage({ src: frame.src, width: Math.min(960, frame.src.width), format: "webp" });
-  return { ...frame, url: large.src, srcset: `${small.src} ${small.options.width}w, ${large.src} ${large.options.width}w` };
+  const full = zoomable ? await getImage({ src: frame.src, width: Math.min(1800, frame.src.width), format: "webp", quality: 90 }) : undefined;
+  return { ...frame, full: full?.src, url: large.src, srcset: `${small.src} ${small.options.width}w, ${large.src} ${large.options.width}w` };
 }));
 ---
 
@@ -32,19 +35,22 @@ const frames = await Promise.all(images.map(async (frame) => {
         <img
           src={index === 0 ? frame.url : undefined}
           srcset={index === 0 ? frame.srcset : undefined}
+          data-full={frame.full}
           data-src={frame.url}
           data-srcset={frame.srcset}
           sizes={sizes}
           alt={frame.alt}
           width={frame.src.width}
           height={frame.src.height}
-          loading="lazy"
+          loading={index === 0 && eager ? "eager" : "lazy"}
+          fetchpriority={index === 0 && eager ? "high" : "auto"}
           decoding="async"
           style={`object-fit: ${frame.fit ?? "contain"}; object-position: ${frame.position ?? "50% 50%"}`}
         />
       </div>
     ))}
   </div>
+  {zoomable && <button class="certificate-open" type="button" data-certificate-open aria-label={`Enlarge ${label} certificate`} title="Click to enlarge certificate"></button>}
 </image-window>
 
 <script>
@@ -58,6 +64,7 @@ const frames = await Promise.all(images.map(async (frame) => {
       let current = 0;
       let timer: number | undefined;
       let visible = false;
+      let certificateOpen = false;
       let first = true;
       let busy = false;
       let alive = true;
@@ -75,8 +82,7 @@ const frames = await Promise.all(images.map(async (frame) => {
       const stop = () => { window.clearTimeout(timer); revision++; };
       const schedule = () => {
         stop();
-        if (!alive || motion.matches || !visible || document.hidden) return;
-        void load((current + 1) % frames.length);
+        if (!alive || certificateOpen || motion.matches || !visible || document.hidden) return;
         timer = window.setTimeout(() => { void advance(); }, first ? Number(this.dataset.delay) : interval);
       };
       const advance = async () => {
@@ -94,7 +100,7 @@ const frames = await Promise.all(images.map(async (frame) => {
         }
         busy = false;
         if (!alive || ticket !== revision) return;
-        if (ready && (!motion.matches && visible && !document.hidden)) {
+        if (ready && (!certificateOpen && !motion.matches && visible && !document.hidden)) {
           frames[current].classList.remove("is-current");
           frames[current].setAttribute("aria-hidden", "true");
           frames[target].classList.add("is-current");
@@ -104,6 +110,7 @@ const frames = await Promise.all(images.map(async (frame) => {
         }
         schedule();
       };
+      window.addEventListener("certificate-state", (event) => { certificateOpen = (event as CustomEvent<boolean>).detail; schedule(); }, { signal: events.signal });
       document.addEventListener("visibilitychange", schedule, { signal: events.signal });
       motion.addEventListener("change", schedule, { signal: events.signal });
       const observer = new IntersectionObserver(([entry]) => {
@@ -125,5 +132,7 @@ const frames = await Promise.all(images.map(async (frame) => {
   .window-frame { position: absolute; inset: 0; opacity: 0; transition: opacity 850ms ease-in-out; pointer-events: none; }
   .window-frame.is-current { opacity: 1; }
   .window-frame img { display: block; width: 100%; height: 100%; max-width: none; }
+  .certificate-open { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; border: 0; background: transparent; cursor: zoom-in; }
+  .certificate-open:focus-visible { outline: 2px solid #8a6450; outline-offset: -3px; }
   @media (prefers-reduced-motion: reduce) { .window-frame { transition: none; } }
 </style>

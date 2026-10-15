@@ -30,6 +30,12 @@
 - [ ] Replace the raised window and deep sill with a floor-to-ceiling window,
       then update the narrow-screen drawing to match.
 
+- [x] Add homepage background depth, category hover/title transitions, category
+      switching and a door-to-room reveal with reduced-motion fallbacks.
+- [x] Add accessible certificate enlargement and on-demand full-size images.
+- [x] Prioritize initial media, defer hidden room media, warm navigation on intent,
+      compress the heading font and remove development-toolbar downloads.
+
 ## Content
 
 - [ ] Replace the placeholder Who am I copy with a concise first-person account

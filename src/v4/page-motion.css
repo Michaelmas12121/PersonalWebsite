@@ -1,0 +1,23 @@
+@view-transition { navigation: auto; }
+::view-transition { pointer-events: none; }
+::view-transition-group(*) { animation-duration: 360ms; animation-timing-function: cubic-bezier(.22,.72,.18,1); }
+::view-transition-old(root) { animation: page-fade-out 220ms ease both; }
+::view-transition-new(root) { animation: page-fade-in 280ms ease both; }
+::view-transition-old(category-content) { animation: content-out 240ms ease both; }
+::view-transition-new(category-content) { animation: content-in 280ms ease both; }
+::view-transition-old(category-header), ::view-transition-new(category-header) { animation: none; }
+::view-transition-old(current-section) { display: none; }
+::view-transition-new(current-section) { animation: none; }
+html[data-navigation="door"] .home-nav a { view-transition-name: none !important; }
+html[data-navigation="door"]::view-transition-old(root) { animation: page-fade-out 700ms ease both; }
+html[data-navigation="door"]::view-transition-new(root) { animation: enter-door 700ms cubic-bezier(.22,.72,.18,1) both; mix-blend-mode: normal; }
+html[data-navigation="door"] .door-leaf { transform: skewY(-9deg) scaleX(.16); }
+@keyframes page-fade-in { from { opacity: 0; } }
+@keyframes page-fade-out { to { opacity: 0; } }
+@keyframes content-in { from { opacity: 0; transform: translateX(var(--travel, 18px)); } }
+@keyframes content-out { to { opacity: 0; transform: translateX(calc(-1 * var(--travel, 18px))); } }
+@keyframes enter-door { from { clip-path: inset(var(--door-inset, 70% 5% 8% 90%)); } to { clip-path: inset(0); } }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
