@@ -7,14 +7,18 @@ will be archived separately after version 4 is stable.
 
 ## Floating previews and portfolio navigation
 
-The homepage is a fixed, viewport-sized composition with a large pale name,
-four oversized category titles, and two floating photo windows per category.
+The homepage is a fixed, viewport-sized composition with a large pale name
+centered in the viewport, four oversized category titles, and two floating photo
+windows per category.
 The former cutout portrait is no longer displayed or downloaded. A fine line-art
-door sits at bottom center. Anton is self-hosted with its OFL license.
+door sits at bottom center, revealing "INTERACTIVE ROOM" on hover or keyboard
+focus. Anton is self-hosted with its OFL license.
 
 The previews use existing collection images and the supplied project logo,
 interleaved across entries. Both titles and photographs link to their category.
-Small, differently phased CSS movements keep the composition alive; hovering or
+Small circular paths (8-18 pixels in radius) keep the photographs moving around
+their positions beside the titles, with opposite directions and offset timing.
+Counter-rotation preserves each photograph's angle. Hovering or
 focusing a photo stops its drift so it remains easy to select. Images preserve
 their source proportions and use responsive WebP copies capped at 640 pixels.
 Only the first frame of each window loads initially; later frames load on demand.
@@ -31,12 +35,12 @@ Desktop and tablet views keep the complete category in one viewport. Phones
 use a single-column layout with readable type and vertical scrolling within the
 same page, as explicitly approved by the user. The homepage itself remains a
 single-screen composition on phones. The homepage door
-is the clickable room entry and has an accessible name without visible copy.
+is the clickable room entry and has an accessible name and a label shown on hover or keyboard focus.
 
 ## Portfolio transitions and certificate reading
 
-The homepage background name and contours move by a few pixels with a fine
-pointer. Hover raises each category label slightly
+The homepage background name stays centered. Contours move by a few pixels with
+a fine pointer. Hover raises each category label slightly
 and draws a fine underline. Native shared-element transitions carry the chosen
 label into the category heading. Category changes keep navigation stable and
 move the active marker while the whole content grid fades/slides over 280 ms.

@@ -73,12 +73,14 @@ another parallel implementation here.
 ## Settled decisions
 
 - **The homepage is a single-screen photographic navigation page.** The user
-  removed the cutout portrait. An oversized pale name sits behind four large
+  removed the cutout portrait. An oversized pale name is centered behind four large
   category titles, each surrounded by two floating, automatically changing photo
   previews. Titles and previews open the same category. Hover/focus stops preview
   drift; reduced motion removes drift and crossfades but keeps automatic changes.
-  The line-art door is at bottom center. No subtitles, logo, header branding or
-  room-entry text. The room remains at `/interactive` with its existing navigation.
+  Photos follow small circular paths while retaining their angle. The line-art
+  door is at bottom center and reveals "INTERACTIVE ROOM" on hover or keyboard
+  focus. No subtitles, logo or header branding. The room remains at `/interactive`
+  with its existing navigation.
 - **Portfolio content is grouped by the supplied resume.** Projects contains
   five entries, Activities three, Others photography/cycling/game development,
   and Honors includes awards and publication. Resume descriptions omit years.

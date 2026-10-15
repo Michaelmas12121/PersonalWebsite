@@ -31,11 +31,12 @@ import PortfolioNav from "../v4/PortfolioNav.astro";
       </svg>
       <h1 class="name">YANLANG LIU</h1>
       <PortfolioNav home />
-      <a class="room-door" href="/interactive/" data-astro-prefetch="hover" aria-label="Enter my interactive room" title="Interactive room">
+      <a class="room-door" href="/interactive/" data-astro-prefetch="hover" aria-label="Enter my interactive room">
         <svg viewBox="0 0 80 130" fill="none" aria-hidden="true">
           <path d="M12 118V20H44" />
           <g class="door-leaf"><path d="M44 20L69 11V124L44 116Z" /><path d="M44 70H50" /></g>
         </svg>
+        <span class="door-label" aria-hidden="true">INTERACTIVE ROOM</span>
       </a>
     </main>
   </body>
@@ -44,17 +45,19 @@ import PortfolioNav from "../v4/PortfolioNav.astro";
   :global(html), :global(body) { margin: 0; overflow: hidden; }
   .portfolio-home { position: relative; width: 100%; height: 100svh; min-height: 0; overflow: hidden; isolation: isolate; }
   .contours { transform: translate(var(--pointer-x, 0px), var(--pointer-y, 0px)) scale(1.025); transition: transform 700ms ease-out; position: absolute; inset: 0; width: 100%; height: 100%; color: #dcd5c6; z-index: -1; pointer-events: none; }
-  .name { position: absolute; top: 2.5%; left: 2%; width: 96%; margin: 0; color: #e2ded2; font: 400 24.5vw/.95 "Anton", Impact, sans-serif; letter-spacing: -.025em; white-space: nowrap; translate: calc(var(--pointer-x, 0px) * -.55) calc(var(--pointer-y, 0px) * -.55); transition: translate 900ms ease-out; transform: scaleX(.91); transform-origin: left top; z-index: -2; }
+  .name { position: absolute; top: 50%; left: 50%; width: max-content; margin: 0; color: #e2ded2; font: 400 22vw/.95 "Anton", Impact, sans-serif; letter-spacing: -.025em; text-align: center; white-space: nowrap; transform: translate(-50%, -50%); z-index: -2; pointer-events: none; }
   .room-door { position: absolute; z-index: 4; bottom: 2.5%; left: 50%; transform: translateX(-50%); width: clamp(44px, 7svh, 70px); color: #35352f; }
   .room-door svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .door-label { position: absolute; left: calc(100% + 12px); top: 50%; white-space: nowrap; font-size: clamp(9px, 1vw, 12px); letter-spacing: .12em; opacity: 0; transform: translate(-4px, -50%); transition: opacity 200ms ease, transform 200ms ease; pointer-events: none; }
+  .room-door:hover .door-label, .room-door:focus-visible .door-label { opacity: 1; transform: translate(0, -50%); }
+  .room-door:focus-visible { outline: 1px solid currentColor; outline-offset: 6px; }
   .door-leaf { transform-origin: 44px 70px; transition: transform 300ms ease; }
   .room-door:hover .door-leaf, .room-door:focus-visible .door-leaf { transform: skewY(-5deg) scaleX(.78); }
   @media (max-width: 700px) and (orientation: portrait) {
-    .name { font-size: 25vw; top: 4%; left: 4%; transform: scaleX(.88) scaleY(1.4); }
     .room-door { bottom: 2%; width: 44px; padding: 3px; }
   }
   @media (max-height: 500px) and (orientation: landscape) {
-    .name { font-size: 21vw; }
     .room-door { width: 32px; bottom: 2%; }
   }
+  @media (prefers-reduced-motion: reduce) { .door-label { transition: none; } }
 </style>

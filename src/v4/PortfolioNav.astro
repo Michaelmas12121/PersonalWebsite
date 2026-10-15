@@ -61,18 +61,19 @@ const homeImages = Object.fromEntries(sections.map((section) => {
   .section-title::after { content: ""; position: absolute; bottom: -.12em; left: 0; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 220ms ease; }
   .section-title:hover, .section-title:focus-visible { transform: translateY(-3px); }
   .section-title:hover::after, .section-title:focus-visible::after { transform: scaleX(1); }
-  .floating-preview { position: absolute; display: block; z-index: 1; width: auto; height: 42%; aspect-ratio: 3 / 2; max-width: 45%; animation: drift 13s ease-in-out var(--float-delay) infinite alternate; }
+  .floating-preview { position: absolute; display: block; z-index: 1; width: auto; height: 42%; aspect-ratio: 3 / 2; max-width: 45%; --orbit-radius: clamp(8px, 1.15vw, 18px); animation: preview-orbit 16s linear var(--float-delay) infinite; }
   .preview-1 { top: -2%; left: -2%; }
-  .preview-2 { bottom: -2%; right: -2%; animation-direction: alternate-reverse; }
+  .preview-2 { bottom: -2%; right: -2%; animation-direction: reverse; }
   .activities .preview-1, .honors .preview-1 { left: auto; right: -2%; }
   .activities .preview-2, .honors .preview-2 { right: auto; left: -2%; }
   .floating-preview:hover, .floating-preview:focus-visible { animation-play-state: paused; z-index: 4; }
   .floating-preview :global(image-window) { height: 100%; padding: 4px; border: 0; border-radius: 1px; background: #f8f5ed; box-shadow: 0 5px 18px #3b30251a; transition: box-shadow 250ms ease; }
   .floating-preview:hover :global(image-window) { box-shadow: 0 9px 25px #3b30252b; }
   .floating-preview :global(.window-viewport) { height: 100%; aspect-ratio: auto; }
-  @keyframes drift {
-    from { transform: translate(-4px, 3px) rotate(var(--tilt)); }
-    to { transform: translate(7px, -8px) rotate(calc(var(--tilt) + 3deg)); }
+  /* Counter-rotation keeps each photograph upright along its small circular path. */
+  @keyframes preview-orbit {
+    from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(var(--tilt)); }
+    to { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(calc(var(--tilt) - 360deg)); }
   }
   @media (max-width: 700px) and (orientation: portrait) {
     .home-nav { inset: 24% 7% 17%; gap: 5svh 8vw; }
