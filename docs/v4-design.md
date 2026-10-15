@@ -1,25 +1,23 @@
 # Version 4 — Interactive Colour Line Room
 
-Version 4 is the only active site in this repository. The single-screen portrait
+Version 4 is the only active site in this repository. The single-screen photographic
 portfolio is served at `/`; its optional interactive room is served at
 `/interactive`. Earlier versions have been removed from the working tree and
 will be archived separately after version 4 is stable.
 
-## Portrait homepage and portfolio navigation
+## Floating previews and portfolio navigation
 
-The homepage is a fixed, viewport-sized composition: a transparent portrait of
-Yanlang, a large pale name behind it, four category links and a line-art door.
-The approved reference is the portrait-led preview, with the realistic glowing
-door replaced by a fine dark outline. The portrait is an ImageGen derivative
-of the user-approved preview, stored at `src/assets/portrait/yanlang-cutout.png`.
-The original identity photograph is not copied into the repository. Astro serves
-responsive WebP derivatives. Anton is self-hosted with its OFL license.
+The homepage is a fixed, viewport-sized composition with a large pale name,
+four oversized category titles, and two floating photo windows per category.
+The former cutout portrait is no longer displayed or downloaded. A fine line-art
+door sits at bottom center. Anton is self-hosted with its OFL license.
 
-The portrait was made with the built-in ImageGen tool. Generation brief: extract
-only the central portrait from the approved preview onto a true transparent
-background; preserve identity, expression, age, hair, lighting and white polo;
-remove all page lettering, contours, backdrop and door; retain natural alpha
-edges. The resulting cutout is a visual asset, not an official identity image.
+The previews use existing collection images and the supplied project logo,
+interleaved across entries. Both titles and photographs link to their category.
+Small, differently phased CSS movements keep the composition alive; hovering or
+focusing a photo stops its drift so it remains easy to select. Images preserve
+their source proportions and use responsive WebP copies capped at 640 pixels.
+Only the first frame of each window loads initially; later frames load on demand.
 
 Projects, Activities, Others and Honors open one static page per category,
 showing all five projects, three activities, three interests, or eight honors
@@ -38,7 +36,7 @@ is the clickable room entry and has an accessible name without visible copy.
 ## Portfolio transitions and certificate reading
 
 The homepage background name and contours move by a few pixels with a fine
-pointer; the portrait stays stable. Hover raises each category label slightly
+pointer. Hover raises each category label slightly
 and draws a fine underline. Native shared-element transitions carry the chosen
 label into the category heading. Category changes keep navigation stable and
 move the active marker while the whole content grid fades/slides over 280 ms.
@@ -47,6 +45,12 @@ screen position over 700 ms. These effects do not delay navigation with timers.
 Reduced motion disables spatial transitions; unsupported browsers keep functional
 links and a brief arrival fade. Desktop single-screen and phone scrolling rules
 remain unchanged.
+
+Automatic photographs continue switching with reduced motion enabled, without
+crossfades or floating. Reduced motion must not freeze the collection on its
+first image. Visibility changes and browser history restoration restart playback;
+a stalled or failed image is skipped without replacing the current photograph
+with an empty frame. Offscreen and hidden-page playback remains paused.
 
 Certificate thumbnails in Honors are clickable, without a new visible control
 bar. A modal fits the full certificate to the screen, offers further zoom, and

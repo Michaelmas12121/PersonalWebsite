@@ -9,14 +9,15 @@ interface Props {
   eager?: boolean;
   zoomable?: boolean;
   sizes?: string;
+  maxWidth?: number;
 }
 
-const { images, label, eager = false, zoomable = false, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
+const { images, label, maxWidth = 960, eager = false, zoomable = false, rhythm = 0, sizes = "(max-width: 680px) 90vw, 35vw" } = Astro.props;
 // Larger collections move faster, with a quiet lower bound and distinct phases.
 const interval = Math.round(1800 + 6000 / (images.length + 1) + rhythm * 45);
 const frames = await Promise.all(images.map(async (frame) => {
-  const small = await getImage({ src: frame.src, width: Math.min(400, frame.src.width), format: "webp" });
-  const large = await getImage({ src: frame.src, width: Math.min(960, frame.src.width), format: "webp" });
+  const small = await getImage({ src: frame.src, width: Math.min(400, maxWidth, frame.src.width), format: "webp" });
+  const large = await getImage({ src: frame.src, width: Math.min(maxWidth, frame.src.width), format: "webp" });
   const full = zoomable ? await getImage({ src: frame.src, width: Math.min(1800, frame.src.width), format: "webp", quality: 90 }) : undefined;
   return { ...frame, full: full?.src, url: large.src, srcset: `${small.src} ${small.options.width}w, ${large.src} ${large.options.width}w` };
 }));
@@ -56,12 +57,12 @@ const frames = await Promise.all(images.map(async (frame) => {
 <script>
   class ImageWindow extends HTMLElement {
     connectedCallback() {
+      this.cleanup?.();
       const frames = [...this.querySelectorAll<HTMLElement>(".window-frame")];
       if (frames.length < 2) return;
-      const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
       const interval = Number(this.dataset.interval);
       const events = new AbortController();
-      let current = 0;
+      let current = Math.max(0, frames.findIndex((frame) => frame.classList.contains("is-current")));
       let timer: number | undefined;
       let visible = false;
       let certificateOpen = false;
@@ -76,13 +77,22 @@ const frames = await Promise.all(images.map(async (frame) => {
           img.srcset = img.dataset.srcset!;
           img.src = img.dataset.src!;
         }
-        try { await img.decode(); return img.naturalWidth > 0; }
-        catch { return false; }
+        let timeout: number | undefined;
+        try {
+          // Bound a stalled request so one missing image cannot stop the carousel.
+          await Promise.race([
+            img.decode(),
+            new Promise((_, reject) => { timeout = window.setTimeout(() => reject(new Error("Image timeout")), 8000); }),
+          ]);
+          return img.naturalWidth > 0;
+        } catch { return img.complete && img.naturalWidth > 0; }
+        finally { window.clearTimeout(timeout); }
       };
       const stop = () => { window.clearTimeout(timer); revision++; };
+      // Reduced motion removes CSS transitions, not automatic photograph changes.
       const schedule = () => {
         stop();
-        if (!alive || certificateOpen || motion.matches || !visible || document.hidden) return;
+        if (!alive || certificateOpen || !visible || document.hidden) return;
         timer = window.setTimeout(() => { void advance(); }, first ? Number(this.dataset.delay) : interval);
       };
       const advance = async () => {
@@ -99,8 +109,9 @@ const frames = await Promise.all(images.map(async (frame) => {
           target = (target + 1) % frames.length;
         }
         busy = false;
-        if (!alive || ticket !== revision) return;
-        if (ready && (!certificateOpen && !motion.matches && visible && !document.hidden)) {
+        if (!alive) return;
+        if (ticket !== revision) { schedule(); return; }
+        if (ready && (!certificateOpen && visible && !document.hidden)) {
           frames[current].classList.remove("is-current");
           frames[current].setAttribute("aria-hidden", "true");
           frames[target].classList.add("is-current");
@@ -112,10 +123,10 @@ const frames = await Promise.all(images.map(async (frame) => {
       };
       window.addEventListener("certificate-state", (event) => { certificateOpen = (event as CustomEvent<boolean>).detail; schedule(); }, { signal: events.signal });
       document.addEventListener("visibilitychange", schedule, { signal: events.signal });
-      motion.addEventListener("change", schedule, { signal: events.signal });
+      window.addEventListener("pageshow", schedule, { signal: events.signal });
       const observer = new IntersectionObserver(([entry]) => {
-        visible = entry.isIntersecting && entry.intersectionRatio >= 0.1;
-        schedule();
+        const nextVisible = entry.isIntersecting && entry.intersectionRatio >= 0.1;
+        if (visible !== nextVisible) { visible = nextVisible; schedule(); }
       }, { threshold: 0.1 });
       observer.observe(this);
       this.cleanup = () => { alive = false; stop(); observer.disconnect(); events.abort(); };

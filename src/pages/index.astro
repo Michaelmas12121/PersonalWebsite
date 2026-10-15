@@ -1,8 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import "../styles/global.css";
 import "../v4/portfolio.css";
-import portrait from "../assets/portrait/yanlang-cutout.png";
 import PageMotion from "../v4/PageMotion.astro";
 import PortfolioNav from "../v4/PortfolioNav.astro";
 ---
@@ -17,7 +15,7 @@ import PortfolioNav from "../v4/PortfolioNav.astro";
     <title>Yanlang Liu</title>
   </head>
   <body>
-    <main class="portrait-home">
+    <main class="portfolio-home">
       <svg class="contours" viewBox="0 0 1680 950" preserveAspectRatio="none" fill="none" aria-hidden="true">
         <g stroke="currentColor" stroke-width="1">
           <path d="M270 -40C290 190 380 200 560 335S720 510 855 470 1000 350 1115 422 1460 520 1740 255" />
@@ -32,7 +30,6 @@ import PortfolioNav from "../v4/PortfolioNav.astro";
         </g>
       </svg>
       <h1 class="name">YANLANG LIU</h1>
-      <Image class="portrait" src={portrait} alt="Yanlang Liu" widths={[480, 640, 960, 1440]} sizes="(max-width: 700px) and (orientation: portrait) 60svh, 91svh" format="webp" quality={82} loading="eager" fetchpriority="high" />
       <PortfolioNav home />
       <a class="room-door" href="/interactive/" data-astro-prefetch="hover" aria-label="Enter my interactive room" title="Interactive room">
         <svg viewBox="0 0 80 130" fill="none" aria-hidden="true">
@@ -45,21 +42,19 @@ import PortfolioNav from "../v4/PortfolioNav.astro";
 </html>
 <style>
   :global(html), :global(body) { margin: 0; overflow: hidden; }
-  .portrait-home { position: relative; width: 100%; height: 100svh; min-height: 0; overflow: hidden; isolation: isolate; }
+  .portfolio-home { position: relative; width: 100%; height: 100svh; min-height: 0; overflow: hidden; isolation: isolate; }
   .contours { transform: translate(var(--pointer-x, 0px), var(--pointer-y, 0px)) scale(1.025); transition: transform 700ms ease-out; position: absolute; inset: 0; width: 100%; height: 100%; color: #dcd5c6; z-index: -1; pointer-events: none; }
   .name { position: absolute; top: 2.5%; left: 2%; width: 96%; margin: 0; color: #e2ded2; font: 400 24.5vw/.95 "Anton", Impact, sans-serif; letter-spacing: -.025em; white-space: nowrap; translate: calc(var(--pointer-x, 0px) * -.55) calc(var(--pointer-y, 0px) * -.55); transition: translate 900ms ease-out; transform: scaleX(.91); transform-origin: left top; z-index: -2; }
-  .portrait { position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); height: 86%; width: auto; max-width: none; object-fit: contain; object-position: bottom; pointer-events: none; }
-  .room-door { position: absolute; z-index: 4; bottom: 8%; right: 5%; width: clamp(50px, 5.5vw, 94px); color: #35352f; }
+  .room-door { position: absolute; z-index: 4; bottom: 2.5%; left: 50%; transform: translateX(-50%); width: clamp(44px, 7svh, 70px); color: #35352f; }
   .room-door svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .door-leaf { transform-origin: 44px 70px; transition: transform 300ms ease; }
   .room-door:hover .door-leaf, .room-door:focus-visible .door-leaf { transform: skewY(-5deg) scaleX(.78); }
   @media (max-width: 700px) and (orientation: portrait) {
-    .name { font-size: 25vw; top: 5%; left: 4%; transform: scaleX(.88) scaleY(1.4); }
-    .portrait { height: 57%; width: auto; max-height: none; }
-    .room-door { bottom: 4%; right: 6%; width: 45px; padding: 5px; }
+    .name { font-size: 25vw; top: 4%; left: 4%; transform: scaleX(.88) scaleY(1.4); }
+    .room-door { bottom: 2%; width: 44px; padding: 3px; }
   }
   @media (max-height: 500px) and (orientation: landscape) {
     .name { font-size: 21vw; }
-    .room-door { width: 42px; bottom: 5%; }
+    .room-door { width: 32px; bottom: 2%; }
   }
 </style>

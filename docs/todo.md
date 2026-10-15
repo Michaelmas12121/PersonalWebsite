@@ -5,8 +5,8 @@
 - [x] Keep version 4 as the only active site in this repository.
 - [x] Remove versions 1, 2 and 3 from the working tree while preserving Git
       history and local-only experiments.
-- [x] Make `/` the approved single-screen portrait homepage, with four category
-      destinations and a line-art door to `/interactive`.
+- [x] Make `/` the single-screen photographic homepage, with floating category
+      previews and a bottom-center line-art door to `/interactive`.
 - [x] Add resume-based project, activity and honor entries without years, plus
       photography, cycling and game development; retain independent photo windows.
 - [x] Keep three.js behind the capability gate and dynamic import.
@@ -32,6 +32,9 @@
 
 - [x] Add homepage background depth, category hover/title transitions, category
       switching and a door-to-room reveal with reduced-motion fallbacks.
+- [x] Replace the homepage portrait with linked, floating automatic previews.
+- [x] Keep photo playback active with reduced motion and recover after visibility
+      changes, history restoration, and failed image requests.
 - [x] Add accessible certificate enlargement and on-demand full-size images.
 - [x] Prioritize initial media, defer hidden room media, warm navigation on intent,
       compress the heading font and remove development-toolbar downloads.

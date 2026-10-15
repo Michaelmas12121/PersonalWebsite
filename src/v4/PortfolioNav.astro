@@ -1,5 +1,6 @@
 ---
 import { getImage } from "astro:assets";
+import ImageWindow from "./ImageWindow.astro";
 import { getPortfolio, sectionUrl, sections, type Section } from "./portfolio";
 interface Props { active?: Section; home?: boolean }
 const { active, home = false } = Astro.props;
@@ -12,35 +13,81 @@ const previews = Object.fromEntries(await Promise.all(sections.map(async (sectio
     return { src: large.src, srcset: `${small.src} ${small.options.width}w, ${large.src} ${large.options.width}w`, sizes: section === "honors" ? "(max-width: 700px) 90vw, 24vw" : "(max-width: 700px) 90vw, 32vw" };
   })),
 ])));
+// Interleave entries to introduce different subjects before continuing larger collections.
+const homeImages = Object.fromEntries(sections.map((section) => {
+  const collections = entries.filter((entry) => entry.section === section).map((entry) =>
+    entry.images.length ? entry.images : entry.logo ? [{ src: entry.logo, alt: `${entry.title} logo`, fit: "contain" as const }] : []
+  ).filter((images) => images.length);
+  const images = Array.from({ length: Math.max(0, ...collections.map((items) => items.length)) }, (_, index) =>
+    collections.flatMap((items) => items[index] ? [items[index]] : [])
+  ).flat();
+  // Both windows include every entry; different starting points keep their sequences offset.
+  const offset = Math.max(1, Math.ceil(images.length / 2));
+  return [section, [images, [...images.slice(offset), ...images.slice(0, offset)]]];
+}));
 ---
 <nav class:list={["portfolio-nav", { "home-nav": home }]} aria-label="Portfolio">
-  {sections.map((section) => (
-    <a class={section} href={sectionUrl(section)} data-astro-prefetch="hover" data-preview-images={JSON.stringify(previews[section])} style={home ? `view-transition-name: section-${section}` : undefined} aria-current={active === section ? "true" : undefined}>
+  {sections.map((section, sectionIndex) => home ? (
+    <div class:list={["home-section", section]}>
+      <a class="section-title" href={sectionUrl(section)} data-astro-prefetch="hover" data-preview-images={JSON.stringify(previews[section])} style={`view-transition-name: section-${section}`}>
+        {section.toUpperCase()}
+      </a>
+      {homeImages[section].map((images, index) => images.length > 0 && (
+        <a class:list={["floating-preview", `preview-${index + 1}`]} href={sectionUrl(section)}
+          data-astro-prefetch="hover" aria-label={`Explore ${section} photographs`}
+          style={`--float-delay: ${-(sectionIndex * 2.3 + index * 4)}s; --tilt: ${(sectionIndex + index) % 2 ? 4 : -5}deg`}>
+          <ImageWindow images={images} label={section} rhythm={sectionIndex * 2 + index}
+            eager={sectionIndex === 0 && index === 0} maxWidth={640}
+            sizes="(max-width: 700px) 27vw, (max-height: 500px) 14vw, 16vw" />
+        </a>
+      ))}
+    </div>
+  ) : (
+    <a class={section} href={sectionUrl(section)} data-astro-prefetch="hover" data-preview-images={JSON.stringify(previews[section])} aria-current={active === section ? "true" : undefined}>
       {section.toUpperCase()}
-      {!home && active === section && <span class="active-mark" aria-hidden="true"></span>}
+      {active === section && <span class="active-mark" aria-hidden="true"></span>}
     </a>
   ))}
 </nav>
 <style>
   .portfolio-nav { display: flex; align-items: center; gap: clamp(12px, 2.4vw, 40px); }
   a { position: relative; transition: color 180ms ease, transform 180ms ease; }
-  .active-mark { position: absolute; left: 0; right: 0; bottom: -7px; height: 1px; background: currentColor; view-transition-name: current-section; }
-  .home-nav a::after { content: ""; position: absolute; bottom: -.12em; left: 0; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 220ms ease; }
-  .home-nav a:hover, .home-nav a:focus-visible { transform: translateY(-3px); }
-  .home-nav a:hover::after, .home-nav a:focus-visible::after { transform: scaleX(1); }
   a:hover, a[aria-current] { color: #8a6450; }
   a:focus-visible { outline: 2px solid currentColor; outline-offset: 8px; }
-  .home-nav a { position: absolute; z-index: 3; font-family: "Anton", Impact, sans-serif; font-size: clamp(30px, 5.45vw, 104px); line-height: 1.12; letter-spacing: -.035em; }
-  .home-nav .projects, .home-nav .others { left: 8.4%; }
-  .home-nav .activities, .home-nav .honors { left: 71.7%; }
-  .home-nav .projects, .home-nav .activities { top: 48%; }
-  .home-nav .others, .home-nav .honors { top: 67.5%; }
-  @media (prefers-reduced-motion: reduce) { .home-nav a:hover, .home-nav a:focus-visible { transform: none; } }
+  .active-mark { position: absolute; left: 0; right: 0; bottom: -7px; height: 1px; background: currentColor; view-transition-name: current-section; }
+  .home-nav { position: absolute; inset: 22% 7% 17%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 5svh 10vw; align-items: stretch; }
+  .home-section { position: relative; min-width: 0; }
+  .section-title { position: absolute; z-index: 3; top: 50%; left: 50%; translate: -50% -50%; font-family: "Anton", Impact, sans-serif; font-size: min(6.3vw, 9svh); line-height: 1.12; letter-spacing: -.035em; }
+  .section-title::after { content: ""; position: absolute; bottom: -.12em; left: 0; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 220ms ease; }
+  .section-title:hover, .section-title:focus-visible { transform: translateY(-3px); }
+  .section-title:hover::after, .section-title:focus-visible::after { transform: scaleX(1); }
+  .floating-preview { position: absolute; display: block; z-index: 1; width: auto; height: 42%; aspect-ratio: 3 / 2; max-width: 45%; animation: drift 13s ease-in-out var(--float-delay) infinite alternate; }
+  .preview-1 { top: -2%; left: -2%; }
+  .preview-2 { bottom: -2%; right: -2%; animation-direction: alternate-reverse; }
+  .activities .preview-1, .honors .preview-1 { left: auto; right: -2%; }
+  .activities .preview-2, .honors .preview-2 { right: auto; left: -2%; }
+  .floating-preview:hover, .floating-preview:focus-visible { animation-play-state: paused; z-index: 4; }
+  .floating-preview :global(image-window) { height: 100%; padding: 4px; border: 0; border-radius: 1px; background: #f8f5ed; box-shadow: 0 5px 18px #3b30251a; transition: box-shadow 250ms ease; }
+  .floating-preview:hover :global(image-window) { box-shadow: 0 9px 25px #3b30252b; }
+  .floating-preview :global(.window-viewport) { height: 100%; aspect-ratio: auto; }
+  @keyframes drift {
+    from { transform: translate(-4px, 3px) rotate(var(--tilt)); }
+    to { transform: translate(7px, -8px) rotate(calc(var(--tilt) + 3deg)); }
+  }
   @media (max-width: 700px) and (orientation: portrait) {
-    .home-nav a { font-size: clamp(27px, 6.7vw, 46px); }
-    .home-nav .projects, .home-nav .others { left: 6%; }
-    .home-nav .activities, .home-nav .honors { left: auto; right: 6%; }
-    .home-nav .projects, .home-nav .activities { top: 25%; }
-    .home-nav .others, .home-nav .honors { top: 35%; }
+    .home-nav { inset: 24% 7% 17%; gap: 5svh 8vw; }
+    .section-title { font-size: min(7.6vw, 5.4svh); }
+    .floating-preview { width: 72%; height: 32%; max-width: none; }
+    .preview-1 { left: -1%; }
+    .preview-2 { right: -1%; }
+  }
+  @media (max-height: 500px) and (orientation: landscape) {
+    .home-nav { inset: 16% 8% 15%; gap: 4svh 15vw; }
+    .section-title { font-size: 8svh; }
+    .floating-preview { width: 42%; height: 34%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .floating-preview { animation: none; transform: rotate(var(--tilt)); }
+    .section-title:hover, .section-title:focus-visible { transform: none; }
   }
 </style>

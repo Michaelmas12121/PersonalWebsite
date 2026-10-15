@@ -41,7 +41,7 @@ for (const link of document.querySelectorAll<HTMLAnchorElement>("[data-astro-pre
   link.addEventListener("pointerdown", () => warm(link), { passive: true });
 }
 
-const home = document.querySelector<HTMLElement>(".portrait-home");
+const home = document.querySelector<HTMLElement>(".portfolio-home");
 if (home) {
   const pointer = matchMedia("(hover: hover) and (pointer: fine)");
   let frame = 0;

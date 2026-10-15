@@ -9,10 +9,10 @@ longer live in the working tree.
 ## What this is
 
 This is a personal site for a 17-year-old applying to universities in the
-United States. The portrait-led homepage is served at `/` and fits a single viewport.
-Four text-only links open Projects, Activities, Others and Honors; a line-drawn
-door opens the optional room. Each category has one static URL and shows every
-entry and all descriptions together, with no item switching, description paging
+United States. The photo-preview homepage is served at `/` and fits a single viewport.
+Four large titles with floating photo previews open Projects, Activities, Others
+and Honors; a bottom-center line-drawn door opens the optional room. Each category
+has one static URL and shows every entry and all descriptions together, with no item switching, description paging
 or scrolling on desktop. Phones keep each category on one scrollable page with
 readable type. Its optional interactive room, at
 `/interactive`, is a warm monochrome drawing of his room. Navigation there is
@@ -28,7 +28,7 @@ retained only in the private history backup.
 
 ## Where things stand
 
-**Complete foundations:** the portrait-led, single-screen homepage; the four
+**Complete foundations:** the photographic, single-screen homepage; the four
 resume-based portfolio category overviews with independent photo windows; the independent
 interactive route; code-native room geometry;
 fixed camera navigation; five interactive objects; the monochrome-to-colour
@@ -72,11 +72,13 @@ another parallel implementation here.
 
 ## Settled decisions
 
-- **The homepage is a single-screen portrait navigation page.** Its approved
-  design uses a cutout portrait, oversized pale name, four text-only category
-  links and a fine-line door. No subtitles, logo, header branding or room-entry
-  text. On phones the category links sit above the portrait. The room remains
-  at `/interactive`; its camera and room navigation retain their original behavior.
+- **The homepage is a single-screen photographic navigation page.** The user
+  removed the cutout portrait. An oversized pale name sits behind four large
+  category titles, each surrounded by two floating, automatically changing photo
+  previews. Titles and previews open the same category. Hover/focus stops preview
+  drift; reduced motion removes drift and crossfades but keeps automatic changes.
+  The line-art door is at bottom center. No subtitles, logo, header branding or
+  room-entry text. The room remains at `/interactive` with its existing navigation.
 - **Portfolio content is grouped by the supplied resume.** Projects contains
   five entries, Activities three, Others photography/cycling/game development,
   and Honors includes awards and publication. Resume descriptions omit years.
@@ -225,14 +227,21 @@ the CSS room. No new dependency was added.
 The first category photograph has priority; later carousel frames wait until
 needed. Hidden room videos use no preload, and hidden cycling maps are lazy.
 Anton is served as a losslessly wrapped WOFF (63,552 bytes versus 130,324 bytes
-for the original TTF), retaining the original font and license. Homepage portrait
-sizes follow its actual height-based layout, with quality 82 WebP derivatives.
+for the original TTF), retaining the original font and license. Homepage previews
+use responsive WebP copies capped at 640 pixels; the portrait is no longer loaded.
 The local development toolbar is disabled to avoid its extra downloads.
 
 Honors certificates open a native modal dialog with a larger processed image
 loaded only on demand, zoom/fit, Escape/backdrop/close dismissal and focus return.
 Multiple certificates remain reachable inside the dialog, including with reduced
 motion. Background slideshows pause while a certificate is open.
+
+Do not gate automatic photo changes on reduced motion: this previously left
+other devices stuck on the first image. Only spatial motion and crossfades are
+disabled for that preference. The carousel also handles history restoration,
+visibility changes, reattachment, failed requests and bounded decode waits.
+Intersection callbacks restart timers only when visibility actually changes,
+so floating previews cannot continually postpone their next frame.
 
 Production smoke checks cover native transitions, history, automatic photographs,
 certificate zoom and focus, phone gating, reduced motion and eight layout sizes.
