@@ -16,18 +16,11 @@ export interface RoomOptions {
   canvas: HTMLCanvasElement;
   initialView?: string;
   onArrive?: (viewName: string) => void;
-  onHover?: (label: string | null) => void;
+  onHover?: (target: TargetName | null) => void;
   onLeave?: () => void;
   onPortalFrame?: (viewName: string, frame: PortalFrame) => void;
 }
 
-const LABELS: Record<TargetName, string> = {
-  figure: "Who am I / Notebook",
-  monitor: "Continue / Computer",
-  mac: "What I've done / Project board",
-  achievements: "Achievements / Trophies",
-  window: "Gallery / Camera",
-};
 const ease = (t: number) => t * t * (3 - 2 * t);
 type ViewName = keyof typeof VIEWS;
 
@@ -111,7 +104,11 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
     startedAt: number; duration: number; destination: ViewName;
   } | null = null;
 
-  function draw() { if (!disposed) renderer.render(scene, camera); }
+  function draw() {
+    if (disposed) return;
+    renderer.render(scene, camera);
+    renderer.shadowMap.autoUpdate = false;
+  }
   function projectPortalFrame(target: TargetName) {
     const anchor = portals.get(target);
     if (!anchor) return;
@@ -132,7 +129,7 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
       material.color.copy(name === target ? white : charcoal);
       material.opacity = name === target ? 0.9 : 0.18;
     }
-    options.onHover?.(target ? LABELS[target] : null);
+    options.onHover?.(target);
     canvas.style.cursor = target ? 'pointer' : 'default';
     draw();
   }

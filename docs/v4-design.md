@@ -86,8 +86,9 @@ copied from outside the repository.
 ## Model pipeline
 
 The model is generated offline with the already-installed Blender. It is
-exported as `src/assets/room/desk-room.glb`, approximately 1.7 MB, including
-compressed textures and per-object interaction metadata. The matching fallback
+exported as `src/assets/room/desk-room.glb`, approximately 1.36 MB, including
+compressed textures and per-object interaction metadata. The exporter losslessly
+shares identical binary ranges using `optimize.py`; geometry and images stay unchanged. The matching fallback
 render is `src/assets/room/desk-poster.webp`. Astro makes responsive copies.
 Neither Blender nor new JavaScript dependencies are required to build or serve
 the site. The checked-in exports are sufficient for `npm run build`.
@@ -115,14 +116,15 @@ keys are retained for existing links and content code:
 | --- | --- | --- |
 | `figure` | Open notebook and name card | Who am I |
 | `monitor` | Monitor and keyboard | Continue workspace |
-| `mac` | Project board and publications | Completed projects and activities |
-| `achievements` | Trophies | Certificates |
-| `window` | Camera and photographs | Gallery |
+| `mac` | Project board and publications | All Projects and Activities, plus full activity accounts |
+| `achievements` | Trophies | All Honors, certificates and papers |
+| `window` | Camera and photographs | Others, gallery and links to cycling/game apps |
 
-Hover brightens an object's outline and shows its label. Clicking travels for
+Hover brightens an object's outline and shows a small label beside the pointer,
+clamped inside the viewport. The flat fallback also shows pointer labels. Clicking travels for
 about 1.1 seconds to a fixed close view. The screen, project board or photograph
-then expands into the existing HTML content layer. About uses a card beside the
-notebook; certificates retain their existing content layout. Closing retracts
+then expands into the HTML content layer. About uses a card beside the
+notebook; Honors uses the complete shared portfolio entries with on-demand certificate zoom. Closing retracts
 the content and returns the camera in about one second. Subviews inside the
 workspace, project browser and gallery close before leaving their parent.
 
@@ -174,16 +176,23 @@ Escape actions return to the desktop before closing Continue back into the room.
 
 ## Project board navigation
 
-The project board represents **What I've done**, not one specific project. Clicking it
-opens a full-viewport application layer generated from the shared activities
-content collection. The room remains behind that layer but is no longer part of
-the reading layout. Conrad Challenge is one card alongside the other projects
-and activities.
+The project board displays **Projects & Activities**, generated from the same
+`getPortfolio()` data as the homepage categories. All descriptions, supplied
+images, logos and links remain available in a responsive reading grid. Entries
+with an existing longer Markdown account have a full-account button. Back from
+a full account returns to the collection before leaving the board.
 
-Selecting a card opens its full account inside the project panel. Back first returns
-to the project selection without moving the camera or changing the room view;
-back from the selection closes the project board content and returns the camera
-to the room overview.
+The trophies display all eight **Honors** entries, including publication and
+awards without images. The shared certificate viewer loads large copies only
+when opened and preserves Escape dismissal and focus return. The camera opens
+**Others & Gallery**, with the three shared interest entries, all photographs,
+and shortcuts into the existing Cycling and Metabolis applications.
+
+Portfolio carousels and long accounts start inside inert templates. Only the
+selected destination attaches its media to the page. The initial room image
+request is the responsive desk poster; hidden video posters wait for playback.
+The scene reuses its static shadow map during movement instead of drawing all
+shadows for every camera frame.
 
 Project photographs keep their source proportions. Desktop layouts may combine
 portrait and landscape images into section-specific editorial grids; narrow

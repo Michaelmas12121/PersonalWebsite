@@ -30,8 +30,8 @@ retained only in the private history backup.
 
 **Complete foundations:** the photographic homepage and portfolio categories;
 the interactive desk with reference-derived Blender geometry, a 23 mm overhead
-camera, real camera travel, five object destinations, no avatar, a matching
-phone poster and the capability gate; the existing project browser, gallery,
+camera, real camera travel, five object destinations with pointer-following labels, no avatar, a matching
+phone poster and the capability gate; all four shared portfolio collections, the expanded Honors archive, gallery,
 Continue desktop with Games, Metabolis and Cycling; and the approved activity
 photographs and certificates. The reference desk now includes the large black
 steel floor-to-ceiling window, superseding the postponed bedroom-window task.
@@ -104,8 +104,9 @@ another parallel implementation here.
 - **Physical surfaces become interfaces.** The screen, project board and
   photographs expand into HTML content after the camera approaches.
 - **Text is HTML.** Never render substantial readable content inside three.js.
-- **The project board represents completed work.** It opens a full-screen project browser
-  generated from the shared activity collection.
+- **The project board represents completed work.** It opens Projects and Activities
+  from the same portfolio collection data as the main site. Existing long activity
+  accounts remain accessible from their entries.
 - **Continue represents active work as a personal computer.** It always opens
   on its desktop. Games is a folder, Metabolis is its only active game, and
   Cycling is a separate route application. Metabolis uses all four supplied
@@ -261,3 +262,26 @@ remains separate and requires explicit public-deployment approval.
 The desk model was exported using installed Blender 5.2. The modeling source is
 adapted from `EdwinjJ1/personal-website/002/blender/kit.py` and `layout.py`.
 Regeneration instructions and interaction mappings are in `docs/v4-design.md`.
+
+## Room content and loading update
+
+The board includes all five Projects and three Activities. The trophies open
+Honors with all eight awards/publications, four paper links and the shared
+certificate viewer. The camera opens all three Others entries plus the complete
+gallery; its cycling and Metabolis shortcuts open the existing computer apps.
+Descriptions, images, logos and links are read through `getPortfolio()` rather
+than copied into a separate room content list.
+
+`PortfolioContent.astro` defers photo carousels in inert templates until their
+room section opens; long activity accounts are attached only on selection.
+The game poster is a processed WebP attached on playback. Browser checks confirm
+that the overview requests only the desk poster as an image and no video. Phones
+and reduced-motion visitors continue to avoid the model and three.js.
+
+The exported GLB is losslessly packed from 1,831,704 to 1,358,232 bytes by sharing
+identical buffer ranges. Every geometry/image range and all scene metadata were
+verified unchanged. `model/optimize.py` runs as part of future exports. Static
+shadow maps are rendered once and reused during camera travel and hover.
+
+The separate desk-side reading and object-to-story concept previews remain in
+ignored `docs/local/`; neither visual direction is applied to the website.

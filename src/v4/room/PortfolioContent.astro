@@ -1,0 +1,51 @@
+---
+import { Image } from "astro:assets";
+import ImageWindow from "../ImageWindow.astro";
+import type { PortfolioEntry, Section } from "../portfolio";
+
+interface Props {
+  entries: PortfolioEntry[];
+  section: Section;
+  stories?: string[];
+}
+const { entries, section, stories = [] } = Astro.props;
+---
+<section class="room-collection" data-room-section={section} aria-label={section}>
+  {section !== "honors" && <header><h2>{section}</h2><span>{String(entries.length).padStart(2, "0")}</span></header>}
+  <div class="collection-grid">
+    {entries.map((entry, index) => (
+      <article data-portfolio-entry={entry.id}>
+        <h2>{entry.title}</h2>
+        {entry.images.length > 0 && <template data-room-media>
+          <ImageWindow images={entry.images} label={entry.title} rhythm={index} zoomable={section === "honors"} sizes="(max-width: 700px) 90vw, (max-width: 1000px) 42vw, 28vw" />
+        </template>}
+        <div class="copy">{entry.description.map((paragraph) => <p>{paragraph}</p>)}</div>
+        {entry.links.length > 0 && <div class="links">{entry.links.map((link) => (
+          <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={`${entry.title}: ${link.label} (opens in a new tab)`}>
+            {entry.logo && <Image src={entry.logo} alt={`${entry.title} logo`} width={120} format="webp" loading="lazy" />}
+            {link.label} ↗
+          </a>
+        ))}</div>}
+        {stories.includes(entry.id) && <button type="button" data-project={entry.id} aria-controls={`project-${entry.id}`}>Read the full account →</button>}
+      </article>
+    ))}
+  </div>
+</section>
+<style>
+  .room-collection { padding: 32px 0; }
+  header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px; }
+  header h2 { text-transform: capitalize; font-size: 28px; margin: 0; }
+  header span { color: #746d61; font-size: 12px; }
+  .collection-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 28px; }
+  article { min-width: 0; display: flex; flex-direction: column; align-items: start; gap: 16px; border-top: 1px solid #cdc4b5; padding-top: 20px; }
+  article h2 { font-size: 23px; font-weight: 500; line-height: 1.2; margin: 0; }
+  .copy { display: grid; gap: 12px; }
+  p { font-size: 15px; line-height: 1.65; margin: 0; }
+  .links { display: flex; flex-wrap: wrap; gap: 14px; }
+  a, button { display: inline-flex; align-items: center; gap: 12px; color: inherit; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+  button { background: transparent; border: 0; padding: 8px 0; cursor: pointer; }
+  a img { width: 90px; height: 36px; object-fit: contain; }
+  article :global(image-window) { border: 0; border-radius: 0; box-shadow: none; }
+  @media (max-width: 1000px) { .collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 700px) { .collection-grid { grid-template-columns: minmax(0, 1fr); } p { font-size: 16px; } }
+</style>

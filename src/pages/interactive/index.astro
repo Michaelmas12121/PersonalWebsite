@@ -1,12 +1,11 @@
 ---
 import PageMotion from "../../v4/PageMotion.astro";
 import roomPoster from "../../assets/room/desk-poster.webp";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
+import PortfolioContent from "../../v4/room/PortfolioContent.astro";
+import CertificateViewer from "../../v4/CertificateViewer.astro";
+import { getPortfolio } from "../../v4/portfolio";
 import { getCollection, render } from "astro:content";
-import aimeCertificate from "../../assets/certificates/v4/aime-2026.webp";
-import himcmCertificate from "../../assets/certificates/v4/himcm-2025-redacted.webp";
-import immcFinalistCertificate from "../../assets/certificates/v4/immc-finalist-2026-redacted.webp";
-import immcOutstandingCertificate from "../../assets/certificates/v4/immc-outstanding-2026-redacted.webp";
 import metabolisCover from "../../assets/continue/metabolis/background-title-source.png";
 import metabolisTitleScreen from "../../assets/continue/metabolis/title-screen.png";
 import metabolisTitleVideo from "../../assets/continue/metabolis/video/title-opening.mp4";
@@ -27,35 +26,8 @@ interface Entry {
   colours: [string, string, string];
 }
 
-// The four certificates on the shelf. These are the privacy-safe copies made for
-// the site: only Yanlang Liu's name survives, every other name is pixelated, and
-// the source PDFs stay outside the repository.
-const certificates = [
-  {
-    image: immcOutstandingCertificate,
-    context: "IMMC 2026 · Greater China",
-    title: "Outstanding",
-    note: "The top award at the 12th International Mathematical Modeling Challenge. Team of four.",
-  },
-  {
-    image: immcFinalistCertificate,
-    context: "IMMC 2026 · Greater China",
-    title: "Finalist",
-    note: "The nomination round of the same challenge, before the international judging. Team of four.",
-  },
-  {
-    image: himcmCertificate,
-    context: "HiMCM 2025",
-    title: "Meritorious",
-    note: "The High School Mathematical Contest in Modeling, run by COMAP. Team of four.",
-  },
-  {
-    image: aimeCertificate,
-    context: "AIME II 2026",
-    title: "Participation",
-    note: "The American Invitational Mathematics Examination, reached through the AMC. Sat alone.",
-  },
-];
+const portfolio = await getPortfolio();
+const titlePoster = await getImage({ src: metabolisTitleScreen, width: 960, format: "webp" });
 
 // Gallery photographs are deliberately uncaptioned, and ordered by the original
 // import sequence rather than by anything the visitor is meant to read into it.
@@ -127,7 +99,7 @@ const entries: Entry[] = [
   },
   {
     view: "mac",
-    label: "What I've done",
+    label: "Projects & Activities",
     note: "Project board",
     object: "Projects and activities from the board",
     body: "Choose a project or activity. Conrad is one part of the record, not the whole of it.",
@@ -135,15 +107,15 @@ const entries: Entry[] = [
   },
   {
     view: "achievements",
-    label: "Achievements",
+    label: "Honors",
     note: "Trophies",
     object: "Competition results and certificates",
-    body: "Competition results, as the certificates themselves.",
+    body: "Awards, publications, papers and certificates.",
     colours: ["#705845", "#b39861", "#754f57"],
   },
   {
     view: "window",
-    label: "Gallery",
+    label: "Others & Gallery",
     note: "Camera",
     object: "Photographs from behind the lens",
     body: "Photographs, uncaptioned.",
@@ -268,7 +240,7 @@ const entries: Entry[] = [
                   <article class="metabolis-slide title-slide" data-metabolis-panel="0">
                     <video
                       src={metabolisTitleVideo}
-                      poster={metabolisTitleScreen.src}
+                      data-poster={titlePoster.src}
                       muted
                       playsinline
                       preload="none"
@@ -415,7 +387,7 @@ const entries: Entry[] = [
       <div id="projects-panel" hidden>
         <div class="mac-app-bar" aria-hidden="true">
           <span class="mac-window-controls"><i></i><i></i><i></i></span>
-          <span>What I've done</span>
+          <span>Projects & Activities</span>
           <span>Projects and activities</span>
         </div>
 
@@ -423,40 +395,14 @@ const entries: Entry[] = [
           <header class="projects-heading">
             <div>
               <p class="panel-state">The project board</p>
-              <h2>What I've done</h2>
+              <h2>Projects & Activities</h2>
             </div>
-            <p>Choose one project or activity to open its full account.</p>
+            <p>Projects, activities and the stories behind them.</p>
           </header>
 
-          <div class="project-grid" id="project-grid">
-            {
-              renderedActivities.map(({ activity }, index) => (
-                <button
-                  class="project-card"
-                  type="button"
-                  data-project={activity.id}
-                  aria-controls={`project-${activity.id}`}
-                  style={`--reveal-index: ${index}`}
-                >
-                  <span class="project-cover">
-                    {activity.data.cover ? (
-                      <Image
-                        src={activity.data.cover}
-                        alt={activity.data.coverAlt ?? ""}
-                        widths={[360, 540]}
-                        sizes="(max-width: 899px) 82vw, 360px"
-                      />
-                    ) : (
-                      <span class="project-lines" aria-hidden="true"><i></i><b></b></span>
-                    )}
-                  </span>
-                  <span class="project-context">{activity.data.context}</span>
-                  <strong>{activity.data.title}</strong>
-                  <span class="project-summary">{activity.data.summary}</span>
-                  <span class="project-open">Open →</span>
-                </button>
-              ))
-            }
+          <div id="project-grid">
+            <PortfolioContent section="projects" entries={portfolio.filter(entry => entry.section === "projects")} stories={activities.map(entry => entry.id)} />
+            <PortfolioContent section="activities" entries={portfolio.filter(entry => entry.section === "activities")} stories={activities.map(entry => entry.id)} />
           </div>
 
           <div class="project-reader" id="project-reader" hidden>
@@ -466,7 +412,7 @@ const entries: Entry[] = [
                   <p class="project-context">{activity.data.context}</p>
                   <h2 tabindex="-1">{activity.data.title}</h2>
                   {activity.data.role && <p class="project-role">{activity.data.role}</p>}
-                  <div class="project-content"><Content /></div>
+                  <div class="project-content"><template data-room-story><Content /></template></div>
                 </article>
               ))
             }
@@ -477,45 +423,10 @@ const entries: Entry[] = [
       <div id="certificates-panel" hidden>
         <div class="app-content">
           <header class="projects-heading">
-            <div>
-              <p class="panel-state">The trophies</p>
-              <h2>Achievements</h2>
-            </div>
-            <p>
-              Mathematical modelling, in teams of four, and one examination sat
-              alone. Open a certificate to read it full size.
-            </p>
+            <div><p class="panel-state">The trophies</p><h2>Honors</h2></div>
+            <p>Awards and publications. Select a certificate to enlarge it, or open the original paper.</p>
           </header>
-
-          <div class="certificate-grid">
-            {
-              certificates.map((certificate) => (
-                <a
-                  class="certificate-card"
-                  href={certificate.image.src}
-                  target="_blank"
-                  rel="noopener">
-                  <span class="certificate-sheet">
-                    <Image
-                      src={certificate.image}
-                      alt={`${certificate.context} — ${certificate.title} certificate`}
-                      widths={[380, 720]}
-                      sizes="(max-width: 899px) 88vw, 420px"
-                      loading="lazy"
-                    />
-                  </span>
-                  <span class="project-context">{certificate.context}</span>
-                  <strong>{certificate.title}</strong>
-                  <span class="certificate-note">{certificate.note}</span>
-                  <span class="project-open">Open the certificate →</span>
-                </a>
-              ))
-            }
-          </div>
-
-          <p class="certificate-footnote">
-            Names other than mine are pixelated on every copy shown here.
-          </p>
+          <PortfolioContent section="honors" entries={portfolio.filter(entry => entry.section === "honors")} />
         </div>
       </div>
 
@@ -524,11 +435,18 @@ const entries: Entry[] = [
           <header class="projects-heading">
             <div>
               <p class="panel-state">Behind the lens</p>
-              <h2>Gallery</h2>
+              <h2>Others & Gallery</h2>
             </div>
             <p>{photos.length} frames, uncaptioned. Open one to see it full size.</p>
           </header>
 
+          <PortfolioContent section="others" entries={portfolio.filter(entry => entry.section === "others")} />
+          <nav class="interest-links" aria-label="Explore interests">
+            <button type="button" data-room-app="cycling">Explore all 17 rides →</button>
+            <button type="button" data-room-app="metabolis">Watch Metabolis →</button>
+            <a href="#room-photographs">Browse all photographs ↓</a>
+          </nav>
+          <h2 id="room-photographs">Photographs</h2>
           <div class="gallery-columns">
             {
               photos.map((photo, index) => (
@@ -568,6 +486,7 @@ const entries: Entry[] = [
     </section>
 
 
+    <CertificateViewer />
     <p class="ui hover" id="hover" aria-hidden="true"></p>
 
     <script>
@@ -727,7 +646,7 @@ const entries: Entry[] = [
       function projectCard(projectId: string) {
         return Array.from(projectGrid.querySelectorAll<HTMLElement>("[data-project]")).find(
           (candidate) => candidate.dataset.project === projectId,
-        ) ?? null;
+        )?.closest<HTMLElement>("article") ?? null;
       }
 
       function resetProjectGrid() {
@@ -763,13 +682,13 @@ const entries: Entry[] = [
           clearTransitionNames(detail, detailHero, detailTitle);
           update();
           setTransitionName(card, "project-frame");
-          setTransitionName(card?.querySelector<HTMLElement>(".project-cover") ?? null, "project-media");
-          setTransitionName(card?.querySelector<HTMLElement>("strong") ?? null, "project-title");
+          setTransitionName(card?.querySelector<HTMLElement>("image-window") ?? null, "project-media");
+          setTransitionName(card?.querySelector<HTMLElement>("h2") ?? null, "project-title");
         });
         const clear = () => clearTransitionNames(
           card,
-          card?.querySelector<HTMLElement>(".project-cover") ?? null,
-          card?.querySelector<HTMLElement>("strong") ?? null,
+          card?.querySelector<HTMLElement>("image-window") ?? null,
+          card?.querySelector<HTMLElement>("h2") ?? null,
         );
         transition?.finished.finally(clear);
         if (!transition) requestAnimationFrame(clear);
@@ -855,10 +774,12 @@ const entries: Entry[] = [
           (candidate) => candidate.dataset.projectDetail === projectId,
         );
         if (!detail) return;
+        const story = detail.querySelector<HTMLTemplateElement>("template[data-room-story]");
+        if (story) story.replaceWith(story.content.cloneNode(true));
         prepareProjectGalleries(detail);
         const card = projectCard(projectId);
-        const cardCover = card?.querySelector<HTMLElement>(".project-cover") ?? null;
-        const cardTitle = card?.querySelector<HTMLElement>("strong") ?? null;
+        const cardCover = card?.querySelector<HTMLElement>("image-window") ?? null;
+        const cardTitle = card?.querySelector<HTMLElement>("h2") ?? null;
         const update = () => {
           projectDetails.forEach((candidate) => { candidate.hidden = candidate !== detail; });
           activeProject = detail;
@@ -974,6 +895,7 @@ const entries: Entry[] = [
         });
         metabolisVideos.forEach((video, videoIndex) => {
           if (videoIndex === activeMetabolisSlide) {
+            if (video.dataset.poster && !video.poster) video.poster = video.dataset.poster;
             if (replay) video.currentTime = 0;
             void video.play().catch(() => undefined);
           } else {
@@ -1053,6 +975,9 @@ const entries: Entry[] = [
       function showPanel(view: ViewName) {
         const entry = byView.get(view);
         if (!entry) return;
+        hover.classList.remove("on");
+        const destination = view === "mac" ? projectsPanel : view === "achievements" ? certificatesPanel : view === "window" ? galleryPanel : continuePanel;
+        destination.querySelectorAll<HTMLTemplateElement>("template[data-room-media]").forEach(template => template.replaceWith(template.content.cloneNode(true)));
         returnView = view;
         body.dataset.active = view;
         document.documentElement.style.setProperty("--active-primary", entry.colours[0]);
@@ -1172,8 +1097,32 @@ const entries: Entry[] = [
       });
       back.addEventListener("click", requestClose);
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") requestClose();
+        if (event.key === "Escape" && !document.querySelector("dialog[open]")) requestClose();
       });
+
+      // Tooltips follow the pointer and remain available on the flat fallback.
+      const moveHint = (event: PointerEvent) => {
+        hover.style.left = `${Math.max(8, Math.min(event.clientX + 16, innerWidth - hover.offsetWidth - 12))}px`;
+        hover.style.top = `${Math.max(8, Math.min(event.clientY + 18, innerHeight - hover.offsetHeight - 12))}px`;
+      };
+      canvas.addEventListener("pointermove", moveHint);
+      menu.addEventListener("pointermove", event => {
+        if (body.dataset.active) return;
+        const button = (event.target as Element).closest<HTMLButtonElement>("button[data-view]");
+        hover.textContent = button ? `${byView.get(button.dataset.view as ViewName)?.label} · Click to explore` : "";
+        hover.classList.toggle("on", Boolean(button));
+        moveHint(event);
+      });
+      menu.addEventListener("pointerleave", () => hover.classList.remove("on"));
+      galleryPanel.addEventListener("click", event => {
+        const app = (event.target as Element).closest<HTMLElement>("[data-room-app]")?.dataset.roomApp;
+        if (app === "cycling" || app === "metabolis") {
+          showPanel("monitor");
+          showContinueScreen(app);
+        }
+      });
+      const initialView = location.hash.slice(1) as ViewName;
+      if (byView.has(initialView)) showPanel(initialView);
 
       if (canRenderRoom()) {
         try {
@@ -1195,8 +1144,9 @@ const entries: Entry[] = [
               }
               showPanel(view as ViewName);
             },
-            onHover(label) {
-              hover.textContent = label ?? "";
+            onHover(target) {
+              const label = target ? byView.get(target)?.label : undefined;
+              hover.textContent = label ? `${label} · Click to explore` : "";
               hover.classList.toggle("on", Boolean(label));
             },
             onPortalFrame(_view, frame) {
@@ -2342,112 +2292,10 @@ const entries: Entry[] = [
         text-align: right;
       }
 
-      .project-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: clamp(16px, 2.5vw, 30px);
-        margin-top: 32px;
-      }
-
-      .project-grid[hidden],
+      #project-grid[hidden],
       .project-reader[hidden],
       [data-project-detail][hidden] {
         display: none !important;
-      }
-
-      .project-card {
-        display: flex;
-        min-width: 0;
-        padding: 0 0 15px;
-        overflow: hidden;
-        flex-direction: column;
-        border: 1px solid color-mix(in srgb, var(--active-primary) 26%, transparent);
-        background: color-mix(in srgb, var(--paper) 92%, var(--active-secondary));
-        color: var(--ink);
-        font: inherit;
-        text-align: left;
-        cursor: pointer;
-        transition:
-          border-color 0.2s ease,
-          box-shadow 0.2s ease,
-          transform 0.2s ease;
-      }
-
-      .project-card:hover,
-      .project-card:focus-visible {
-        border-color: var(--active-primary);
-        box-shadow: 0 12px 28px rgba(41, 40, 37, 0.1);
-        outline: none;
-        transform: translateY(-2px);
-      }
-
-      .project-cover {
-        position: relative;
-        display: block;
-        width: 100%;
-        aspect-ratio: 4 / 3;
-        margin-bottom: 13px;
-        overflow: hidden;
-        background:
-          linear-gradient(145deg, var(--active-primary), var(--active-secondary) 72%, var(--active-accent));
-      }
-
-      .project-cover :global(img) {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-      }
-
-      .project-lines {
-        position: absolute;
-        inset: 22% 16%;
-        border: 1px solid rgba(251, 250, 246, 0.78);
-        transform: rotate(-3deg);
-      }
-
-      .project-lines::before,
-      .project-lines::after,
-      .project-lines i,
-      .project-lines b {
-        content: "";
-        position: absolute;
-        display: block;
-        height: 1px;
-        background: rgba(251, 250, 246, 0.72);
-      }
-
-      .project-lines::before {
-        top: 27%;
-        right: 12%;
-        left: 12%;
-      }
-
-      .project-lines::after {
-        top: 55%;
-        right: 20%;
-        left: 12%;
-      }
-
-      .project-lines i {
-        top: 72%;
-        right: 33%;
-        left: 12%;
-      }
-
-      .project-lines b {
-        top: 10%;
-        bottom: 10%;
-        left: 24%;
-        width: 1px;
-        height: auto;
-      }
-
-      .project-context,
-      .project-card strong,
-      .project-summary,
-      .project-open {
-        margin-right: 14px;
-        margin-left: 14px;
       }
 
       .project-context {
@@ -2458,106 +2306,6 @@ const entries: Entry[] = [
         text-transform: uppercase;
       }
 
-      .project-card strong {
-        margin-top: 6px;
-        font-size: clamp(16px, 1.6vw, 21px);
-        font-weight: 500;
-        line-height: 1.25;
-      }
-
-      .project-summary {
-        margin-top: 9px;
-        color: #5b5751;
-        font-size: 12.5px;
-        line-height: 1.55;
-      }
-
-      .project-open {
-        margin-top: auto;
-        padding-top: 16px;
-        color: var(--active-primary);
-        font-size: 10.5px;
-      }
-
-      /* The certificate shelf. A certificate is a sheet of paper, so each one is
-         shown whole on a pale mount rather than cropped to a tile. */
-      .certificate-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(18px, 2.6vw, 34px);
-        margin-top: 32px;
-      }
-
-      .certificate-card {
-        display: flex;
-        min-width: 0;
-        padding: 0 0 16px;
-        flex-direction: column;
-        border: 1px solid color-mix(in srgb, var(--active-primary) 26%, transparent);
-        background: color-mix(in srgb, var(--paper) 92%, var(--active-secondary));
-        color: var(--ink);
-        text-decoration: none;
-        transition:
-          border-color 0.2s ease,
-          box-shadow 0.2s ease,
-          transform 0.2s ease;
-      }
-
-      .certificate-card:hover,
-      .certificate-card:focus-visible {
-        border-color: var(--active-primary);
-        box-shadow: 0 12px 28px rgba(41, 40, 37, 0.1);
-        outline: none;
-        transform: translateY(-2px);
-      }
-
-      .certificate-sheet {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: clamp(14px, 1.8vw, 24px);
-        margin-bottom: 12px;
-        background:
-          linear-gradient(150deg, color-mix(in srgb, var(--active-secondary) 26%, var(--paper)), var(--paper) 74%);
-        border-bottom: 1px solid color-mix(in srgb, var(--active-primary) 18%, transparent);
-      }
-
-      .certificate-sheet :global(img) {
-        width: 100%;
-        height: auto;
-        box-shadow: 0 6px 20px rgba(41, 40, 37, 0.14);
-      }
-
-      .certificate-card .project-context,
-      .certificate-card strong,
-      .certificate-note,
-      .certificate-card .project-open {
-        margin-right: 16px;
-        margin-left: 16px;
-      }
-
-      .certificate-card strong {
-        margin-top: 6px;
-        font-size: clamp(18px, 1.8vw, 24px);
-        font-weight: 500;
-        line-height: 1.2;
-      }
-
-      .certificate-note {
-        margin-top: 9px;
-        color: #5b5751;
-        font-size: 12.5px;
-        line-height: 1.6;
-      }
-
-      .certificate-footnote {
-        margin: 26px 0 0;
-        color: #6d6862;
-        font-size: 11.5px;
-      }
-
-      /* The window's photographs. Columns rather than a grid, so every frame
-         keeps the proportions it was taken at. */
       .gallery-columns {
         margin-top: 32px;
         columns: 280px;
@@ -2834,24 +2582,30 @@ const entries: Entry[] = [
       }
 
       .hover {
-        left: 50%;
-        bottom: clamp(20px, 4vh, 42px);
+        left: 12px;
+        top: 12px;
+        bottom: auto;
+        z-index: 10;
+        padding: 7px 10px;
+        border-radius: 4px;
+        background: #fff9ed;
+        box-shadow: 0 3px 16px #29251c24;
+        max-width: calc(100vw - 24px);
         margin: 0;
         color: var(--ink);
         font-size: 11.5px;
         letter-spacing: 0.02em;
         opacity: 0;
-        transform: translateX(-50%);
-        transition: opacity 0.2s ease;
+        transition: opacity 0.15s ease;
         pointer-events: none;
       }
 
-      .hover.on {
-        opacity: 1;
-      }
+      .hover.on { opacity: 1; }
+      @media (hover: none) { .hover { display: none; } }
+      .interest-links { display: flex; flex-wrap: wrap; gap: 20px; margin: 0 0 40px; }
+      .interest-links button, .interest-links a { background: transparent; border: 0; padding: 10px 0; color: inherit; font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 
       @media (max-width: 899px) {
-        .hover { display: none; }
 
         .panel {
           position: fixed;
@@ -3101,54 +2855,12 @@ const entries: Entry[] = [
           text-align: left;
         }
 
-        .project-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .certificate-grid {
-          grid-template-columns: 1fr;
-        }
-
         .gallery-columns {
           columns: 2;
         }
 
         .gallery-lightbox {
           padding: 62px 18px 28px;
-        }
-
-        .project-card {
-          display: grid;
-          grid-template-columns: 112px 1fr;
-          grid-template-rows: auto auto 1fr auto;
-          column-gap: 14px;
-          padding: 0 14px 0 0;
-        }
-
-        .project-cover {
-          grid-row: 1 / 5;
-          margin: 0;
-          aspect-ratio: 3 / 4;
-        }
-
-        .project-context,
-        .project-card strong,
-        .project-summary,
-        .project-open {
-          margin-right: 0;
-          margin-left: 0;
-        }
-
-        .project-context {
-          margin-top: 13px;
-        }
-
-        .project-summary {
-          margin-bottom: 10px;
-        }
-
-        .project-open {
-          padding: 0 0 13px;
         }
 
         .project-reader h2 {

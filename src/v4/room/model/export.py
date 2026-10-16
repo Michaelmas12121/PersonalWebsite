@@ -14,6 +14,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(HERE))
 import kit
 import layout
+from optimize import optimize
 
 kit.ROOT = str(ROOT / 'docs/local/room-builder')
 OUTPUT = ROOT / 'src/assets/room'
@@ -86,6 +87,7 @@ bpy.ops.export_scene.gltf(
     export_image_format='JPEG', export_jpeg_quality=85,
     export_copyright='Desk geometry: Copyright (c) 2025-2026 Evan Lin. MIT; see /room-license.txt.',
 )
+optimize(OUTPUT / 'desk-room.glb')
 
 # Blender and glTF use different up axes: (x, y, z) becomes (x, z, -y).
 cam = scene.camera

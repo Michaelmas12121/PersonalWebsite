@@ -32,6 +32,11 @@
 - [x] Prioritize initial media, defer hidden room media, warm navigation on intent,
       compress the heading font and remove development-toolbar downloads.
 
+- [x] Add pointer-following object hints and share all four portfolio collections
+      with the room, including the full Honors archive and certificate viewer.
+- [x] Defer room collection media and long accounts until opened; losslessly pack
+      the model and reuse the static shadow map.
+
 ## Content
 
 - [ ] Replace the placeholder Who am I copy with a concise first-person account
