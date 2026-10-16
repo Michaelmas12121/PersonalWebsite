@@ -91,7 +91,9 @@ another parallel implementation here.
   within the same category page, as explicitly approved by the user.
   No new imagery is invented for entries without supplied images.
 - **The room is the menu.** Navigation is fixed camera movement, not a scroll
-  page or a free-roam world.
+  page or a free-roam world. There is no visible name card, menu panel or credit
+  strip. The fallback poster has transparent object buttons; keyboard focus
+  reveals a label. Attribution remains in the asset and public license file.
 - **The desk and camera come from the approved reference.** The user chose to
   replace the bedroom geometry and avatar with EdwinjJ1/personal-website's desk
   model and camera. Use the adapted scripts rather than rebuilding a rough

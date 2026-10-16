@@ -168,25 +168,17 @@ const entries: Entry[] = [
 
   <body data-mode="flat" data-active="">
     <div class="poster" aria-hidden="true">
-      <Image src={roomPoster} alt="" widths={[640, 960, 1600]} sizes="(max-width: 899px) 90vh, 100vw" loading="eager" fetchpriority="high" />
+      <Image src={roomPoster} alt="" widths={[640, 960, 1600]} sizes="(min-aspect-ratio: 8/5) 160vh, 100vw" loading="eager" fetchpriority="high" />
     </div>
 
     <canvas id="stage" hidden></canvas>
     <div class="scrim" id="scrim" aria-hidden="true"></div>
 
-    <header class="ui top">
-      <a class="name" href="/" aria-label="Return to the portfolio">Yanlang Liu <span aria-hidden="true">↗</span></a>
-      <p class="version">Interactive room</p>
-      <p class="hint" id="hint">A desk full of things to explore. Choose an object.</p>
-    </header>
-
-    <nav class="ui menu" id="menu" aria-label="Main menu">
+    <nav class="ui menu" id="menu" aria-label="Explore the desk">
       {
         entries.map((entry) => (
-          <button type="button" data-view={entry.view}>
-            <span class="mark" aria-hidden="true"></span>
+          <button type="button" data-view={entry.view} aria-label={`${entry.label} — ${entry.note}`}>
             <span class="label">{entry.label}</span>
-            <span class="note">{entry.note}</span>
           </button>
         ))
       }
@@ -575,7 +567,6 @@ const entries: Entry[] = [
       </div>
     </section>
 
-    <div class="scene-credit"><a href="https://github.com/EdwinjJ1/personal-website" target="_blank" rel="noreferrer">Scene adapted from Evan Lin</a> · <a href="/room-license.txt" target="_blank">MIT</a></div>
 
     <p class="ui hover" id="hover" aria-hidden="true"></p>
 
@@ -648,7 +639,6 @@ const entries: Entry[] = [
       const scrim = document.getElementById("scrim")!;
       const back = document.getElementById("back")!;
       const hover = document.getElementById("hover")!;
-      const hint = document.getElementById("hint")!;
       let returnView: ViewName | null = null;
       let activeProject: HTMLElement | null = null;
       let activeGalleryPhoto: HTMLAnchorElement | null = null;
@@ -1187,7 +1177,6 @@ const entries: Entry[] = [
 
       if (canRenderRoom()) {
         try {
-          hint.textContent = "Opening the desk. You can use the menu while it loads.";
           // Keep three.js behind this dynamic import. Phones never request it.
           const { createRoom } = await import("../../v4/room/scene");
           const room = await createRoom({
@@ -1202,10 +1191,8 @@ const entries: Entry[] = [
               if (view === "wide") {
                 back.hidden = true;
                 restoreMenuFocus();
-                hint.textContent = "A desk full of things to explore. Choose an object.";
                 return;
               }
-              hint.textContent = "";
               showPanel(view as ViewName);
             },
             onHover(label) {
@@ -1219,7 +1206,6 @@ const entries: Entry[] = [
 
           canvas.hidden = false;
           body.dataset.mode = "room";
-          if (!body.dataset.active) hint.textContent = "A desk full of things to explore. Choose an object.";
           // A selection made while the model loaded must remain open.
           const pendingView = body.dataset.active as ViewName;
           if (pendingView && room.current() !== pendingView) room.goTo(pendingView);
@@ -1231,7 +1217,6 @@ const entries: Entry[] = [
         } catch {
           canvas.hidden = true;
           body.dataset.mode = "flat";
-          hint.textContent = "Choose an item below to explore the desk.";
         }
       }
     </script>
@@ -1321,14 +1306,17 @@ const entries: Entry[] = [
 
       .poster {
         position: fixed;
-        inset: 0;
+        left: 50%;
+        top: 50%;
+        width: min(100vw, 160svh);
+        height: min(62.5vw, 100svh);
+        transform: translate(-50%, -50%);
         overflow: hidden;
-        background: #ddd5c6;
       }
       .poster :global(img) {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
       }
       body[data-mode="room"] .poster { display: none; }
 
@@ -1351,88 +1339,55 @@ const entries: Entry[] = [
         z-index: 2;
       }
 
-      .top {
-        top: clamp(20px, 3.5vh, 42px);
-        left: clamp(22px, 4vw, 58px);
-      }
-
-      .name,
-      .version,
-      .hint {
-        margin: 0;
-      }
-
-      .name {
-        font-size: clamp(18px, 2vw, 24px);
-        font-weight: 500;
-        letter-spacing: -0.02em;
-      }
-
-      .version {
-        margin-top: 5px;
-        color: var(--graphite);
-        font-size: 11px;
-        letter-spacing: 0.07em;
-      }
-
-      .hint {
-        max-width: 440px;
-        margin-top: 10px;
-        color: var(--graphite);
-        font-size: 12px;
-        line-height: 1.5;
-      }
-
+      body { overflow: hidden; }
       .menu {
-        left: clamp(22px, 4vw, 58px);
-        bottom: clamp(24px, 5vh, 56px);
-        display: grid;
-        gap: 2px;
+        left: 50%;
+        top: 50%;
+        width: min(100vw, 160svh);
+        height: min(62.5vw, 100svh);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
       }
-
       .menu button {
-        display: grid;
-        grid-template-columns: 8px auto auto;
-        gap: 10px;
-        align-items: baseline;
-        padding: 5px 0;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        min-width: 44px;
+        min-height: 44px;
         border: 0;
+        padding: 0;
         background: transparent;
-        color: rgba(41, 40, 37, 0.58);
-        font: inherit;
-        text-align: left;
-        cursor: pointer;
-        transition: color 0.2s ease;
-      }
-
-      .menu button:hover,
-      .menu button:focus-visible {
         color: var(--ink);
-        outline: none;
+        font: inherit;
+        cursor: pointer;
+        pointer-events: auto;
       }
-
-      .mark {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: currentColor;
+      .menu [data-view="figure"] { left: 44.4%; top: 76%; width: 14%; height: 13%; }
+      .menu [data-view="monitor"] { left: 33.5%; top: 47.5%; width: 18%; height: 18%; }
+      .menu [data-view="mac"] { left: 27%; top: 25%; width: 35%; height: 25%; }
+      .menu [data-view="achievements"] { left: 65.3%; top: 49%; width: 10%; height: 13%; }
+      .menu [data-view="window"] { left: 80.6%; top: 69%; width: 10%; height: 13%; }
+      .menu .label {
+        position: absolute;
+        left: 50%;
+        bottom: 100%;
+        transform: translateX(-50%);
+        width: max-content;
+        padding: 7px 10px;
+        background: #fbfaf6ed;
+        border-radius: 3px;
+        font-size: 12px;
         opacity: 0;
-        transition: opacity 0.2s ease;
+        pointer-events: none;
       }
-
-      .menu button:hover .mark,
-      .menu button:focus-visible .mark {
-        opacity: 1;
+      .menu button:focus-visible {
+        outline: 2px solid #536653;
+        outline-offset: 3px;
+        border-radius: 3px;
       }
-
-      .label {
-        font-size: clamp(17px, 2vw, 23px);
-      }
-
-      .note {
-        color: var(--graphite);
-        font-size: 11.5px;
-      }
+      .menu button:focus-visible .label { opacity: 1; }
+      body[data-mode="room"] .menu button { pointer-events: none; }
+      body[data-active]:not([data-active=""]) .menu,
+      body[data-travel="true"] .menu { visibility: hidden; }
 
       .back {
         z-index: 5;
@@ -2895,103 +2850,8 @@ const entries: Entry[] = [
         opacity: 1;
       }
 
-      .top {
-        padding: 14px 18px;
-        border: 1px solid #ffffff70;
-        border-radius: 3px;
-        background: #f7f0e3e8;
-        box-shadow: 0 4px 24px #20251f0c;
-        pointer-events: none;
-      }
-      .name { display: inline-block; color: inherit; text-decoration: none; pointer-events: auto; }
-      .name span { margin-left: 12px; font-size: 14px; color: var(--graphite); }
-      .hint { max-width: 300px; }
-      .menu {
-        left: 50%;
-        bottom: 28px;
-        display: flex;
-        gap: 5px;
-        width: max-content;
-        max-width: calc(100% - 48px);
-        padding: 8px;
-        border: 1px solid #ffffff80;
-        border-radius: 4px;
-        background: #f7f0e3ed;
-        box-shadow: 0 8px 30px #20251f18;
-        transform: translateX(-50%);
-        backdrop-filter: blur(12px);
-      }
-      .menu button { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 10px 20px; color: #393d35; border-radius: 2px; }
-      .menu button:hover, .menu button:focus-visible { background: #d7dfd0; outline: 2px solid #718371; outline-offset: -2px; }
-      .menu .mark { display: none; }
-      .menu .label { font-size: 15px; font-weight: 500; }
-      .menu .note { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; }
-      body[data-active]:not([data-active=""]) .menu, body[data-travel="true"] .menu { visibility: hidden; }
-      body[data-active]:not([data-active=""]) .scene-credit { visibility: hidden; }
-      .hover { bottom: 124px; padding: 9px 14px; background: #f7f0e3f2; border-radius: 3px; font-size: 12px; box-shadow: 0 4px 20px #24251e18; }
-      .scene-credit a { color: inherit; text-decoration: none; }
-      .scene-credit a:hover { text-decoration: underline; }
-      .scene-credit { position: fixed; bottom: 6px; right: 14px; z-index: 2; padding: 3px 6px; background: #f7f0e3d9; color: #494f46; font-size: 9px; text-decoration: none; }
       @media (max-width: 899px) {
-        .poster { height: 56svh; }
-        .poster :global(img) { object-fit: cover; object-position: 50% 50%; }
-        .top { width: max-content; max-width: 100%; padding: 12px 14px; }
-        .menu { left: auto; bottom: auto; display: grid; max-width: none; margin-top: 42svh; padding: 6px 14px; transform: none; }
-        .menu .note { align-self: center; }
-        .scene-credit { position: relative; align-self: end; right: auto; bottom: auto; margin-top: 10px; font-size: 10px; }
-      }
-
-      @media (max-width: 899px) {
-        body {
-          display: flex;
-          flex-direction: column;
-          min-height: 100svh;
-          padding: 24px clamp(20px, 6vw, 38px) 28px;
-        }
-
-        .ui {
-          position: relative;
-        }
-
-        .top {
-          margin-bottom: auto;
-        }
-
-        .hint {
-          max-width: 310px;
-        }
-
-        .menu {
-          width: 100%;
-          gap: 0;
-        }
-
-        .menu button {
-          grid-template-columns: auto 1fr;
-          padding: 14px 0;
-          border-top: 1px solid rgba(41, 40, 37, 0.14);
-          color: var(--ink);
-        }
-
-        .menu button:last-child {
-          border-bottom: 1px solid rgba(41, 40, 37, 0.14);
-        }
-
-        .mark {
-          display: none;
-        }
-
-        .label {
-          font-size: 19px;
-        }
-
-        .note {
-          justify-self: end;
-        }
-
-        .hover {
-          display: none;
-        }
+        .hover { display: none; }
 
         .panel {
           position: fixed;

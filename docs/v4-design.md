@@ -77,8 +77,8 @@ cascade is removed.
 
 The source modeling helpers and layout are adapted under MIT in
 `src/v4/room/model/`, with the original copyright and permission notice.
-`public/room-license.txt` accompanies the shipped asset and the room provides a
-small source credit. The reference author's photographs, writing, identity and
+`public/room-license.txt` accompanies the shipped asset. No attribution strip
+overlays the scene. The reference author's photographs, writing, identity and
 project graphics are not used. Texture artwork is generated locally using
 portfolio labels and existing approved photographs; source photos are never
 copied from outside the repository.
@@ -126,11 +126,14 @@ notebook; certificates retain their existing content layout. Closing retracts
 the content and returns the camera in about one second. Subviews inside the
 workspace, project browser and gallery close before leaving their parent.
 
-The small bottom menu offers the same destinations for keyboard navigation.
+The room has no name card, introductory text or visible menu. On the fallback
+poster, transparent buttons sit over the five objects. Keyboard focus outlines
+the selected object and reveals its name. On desktop, pointer interaction uses
+the real model while the same buttons provide keyboard access.
 Only the scene module imports three.js and GLTFLoader; that module stays behind
 the capability-gated dynamic import. Phones, touch-first devices, reduced-motion
 visitors and devices without WebGL get the matching desk poster and full HTML
-menu. Failed model loading preserves this working fallback. The scene draws
+object navigation. Failed model loading preserves this working fallback. The scene draws
 only when the camera, viewport or hover state changes, rather than continuously
 rendering a stationary desk.
 
