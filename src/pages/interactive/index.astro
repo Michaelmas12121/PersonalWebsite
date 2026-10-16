@@ -1,5 +1,6 @@
 ---
 import PageMotion from "../../v4/PageMotion.astro";
+import roomPoster from "../../assets/room/desk-poster.webp";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import aimeCertificate from "../../assets/certificates/v4/aime-2026.webp";
@@ -14,8 +15,8 @@ import metabolisNetworkVideo from "../../assets/continue/metabolis/video/network
 import metabolisOverviewVideo from "../../assets/continue/metabolis/video/system-overview.mp4";
 
 /**
- * Version 4 visual foundation. The generated room studies are references only;
- * the room itself is code-native geometry so its camera and colour can change.
+ * The reference desk geometry is exported from Blender for real camera travel.
+ * Readable content remains HTML and is shared with the existing portfolio.
  */
 interface Entry {
   view: "figure" | "monitor" | "mac" | "achievements" | "window";
@@ -111,15 +112,15 @@ const entries: Entry[] = [
   {
     view: "figure",
     label: "Who am I",
-    note: "The figure",
-    object: "A low-poly avatar seated at the desk",
+    note: "Notebook",
+    object: "A few words from the notebook",
     body: "I am Yanlang Liu, seventeen, from Shenzhen. I study in the international division at Shenzhen Middle School. This is placeholder writing — the full first-person account, and how to reach me, still has to be written.",
     colours: ["#687b86", "#b97865", "#d5c5ac"],
   },
   {
     view: "monitor",
     label: "Continue",
-    note: "The desk display",
+    note: "Computer",
     object: "The single display on the desk",
     body: "A game still being built and a visual log of rides still being ridden.",
     colours: ["#2f6970", "#86a0a0", "#d5a84a"],
@@ -127,24 +128,24 @@ const entries: Entry[] = [
   {
     view: "mac",
     label: "What I've done",
-    note: "The Mac on the bed",
-    object: "The open computer near the head of the bed",
+    note: "Project board",
+    object: "Projects and activities from the board",
     body: "Choose a project or activity. Conrad is one part of the record, not the whole of it.",
     colours: ["#3f526b", "#a46b58", "#c9a45b"],
   },
   {
     view: "achievements",
     label: "Achievements",
-    note: "The display shelf",
-    object: "The divided shelf near the doorway",
+    note: "Trophies",
+    object: "Competition results and certificates",
     body: "Competition results, as the certificates themselves.",
     colours: ["#705845", "#b39861", "#754f57"],
   },
   {
     view: "window",
     label: "Gallery",
-    note: "The window",
-    object: "The window and deep sill",
+    note: "Camera",
+    object: "Photographs from behind the lens",
     body: "Photographs, uncaptioned.",
     colours: ["#7393a1", "#7e956f", "#d7b66a"],
   },
@@ -167,27 +168,16 @@ const entries: Entry[] = [
 
   <body data-mode="flat" data-active="">
     <div class="poster" aria-hidden="true">
-      <div class="poster-room"></div>
-      <div class="poster-window"><i></i><b></b></div>
-      <div class="poster-sill"></div>
-      <div class="poster-desk"></div>
-      <div class="poster-desk-cabinet"></div>
-      <div class="poster-monitor"></div>
-      <div class="poster-achievements"><i></i><b></b></div>
-      <div class="poster-chair"></div>
-      <div class="poster-figure"><i></i><b></b><span></span></div>
-      <div class="poster-bed"></div>
-      <div class="poster-bed-cabinet"></div>
-      <div class="poster-mac"></div>
+      <Image src={roomPoster} alt="" widths={[640, 960, 1600]} sizes="(max-width: 899px) 90vh, 100vw" loading="eager" fetchpriority="high" />
     </div>
 
     <canvas id="stage" hidden></canvas>
     <div class="scrim" id="scrim" aria-hidden="true"></div>
 
     <header class="ui top">
-      <p class="name">Yanlang Liu</p>
+      <a class="name" href="/" aria-label="Return to the portfolio">Yanlang Liu <span aria-hidden="true">↗</span></a>
       <p class="version">Interactive room</p>
-      <p class="hint" id="hint">Choose an object. Colour travels through the room as you enter.</p>
+      <p class="hint" id="hint">A desk full of things to explore. Choose an object.</p>
     </header>
 
     <nav class="ui menu" id="menu" aria-label="Main menu">
@@ -206,7 +196,7 @@ const entries: Entry[] = [
 
     <section class="ui panel" id="panel" hidden aria-live="polite">
       <div id="standard-panel" class="standard-content">
-        <p class="panel-state">Visual prototype</p>
+        <p class="panel-state">From the notebook</p>
         <h2 id="panel-title"></h2>
         <p class="panel-object" id="panel-object"></p>
         <p class="panel-body" id="panel-body"></p>
@@ -440,7 +430,7 @@ const entries: Entry[] = [
         <div class="app-content">
           <header class="projects-heading">
             <div>
-              <p class="panel-state">The Mac on the bed</p>
+              <p class="panel-state">The project board</p>
               <h2>What I've done</h2>
             </div>
             <p>Choose one project or activity to open its full account.</p>
@@ -496,7 +486,7 @@ const entries: Entry[] = [
         <div class="app-content">
           <header class="projects-heading">
             <div>
-              <p class="panel-state">The display shelf</p>
+              <p class="panel-state">The trophies</p>
               <h2>Achievements</h2>
             </div>
             <p>
@@ -541,7 +531,7 @@ const entries: Entry[] = [
         <div class="app-content">
           <header class="projects-heading">
             <div>
-              <p class="panel-state">The window</p>
+              <p class="panel-state">Behind the lens</p>
               <h2>Gallery</h2>
             </div>
             <p>{photos.length} frames, uncaptioned. Open one to see it full size.</p>
@@ -584,6 +574,8 @@ const entries: Entry[] = [
         </div>
       </div>
     </section>
+
+    <div class="scene-credit"><a href="https://github.com/EdwinjJ1/personal-website" target="_blank" rel="noreferrer">Scene adapted from Evan Lin</a> · <a href="/room-license.txt" target="_blank">MIT</a></div>
 
     <p class="ui hover" id="hover" aria-hidden="true"></p>
 
@@ -657,6 +649,7 @@ const entries: Entry[] = [
       const back = document.getElementById("back")!;
       const hover = document.getElementById("hover")!;
       const hint = document.getElementById("hint")!;
+      let returnView: ViewName | null = null;
       let activeProject: HTMLElement | null = null;
       let activeGalleryPhoto: HTMLAnchorElement | null = null;
 
@@ -1070,12 +1063,12 @@ const entries: Entry[] = [
       function showPanel(view: ViewName) {
         const entry = byView.get(view);
         if (!entry) return;
+        returnView = view;
         body.dataset.active = view;
         document.documentElement.style.setProperty("--active-primary", entry.colours[0]);
         document.documentElement.style.setProperty("--active-secondary", entry.colours[1]);
         document.documentElement.style.setProperty("--active-accent", entry.colours[2]);
-        // The two screens and the window grow from their real room geometry
-        // into readable HTML layers. The certificate shelf remains a direct app.
+        // The screen, project board and photograph expand into HTML content.
         const isContinue = view === "monitor";
         const isMac = view === "mac";
         const isCertificates = view === "achievements";
@@ -1119,6 +1112,7 @@ const entries: Entry[] = [
         requestAnimationFrame(() => {
           panel.classList.add("on");
           scrim.classList.add("on");
+          back.focus({ preventScroll: true });
         });
       }
 
@@ -1141,10 +1135,14 @@ const entries: Entry[] = [
         }, closingDelay);
       }
 
+      function restoreMenuFocus() {
+        if (returnView) menu.querySelector<HTMLButtonElement>(`[data-view="${returnView}"]`)?.focus({ preventScroll: true });
+      }
       let open = (view: ViewName) => showPanel(view);
       let close = () => {
         hidePanel();
         back.hidden = true;
+        restoreMenuFocus();
       };
 
       function requestClose() {
@@ -1189,20 +1187,22 @@ const entries: Entry[] = [
 
       if (canRenderRoom()) {
         try {
+          hint.textContent = "Opening the desk. You can use the menu while it loads.";
           // Keep three.js behind this dynamic import. Phones never request it.
           const { createRoom } = await import("../../v4/room/scene");
-          canvas.hidden = false;
-
-          const room = createRoom({
+          const room = await createRoom({
             canvas,
             initialView: location.hash.slice(1) || undefined,
             onLeave() {
               hidePanel();
+              body.dataset.travel = "true";
             },
             onArrive(view) {
+              body.dataset.travel = "false";
               if (view === "wide") {
                 back.hidden = true;
-                hint.textContent = "Choose an object. Colour travels through the room as you enter.";
+                restoreMenuFocus();
+                hint.textContent = "A desk full of things to explore. Choose an object.";
                 return;
               }
               hint.textContent = "";
@@ -1217,12 +1217,21 @@ const entries: Entry[] = [
             },
           });
 
-          requestAnimationFrame(() => { body.dataset.mode = "room"; });
+          canvas.hidden = false;
+          body.dataset.mode = "room";
+          if (!body.dataset.active) hint.textContent = "A desk full of things to explore. Choose an object.";
+          // A selection made while the model loaded must remain open.
+          const pendingView = body.dataset.active as ViewName;
+          if (pendingView && room.current() !== pendingView) room.goTo(pendingView);
           open = (view) => room.goTo(view);
           close = () => room.back();
+          window.addEventListener("pagehide", (event) => {
+            if (!event.persisted) room.dispose();
+          });
         } catch {
           canvas.hidden = true;
           body.dataset.mode = "flat";
+          hint.textContent = "Choose an item below to explore the desk.";
         }
       }
     </script>
@@ -1300,6 +1309,8 @@ const entries: Entry[] = [
         opacity: 0.32;
       }
 
+      #stage[hidden] { display: none; }
+
       #stage {
         position: fixed;
         inset: 0;
@@ -1312,361 +1323,14 @@ const entries: Entry[] = [
         position: fixed;
         inset: 0;
         overflow: hidden;
-        background-color: var(--void);
-        background-image: radial-gradient(circle at 53% 24%, #fff 0 8%, transparent 42%);
-        transition: background-color 0.55s ease;
+        background: #ddd5c6;
       }
-
-      body[data-mode="room"] .poster {
-        display: none;
-      }
-
-      .poster > div {
-        position: absolute;
-        transition:
-          background-color 0.55s ease,
-          border-color 0.55s ease,
-          box-shadow 0.55s ease;
-      }
-
-      .poster-room {
-        inset: 8% 5% 7%;
-        border: 2px solid rgba(41, 40, 37, 0.38);
-        clip-path: polygon(16% 11%, 84% 11%, 100% 0, 100% 100%, 0 100%, 0 0);
-      }
-
-      .poster-window {
-        top: 17%;
-        left: 40%;
-        width: 28%;
-        height: 38%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-      }
-
-      .poster-window::before,
-      .poster-window::after {
-        content: "";
-        position: absolute;
-        background: rgba(41, 40, 37, 0.62);
-      }
-
-      .poster-window::before {
-        left: 50%;
-        top: 0;
-        width: 1px;
-        height: 100%;
-      }
-
-      .poster-window::after {
-        top: 50%;
-        left: 0;
+      .poster :global(img) {
         width: 100%;
-        height: 1px;
-      }
-
-      .poster-sill {
-        top: 55%;
-        left: 37%;
-        width: 34%;
-        height: 3%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-        transform: perspective(360px) rotateX(52deg);
-      }
-
-      .poster-desk {
-        left: -3%;
-        bottom: 16%;
-        width: 48%;
-        height: 8%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-        transform: skewY(5deg);
-      }
-
-      .poster-desk-cabinet {
-        top: 15%;
-        left: 8%;
-        width: 28%;
-        height: 16%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-        transform: skewY(4deg);
-      }
-
-      .poster-monitor {
-        left: 25%;
-        bottom: 24%;
-        width: 10%;
-        height: 15%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-      }
-
-      .poster-monitor::before {
-        content: "";
-        position: absolute;
-        left: 47%;
-        top: 100%;
-        width: 3px;
-        height: 18px;
-        background: var(--ink);
-        box-shadow: -10px 17px 0 -1px var(--ink), 10px 17px 0 -1px var(--ink);
-      }
-
-      .poster-achievements {
-        top: 21%;
-        left: 2%;
-        width: 14%;
-        height: 25%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-      }
-
-      .poster-achievements::before,
-      .poster-achievements::after {
-        content: "";
-        position: absolute;
-        background: var(--ink);
-      }
-
-      .poster-achievements::before {
-        left: 33%;
-        top: 0;
-        width: 1px;
         height: 100%;
-        box-shadow: calc(33% + 34px) 0 0 var(--ink);
+        object-fit: cover;
       }
-
-      .poster-achievements::after {
-        left: 0;
-        top: 50%;
-        width: 100%;
-        height: 1px;
-      }
-
-      .poster-chair {
-        left: 31%;
-        bottom: 7%;
-        width: 11%;
-        height: 27%;
-        border: 2px solid var(--ink);
-        border-radius: 14% 32% 6% 9%;
-        background: var(--paper);
-        transform: rotate(-4deg);
-      }
-
-      .poster-figure {
-        left: 32.5%;
-        bottom: 21%;
-        width: 7.5%;
-        height: 19%;
-        border: 2px solid var(--ink);
-        border-radius: 22% 22% 8% 8%;
-        background: color-mix(in srgb, var(--graphite) 10%, var(--paper));
-        transform: rotate(-4deg);
-      }
-
-      .poster-figure::before {
-        content: "";
-        position: absolute;
-        top: -57%;
-        left: 3%;
-        width: 94%;
-        height: 53%;
-        box-sizing: border-box;
-        border: 2px solid var(--ink);
-        border-radius: 34% 34% 42% 42%;
-        background: color-mix(in srgb, var(--graphite) 6%, var(--paper));
-      }
-
-      .poster-figure::after {
-        content: "";
-        position: absolute;
-        top: -64%;
-        left: -1%;
-        width: 103%;
-        height: 27%;
-        background: var(--ink);
-        clip-path: polygon(0 68%, 7% 22%, 20% 45%, 29% 0, 40% 39%, 54% 4%, 65% 38%, 79% 9%, 86% 48%, 100% 31%, 94% 100%, 12% 100%);
-      }
-
-      .poster-figure i,
-      .poster-figure b,
-      .poster-figure span {
-        position: absolute;
-        display: block;
-        width: 12px;
-        background: color-mix(in srgb, var(--graphite) 10%, var(--paper));
-        border: 1px solid var(--ink);
-        transform-origin: top;
-      }
-
-      .poster-figure i {
-        top: 17%;
-        left: 4%;
-        height: 72%;
-        transform: rotate(29deg);
-      }
-
-      .poster-figure b {
-        top: 17%;
-        right: 4%;
-        height: 72%;
-        transform: rotate(-24deg);
-      }
-
-      .poster-figure span {
-        top: 92%;
-        left: -8%;
-        width: 44px;
-        height: 48px;
-        border: 0;
-        background:
-          linear-gradient(90deg, var(--graphite), var(--graphite)) 0 0 / 28px 8px no-repeat,
-          linear-gradient(var(--graphite), var(--graphite)) 22px 5px / 8px 36px no-repeat,
-          linear-gradient(90deg, var(--graphite), var(--graphite)) 3px 12px / 29px 8px no-repeat,
-          linear-gradient(var(--graphite), var(--graphite)) 26px 17px / 8px 30px no-repeat;
-        transform: none;
-        box-shadow: none;
-      }
-
-      .poster-bed {
-        right: -4%;
-        bottom: 9%;
-        width: 41%;
-        height: 19%;
-        border: 2px solid var(--ink);
-        border-radius: 3% 4% 1% 2%;
-        background: var(--paper);
-        transform: skewY(-5deg);
-      }
-
-      .poster-bed::before {
-        content: "";
-        position: absolute;
-        top: -18%;
-        left: 12%;
-        width: 38%;
-        height: 31%;
-        border: 2px solid var(--ink);
-        border-radius: 45%;
-        background: var(--paper);
-      }
-
-      .poster-bed-cabinet {
-        top: 12%;
-        right: 4%;
-        width: 29%;
-        height: 17%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-        transform: skewY(-4deg);
-      }
-
-      .poster-mac {
-        right: 18%;
-        bottom: 27%;
-        width: 11%;
-        height: 12%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-        transform: skewY(-5deg);
-      }
-
-      .poster-mac::after {
-        content: "";
-        position: absolute;
-        left: -10%;
-        top: 100%;
-        width: 120%;
-        height: 16%;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-      }
-
-      body[data-active="figure"] .poster,
-      body[data-active="achievements"] .poster {
-        background-color: #e8e0d4;
-      }
-
-      body[data-active="figure"] .poster-room,
-      body[data-active="achievements"] .poster-room {
-        background-color: #f1e9dc;
-      }
-
-      body[data-active="figure"] .poster-window,
-      body[data-active="achievements"] .poster-window {
-        background-color: #bfced0;
-      }
-
-      body[data-active="figure"] .poster-sill,
-      body[data-active="figure"] .poster-desk,
-      body[data-active="figure"] .poster-desk-cabinet,
-      body[data-active="figure"] .poster-bed-cabinet,
-      body[data-active="figure"] .poster-achievements,
-      body[data-active="achievements"] .poster-sill,
-      body[data-active="achievements"] .poster-desk,
-      body[data-active="achievements"] .poster-desk-cabinet,
-      body[data-active="achievements"] .poster-bed-cabinet,
-      body[data-active="achievements"] .poster-achievements {
-        background-color: #a9805d;
-      }
-
-      body[data-active="figure"] .poster-monitor,
-      body[data-active="figure"] .poster-mac,
-      body[data-active="figure"] .poster-mac::after,
-      body[data-active="achievements"] .poster-monitor,
-      body[data-active="achievements"] .poster-mac,
-      body[data-active="achievements"] .poster-mac::after {
-        background-color: #706c66;
-      }
-
-      body[data-active="figure"] .poster-chair,
-      body[data-active="achievements"] .poster-chair,
-      body[data-active="figure"] .poster-bed,
-      body[data-active="achievements"] .poster-bed {
-        background-color: #7f9099;
-      }
-
-      body[data-active="figure"] .poster-bed::before,
-      body[data-active="achievements"] .poster-bed::before {
-        background-color: #d8cbb8;
-      }
-
-      body[data-active="window"] .poster-window,
-      body[data-active="window"] .poster-sill {
-        background: var(--active-secondary);
-        box-shadow: inset 0 -34px 0 color-mix(in srgb, var(--active-accent) 70%, white);
-      }
-
-      body[data-active="monitor"] .poster-monitor {
-        background: linear-gradient(145deg, var(--active-primary), var(--active-secondary) 70%, var(--active-accent));
-      }
-
-      body[data-active="mac"] .poster-mac,
-      body[data-active="mac"] .poster-mac::after {
-        background: linear-gradient(145deg, var(--active-primary), var(--active-secondary) 68%, var(--active-accent));
-      }
-
-      body[data-active="achievements"] .poster-achievements {
-        background: linear-gradient(120deg, var(--active-primary), var(--active-secondary) 58%, var(--active-accent));
-      }
-
-      body[data-active="figure"] .poster-chair {
-        background: linear-gradient(150deg, var(--active-primary), var(--active-secondary) 72%, var(--active-accent));
-      }
-
-      body[data-active="figure"] .poster-figure,
-      body[data-active="figure"] .poster-figure i,
-      body[data-active="figure"] .poster-figure b {
-        background: var(--active-primary);
-      }
-
-      body[data-active="figure"] .poster-figure::before {
-        background: var(--active-secondary);
-      }
+      body[data-mode="room"] .poster { display: none; }
 
       .scrim {
         position: fixed;
@@ -3231,6 +2895,52 @@ const entries: Entry[] = [
         opacity: 1;
       }
 
+      .top {
+        padding: 14px 18px;
+        border: 1px solid #ffffff70;
+        border-radius: 3px;
+        background: #f7f0e3e8;
+        box-shadow: 0 4px 24px #20251f0c;
+        pointer-events: none;
+      }
+      .name { display: inline-block; color: inherit; text-decoration: none; pointer-events: auto; }
+      .name span { margin-left: 12px; font-size: 14px; color: var(--graphite); }
+      .hint { max-width: 300px; }
+      .menu {
+        left: 50%;
+        bottom: 28px;
+        display: flex;
+        gap: 5px;
+        width: max-content;
+        max-width: calc(100% - 48px);
+        padding: 8px;
+        border: 1px solid #ffffff80;
+        border-radius: 4px;
+        background: #f7f0e3ed;
+        box-shadow: 0 8px 30px #20251f18;
+        transform: translateX(-50%);
+        backdrop-filter: blur(12px);
+      }
+      .menu button { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 10px 20px; color: #393d35; border-radius: 2px; }
+      .menu button:hover, .menu button:focus-visible { background: #d7dfd0; outline: 2px solid #718371; outline-offset: -2px; }
+      .menu .mark { display: none; }
+      .menu .label { font-size: 15px; font-weight: 500; }
+      .menu .note { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; }
+      body[data-active]:not([data-active=""]) .menu, body[data-travel="true"] .menu { visibility: hidden; }
+      body[data-active]:not([data-active=""]) .scene-credit { visibility: hidden; }
+      .hover { bottom: 124px; padding: 9px 14px; background: #f7f0e3f2; border-radius: 3px; font-size: 12px; box-shadow: 0 4px 20px #24251e18; }
+      .scene-credit a { color: inherit; text-decoration: none; }
+      .scene-credit a:hover { text-decoration: underline; }
+      .scene-credit { position: fixed; bottom: 6px; right: 14px; z-index: 2; padding: 3px 6px; background: #f7f0e3d9; color: #494f46; font-size: 9px; text-decoration: none; }
+      @media (max-width: 899px) {
+        .poster { height: 56svh; }
+        .poster :global(img) { object-fit: cover; object-position: 50% 50%; }
+        .top { width: max-content; max-width: 100%; padding: 12px 14px; }
+        .menu { left: auto; bottom: auto; display: grid; max-width: none; margin-top: 42svh; padding: 6px 14px; transform: none; }
+        .menu .note { align-self: center; }
+        .scene-credit { position: relative; align-self: end; right: auto; bottom: auto; margin-top: 10px; font-size: 10px; }
+      }
+
       @media (max-width: 899px) {
         body {
           display: flex;
@@ -3245,90 +2955,6 @@ const entries: Entry[] = [
 
         .top {
           margin-bottom: auto;
-        }
-
-        .poster-room {
-          inset: 7% -24% 39%;
-        }
-
-        .poster-window {
-          top: 11%;
-          left: 48%;
-          width: 36%;
-          height: 26%;
-        }
-
-        .poster-sill {
-          top: 37%;
-          left: 43%;
-          width: 46%;
-        }
-
-        .poster-desk {
-          bottom: 48%;
-          width: 58%;
-        }
-
-        .poster-desk-cabinet {
-          top: 11%;
-          left: -7%;
-          width: 43%;
-          height: 13%;
-        }
-
-        .poster-monitor {
-          left: 17%;
-          bottom: 56%;
-          width: 16%;
-          height: 10%;
-        }
-
-        .poster-achievements {
-          top: 24%;
-          left: -4%;
-          width: 20%;
-          height: 16%;
-        }
-
-        .poster-chair {
-          left: 38%;
-          bottom: 38%;
-          width: 16%;
-          height: 18%;
-        }
-
-        .poster-figure {
-          left: 41%;
-          bottom: 49%;
-          width: 9%;
-          height: 16%;
-        }
-
-        .poster-figure::before {
-          top: -54%;
-          width: 94%;
-          height: 50%;
-        }
-
-        .poster-bed {
-          right: -17%;
-          bottom: 42%;
-          width: 58%;
-          height: 13%;
-        }
-
-        .poster-bed-cabinet {
-          top: 9%;
-          right: -12%;
-          width: 46%;
-          height: 13%;
-        }
-
-        .poster-mac {
-          right: 4%;
-          bottom: 53%;
-          width: 16%;
-          height: 8%;
         }
 
         .hint {

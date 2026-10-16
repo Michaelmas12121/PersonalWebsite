@@ -6,35 +6,38 @@ export interface View {
   parent?: "wide";
 }
 
-/** Fixed views keep the room legible and make every move intentional. */
+/** Reference camera converted from Blender Z-up to glTF Y-up.
+ * Destination keys preserve existing links; figure now means the notebook,
+ * mac the project board, and window the camera and photographs.
+ */
 export const VIEWS: Record<"wide" | TargetName, View> = {
   wide: {
-    position: [0.05, 1.55, 1.08],
-    target: [0.0, 1.12, -2.55],
+    position: [0.0, 2.56, 1.70],
+    target: [0.05, 1.06, -0.14],
   },
   figure: {
-    position: [-2.08, 1.5, -1.0],
-    target: [-0.67, 1.2, -1.46],
+    position: [-0.16, 1.48, 0.94],
+    target: [-0.16, 0.77, 0.33],
     parent: "wide",
   },
   monitor: {
-    position: [0.3, 1.48, -1.48],
-    target: [-1.04, 1.14, -1.95],
+    position: [-0.55, 1.47, 0.76],
+    target: [-0.58, 1.03, -0.30],
     parent: "wide",
   },
   mac: {
-    position: [0.15, 1.24, -0.18],
-    target: [1.02, 0.72, -1.34],
+    position: [-0.64, 1.66, 1.18],
+    target: [-0.72, 1.45, -0.55],
     parent: "wide",
   },
   achievements: {
-    position: [0.1, 1.56, 0.96],
-    target: [-1.57, 1.58, 0.02],
+    position: [0.70, 1.38, 0.74],
+    target: [0.70, 0.94, -0.33],
     parent: "wide",
   },
   window: {
-    position: [0.0, 1.47, -1.02],
-    target: [0.0, 1.5, -3.58],
+    position: [1.10, 1.35, 0.88],
+    target: [1.10, 0.81, 0.20],
     parent: "wide",
   },
 };

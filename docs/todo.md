@@ -10,25 +10,18 @@
 - [x] Add resume-based project, activity and honor entries without years, plus
       photography, cycling and game development; retain independent photo windows.
 - [x] Keep three.js behind the capability gate and dynamic import.
-- [x] Keep the code-native narrow-screen fallback.
+- [x] Keep a complete narrow-screen fallback without three.js.
 
 ## Version 4 — immediate visual work
 
-- [x] Replace the rough stick figure with a recognisable, stylised avatar based
-      on approved reference images. Source selfies stay outside the repository.
-- [x] Turn the figure and chair towards the desk display.
-- [x] Move the Who am I camera to the desk side and verify that its full path
-      does not clip through the display, desk or figure.
-- [x] Expose and enlarge the desk display so Continue has a clear, forgiving
-      target in the overview.
-- [x] Slow the immersive camera paths and introduce a stable natural room
-      palette through an object-led colour cascade.
-- [x] Expand the desk display, Mac and window from their projected room geometry
-      into distinct full-screen content treatments.
-- [x] Add reversible project-card and gallery-photograph expansion, including an
-      in-site photograph lightbox.
-- [ ] Replace the raised window and deep sill with a floor-to-ceiling window,
-      then update the narrow-screen drawing to match.
+- [x] Replace the bedroom and avatar with the approved reference desk geometry
+      and original overhead camera, retaining MIT attribution.
+- [x] Replace the reference author's textures with portfolio artwork and approved photos.
+- [x] Connect the notebook, monitor, project board, trophies and camera to the
+      five existing content destinations, preserving real camera travel.
+- [x] Include the reference's floor-to-ceiling window and a matching phone poster.
+- [x] Keep three.js and the GLB behind the desktop capability gate.
+- [x] Preserve reversible project-card, screen and photograph transitions.
 
 - [x] Add homepage background depth, category hover/title transitions, category
       switching and a door-to-room reveal with reduced-motion fallbacks.

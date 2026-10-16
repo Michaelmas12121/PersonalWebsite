@@ -1,6 +1,6 @@
 /**
  * The 3D room is progressive enhancement. Narrow or touch-first devices keep
- * the complete HTML menu and a code-native line drawing without downloading
+ * the complete HTML menu and a rendered desk poster without downloading
  * three.js.
  */
 export function canRenderRoom(): boolean {

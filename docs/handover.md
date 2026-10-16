@@ -15,10 +15,10 @@ and Honors; a bottom-center line-drawn door opens the optional room. Each catego
 has one static URL and shows every entry and all descriptions together, with no item switching, description paging
 or scrolling on desktop. Phones keep each category on one scrollable page with
 readable type. Its optional interactive room, at
-`/interactive`, is a warm monochrome drawing of his room. Navigation there is
+`/interactive`, is a coloured loft desk adapted from the approved reference scene. Navigation there is
 camera movement between fixed objects, while readable content remains ordinary
-HTML. The immersive destinations introduce natural room colour during camera
-travel, then expand the selected physical surface into readable content.
+HTML. The immersive destinations move the camera towards a selected object, then expand
+its physical surface into readable content.
 
 Version 4 is the only active site in this repository. Versions 1 and 2 live in
 separate private frozen repositories; the rejected version 3 direction is
@@ -28,21 +28,13 @@ retained only in the private history backup.
 
 ## Where things stand
 
-**Complete foundations:** the photographic, single-screen homepage; the four
-resume-based portfolio category overviews with independent photo windows; the independent
-interactive route; code-native room geometry;
-fixed camera navigation; five interactive objects; the monochrome-to-colour
-state rule; the capability gate; the CSS narrow-screen fallback; the stylised
-avatar and desk-side portrait view; the project browser; the photograph
-gallery; the exposed and enlarged desk-display target; the room-wide colour
-cascade; reversible screen, project and photograph transitions; the Continue
-personal computer with a Games folder, Metabolis opening and a privacy-cropped
-Cycling application; the completed football account and privacy-safe team
-media; and four privacy-safe certificate copies.
-
-**Deferred visual work:** redesign the existing raised window as a
-floor-to-ceiling window and update the narrow-screen drawing to match. The user
-explicitly postponed this while completing content.
+**Complete foundations:** the photographic homepage and portfolio categories;
+the interactive desk with reference-derived Blender geometry, a 23 mm overhead
+camera, real camera travel, five object destinations, no avatar, a matching
+phone poster and the capability gate; the existing project browser, gallery,
+Continue desktop with Games, Metabolis and Cycling; and the approved activity
+photographs and certificates. The reference desk now includes the large black
+steel floor-to-ceiling window, superseding the postponed bedroom-window task.
 
 **Incomplete content:** the Who am I text and the eventual Load Game links to
 separately hosted archives. Activity accounts do not require additional
@@ -53,7 +45,9 @@ reflection sections.
 ## Repository structure
 
 - `src/v4/` contains the active room implementation.
-- `src/pages/v4/` contains the active route and all HTML content layers.
+- `src/pages/interactive/` contains the room route and all HTML content layers.
+- `src/v4/room/model/` contains the adapted MIT modeling scripts and the local
+  exporter. `src/assets/room/` contains the exported GLB and responsive poster source.
 - `src/content/` contains the activity accounts.
 - `src/assets/` contains build-processed project, gallery and certificate media.
 - Versions 1, 2 and 3 are absent from the working tree and remain recoverable
@@ -98,15 +92,17 @@ another parallel implementation here.
   No new imagery is invented for entries without supplied images.
 - **The room is the menu.** Navigation is fixed camera movement, not a scroll
   page or a free-roam world.
-- **Colour carries the visitor into every destination.** Hover remains
-  monochrome. Travel to the figure, desk display, Mac, achievements or window
-  sends stable natural room colour out through the camera view while the target
-  keeps its own stronger palette.
-- **Physical surfaces become interfaces.** The projected desk display, Mac or
-  window outline expands into the HTML layer; project cards and photographs use
-  the same reversible spatial relationship.
+- **The desk and camera come from the approved reference.** The user chose to
+  replace the bedroom geometry and avatar with EdwinjJ1/personal-website's desk
+  model and camera. Use the adapted scripts rather than rebuilding a rough
+  approximation. Keep original MIT notices; replace all author-specific content.
+- **The room is coloured from the start.** Browser lighting and restrained edges
+  replace the old monochrome-to-colour cascade. The source site's ten offline
+  comic styles are not part of this implementation.
+- **Physical surfaces become interfaces.** The screen, project board and
+  photographs expand into HTML content after the camera approaches.
 - **Text is HTML.** Never render substantial readable content inside three.js.
-- **The Mac represents completed work.** It opens a full-screen project browser
+- **The project board represents completed work.** It opens a full-screen project browser
   generated from the shared activity collection.
 - **Continue represents active work as a personal computer.** It always opens
   on its desktop. Games is a folder, Metabolis is its only active game, and
@@ -114,7 +110,7 @@ another parallel implementation here.
   video recordings as a full-screen, swipeable four-page presentation; only the
   current muted H.264 slide plays. Games and Cycling also fill the screen below
   the system bar, and Cycling uses complete uncropped route-map derivatives.
-  Continue does not duplicate completed activity accounts from the Mac.
+  Continue does not duplicate completed activity accounts from the project board.
 - **Cycling records use screenshots, not invented route data.** A ride becomes a
   map crop plus HTML statistics. Exact endpoint markers, account names and dates
   stay outside the website copy; GPX files are not required. The current archive
@@ -142,19 +138,21 @@ another parallel implementation here.
 
 ## Traps
 
-- Judge every fixed view, not only the overview. Use `/v4#figure`,
-  `/v4#monitor`, `/v4#mac`, `/v4#achievements` and `/v4#window`.
+- Judge every fixed view, not only the overview. Use `/interactive/#figure`,
+  `/interactive/#monitor`, `/interactive/#mac`, `/interactive/#achievements` and
+  `/interactive/#window`. The legacy keys now mean notebook, monitor, board,
+  trophies and camera; there is no avatar or Mac on a bed.
 - Changing only the hash may not re-run the page setup. Navigate away before
   opening a different hash directly during visual testing.
 - Background browser tabs may suspend `requestAnimationFrame`, making camera
   movement appear broken.
 - Camera moves must be checked for furniture clipping from start to finish.
 - Immersive movement must be checked at the start, midpoint, arrival and return;
-  a correct final camera does not prove that the colour path or portal is clean.
+  a correct final camera does not prove that its travel or content expansion is clean.
 - Project and photograph expansion must work both with and without native View
   Transitions. The built-in fallback is required for browsers without the API.
-- The narrow-screen CSS room is a separate rendering and must be updated when
-  the desktop geometry changes.
+- Regenerate the matching poster after changing the desktop model. The mobile
+  fallback must match the desk and must not download the model or three.js.
 - three.js must remain behind the capability gate and dynamic `import()`. Phones
   must not download it.
 
@@ -224,7 +222,7 @@ Do not replace it with a client router without accounting for the room lifecycle
 Astro prefetches internal pages on intent; first-frame previews are warmed at low
 priority. The room module stays behind dynamic import and the existing capability
 gate, including when warmed from the door. Failed room initialization preserves
-the CSS room. No new dependency was added.
+the desk poster and HTML menu. No new dependency was added.
 
 The first category photograph has priority; later carousel frames wait until
 needed. Hidden room videos use no preload, and hidden cycling maps are lazy.
@@ -254,7 +252,10 @@ in this repository. Verify long-lived caching for hashed assets at deployment.
 
 ## What to do next
 
-The next unresolved content task is Who am I. The floor-to-ceiling window remains
-the next coherent room change, but it is postponed until the user returns to it.
-Archive hosting remains separate and requires explicit public-deployment
-approval.
+Review the new desk composition with the user. The remaining unresolved room
+content task is Who am I; its existing draft is unchanged. Archive hosting
+remains separate and requires explicit public-deployment approval.
+
+The desk model was exported using installed Blender 5.2. The modeling source is
+adapted from `EdwinjJ1/personal-website/002/blender/kit.py` and `layout.py`.
+Regeneration instructions and interaction mappings are in `docs/v4-design.md`.
