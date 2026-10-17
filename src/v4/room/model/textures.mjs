@@ -23,9 +23,9 @@ for (let i = 0; i < 3; i++) {
 let grain = '';
 for (let i = 0; i < 80; i++) {
   const y = i * 8;
-  grain += `<path d="M0 ${y} Q300 ${y + Math.sin(i) * 7} 600 ${y} T1200 ${y + 2}" fill="none" stroke="${i % 3 ? '#a77749' : '#e8bd83'}" stroke-opacity=".28" stroke-width="${i % 5 + 1}"/>`;
+  grain += `<path d="M0 ${y} Q300 ${y + Math.sin(i) * 7} 600 ${y} T1200 ${y + 2}" fill="none" stroke="${i % 3 ? '#9c805f' : '#d5c2a2'}" stroke-opacity=".18" stroke-width="${i % 5 + 1}"/>`;
 }
-await svg('wood.png', 1200, 640, grain, '#c49763');
+await svg('wood.png', 1200, 640, grain, '#b49b79');
 let bricks = '';
 for (let y = 0; y < 512; y += 64) for (let x = -128; x < 768; x += 128) bricks += `<rect x="${x + (y % 128 ? 64 : 0)}" y="${y}" width="124" height="60" fill="${y % 3 ? '#ded5c6' : '#e6ddce'}"/>`;
 await svg('brick.png', 768, 512, bricks, '#c8bdad');

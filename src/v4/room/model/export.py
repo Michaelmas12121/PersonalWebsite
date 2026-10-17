@@ -59,13 +59,35 @@ for ob in bpy.data.objects:
         if mat:
             mat.use_backface_culling = True
 
+# A restrained studio palette replaces the bright accessory colors.
+PALETTE = {
+    'rug': '#484f4a', 'rug_in': '#667069', 'floor': '#a8a49a',
+    'hp': '#596762', 'hp_pad': '#78877e', 'leaf_a': '#60795a', 'leaf_b': '#819476',
+    'gold': '#b9a475', 'cap_#ff7a3d': '#b58a65', 'nb_pen': '#966b56',
+    'vinyl_sleeve': '#8c816c', 'vinyl_stripe': '#b9a580',
+    'vinyl_label': '#b9a580', 'mug_band': '#7f938a',
+    'edge_#2f9e77': '#647b6b', 'cam_ring': '#aa7965',
+}
 # Use matte metals: the browser lighting should remain readable without an HDRI.
 for mat in bpy.data.materials:
     if mat.node_tree:
         for node in mat.node_tree.nodes:
             if node.type == 'BSDF_PRINCIPLED':
+                color = PALETTE.get(mat.name)
+                if mat.name.startswith('pen') and mat.name[3:].isdigit():
+                    color = ['#b07a64', '#7c8e92', '#b39b6b', '#758877'][int(mat.name[3:]) % 4]
+                if color:
+                    node.inputs['Base Color'].default_value = kit.rgb(color)
+                    mat.diffuse_color = kit.rgb(color)
+                if mat.name in {'tex_wood.png', 'tex_notebook.png'}:
+                    node.inputs['Roughness'].default_value = 0.88
                 node.inputs['Metallic'].default_value = min(node.inputs['Metallic'].default_value, 0.35)
                 node.inputs['Roughness'].default_value = max(node.inputs['Roughness'].default_value, 0.38)
+
+# Remove colored decorative spill from the offline fallback as well.
+for ob in list(bpy.data.objects):
+    if ob.type == 'LIGHT' and ob.name.startswith(('strip_', 'neon_', 'puck_')):
+        bpy.data.objects.remove(ob, do_unlink=True)
 
 world = scene.world or bpy.data.worlds.new('World')
 scene.world = world

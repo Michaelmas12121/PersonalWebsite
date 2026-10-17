@@ -14,7 +14,8 @@ const { entries, section, stories = [] } = Astro.props;
   {section !== "honors" && <header><h2>{section}</h2><span>{String(entries.length).padStart(2, "0")}</span></header>}
   <div class="collection-grid">
     {entries.map((entry, index) => (
-      <article data-portfolio-entry={entry.id}>
+      <article data-portfolio-entry={entry.id} class:list={{ "has-media": entry.images.length > 0 }}>
+        <span class="entry-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
         <h2>{entry.title}</h2>
         {entry.images.length > 0 && <template data-room-media>
           <ImageWindow images={entry.images} label={entry.title} rhythm={index} zoomable={section === "honors"} sizes="(max-width: 700px) 90vw, (max-width: 1000px) 42vw, 28vw" />
@@ -34,18 +35,42 @@ const { entries, section, stories = [] } = Astro.props;
 <style>
   .room-collection { padding: 32px 0; }
   header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px; }
-  header h2 { text-transform: capitalize; font-size: 28px; margin: 0; }
-  header span { color: #746d61; font-size: 12px; }
-  .collection-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 28px; }
-  article { min-width: 0; display: flex; flex-direction: column; align-items: start; gap: 16px; border-top: 1px solid #cdc4b5; padding-top: 20px; }
-  article h2 { font-size: 23px; font-weight: 500; line-height: 1.2; margin: 0; }
+  header h2 { text-transform: capitalize; font: 400 28px/1.2 Georgia, serif; margin: 0; }
+  header span { opacity: .6; font-size: 12px; }
+  .collection-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+  article { position: relative; min-width: 0; display: flex; flex-direction: column; align-items: start; gap: 18px; padding: 24px; background: #faf6ed; border-top: 3px solid #9a9f85; box-shadow: 0 3px 12px #58452c0a; }
+  .entry-index { font: 11px/1 Arial, sans-serif; letter-spacing: .16em; color: #8a7c61; }
+  article h2 { font: 400 clamp(23px, 2.2vw, 31px)/1.16 Georgia, serif; margin: 0; letter-spacing: -.025em; }
   .copy { display: grid; gap: 12px; }
-  p { font-size: 15px; line-height: 1.65; margin: 0; }
+  p { font-size: 15px; line-height: 1.75; margin: 0; }
   .links { display: flex; flex-wrap: wrap; gap: 14px; }
   a, button { display: inline-flex; align-items: center; gap: 12px; color: inherit; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
   button { background: transparent; border: 0; padding: 8px 0; cursor: pointer; }
   a img { width: 90px; height: 36px; object-fit: contain; }
-  article :global(image-window) { border: 0; border-radius: 0; box-shadow: none; }
-  @media (max-width: 1000px) { .collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 700px) { .collection-grid { grid-template-columns: minmax(0, 1fr); } p { font-size: 16px; } }
+  article :global(image-window) { border: 0; border-radius: 0; box-shadow: none; background: #e6e0d3; }
+  [data-room-section="activities"] article { border-top-color: #b18b72; }
+  [data-room-section="honors"] .collection-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  [data-room-section="honors"] article { display: grid; grid-template-columns: 32px minmax(0, 1fr) minmax(180px, 34%); column-gap: 24px; row-gap: 14px; align-items: start; padding: 30px 0; background: transparent; box-shadow: none; border-top: 1px solid #c8baa0; }
+  [data-room-section="honors"] article:first-child { border: 0; padding-top: 0; }
+  [data-room-section="honors"] .entry-index { grid-column: 1; grid-row: 1; margin-top: 8px; }
+  [data-room-section="honors"] h2 { grid-column: 2; grid-row: 1; }
+  [data-room-section="honors"] .copy { grid-column: 2; grid-row: 2; }
+  [data-room-section="honors"] .links { grid-column: 2; grid-row: 3; }
+  [data-room-section="honors"] article:not(.has-media) .copy { grid-column: 2 / 4; }
+  [data-room-section="honors"] article :global(image-window) { grid-column: 3; grid-row: 1 / 4; border: 8px solid #e6dfcf; --window-ratio: 4 / 3; box-shadow: 0 3px 12px #5e4b2820; }
+  [data-room-section="others"] .collection-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  [data-room-section="others"] article { padding: 0; border-top: 1px solid #747866; padding-top: 20px; background: transparent; }
+  [data-room-section="others"] .entry-index { color: #b8bca4; }
+  [data-room-section="others"] article :global(image-window) { border: 7px solid #e6e0d3; }
+  @media (max-width: 1000px) { [data-room-section="others"] .collection-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 700px) {
+    .collection-grid { grid-template-columns: minmax(0, 1fr); }
+    article { padding: 22px 18px; }
+    p { font-size: 16px; }
+    [data-room-section="honors"] article { grid-template-columns: 24px minmax(0, 1fr); column-gap: 14px; }
+    [data-room-section="honors"] article :global(image-window) { grid-column: 2; grid-row: 2; }
+    [data-room-section="honors"] .copy { grid-column: 2; grid-row: 3; }
+    [data-room-section="honors"] .links { grid-column: 2; grid-row: 4; }
+    [data-room-section="honors"] article:not(.has-media) .copy { grid-column: 2; }
+  }
 </style>

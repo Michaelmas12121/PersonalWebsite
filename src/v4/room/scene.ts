@@ -69,6 +69,11 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
   const outlines = new Map<TargetName, THREE.LineBasicMaterial>();
   const white = new THREE.Color(0xffefc7);
   const charcoal = new THREE.Color(0x3d3932);
+  const feedback: {
+    mesh: THREE.Mesh; target: TargetName; amount: number;
+    position: THREE.Vector3; corners?: Float32Array;
+    glow?: THREE.MeshStandardMaterial; glowBase?: number;
+  }[] = [];
   gltf.scene.traverse((object) => {
     if (!(object instanceof THREE.Mesh)) return;
     const mesh = object as THREE.Mesh;
@@ -77,8 +82,21 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
     if (!mesh.userData.backdrop) pickable.push(mesh);
     const target = mesh.userData.target as TargetName | undefined;
     if (mesh.userData.portal) portals.set(mesh.userData.portal, mesh);
+    const paper = mesh.name === 'notebook' || mesh.name.startsWith('polaroid_') || mesh.name.startsWith('wall_clip_');
+    if (target && paper) {
+      mesh.geometry = mesh.geometry.clone();
+      feedback.push({ mesh, target, amount: 0, position: mesh.position.clone(), corners: new Float32Array(mesh.geometry.attributes.position.array) });
+    }
+    if (target && (mesh.name === 'mon_screen' || mesh.name.startsWith('tr_cup_'))) {
+      const material = (mesh.material as THREE.MeshStandardMaterial).clone();
+      mesh.material = material;
+      material.emissive.set(0xe3d8b7);
+      material.emissiveMap = material.map;
+      material.emissiveIntensity = 0.03;
+      feedback.push({ mesh, target, amount: 0, position: mesh.position.clone(), glow: material, glowBase: 0.03 });
+    }
     // Restrained silhouettes retain the reference's illustrated character.
-    if (!mesh.userData.backdrop && !mesh.name.includes('caps') && mesh.geometry.attributes.position.count < 2500) {
+    if (!paper && !mesh.userData.backdrop && !mesh.name.includes('caps') && mesh.geometry.attributes.position.count < 2500) {
       let ink = target ? outlines.get(target) : undefined;
       if (!ink) {
         ink = new THREE.LineBasicMaterial({ color: charcoal, transparent: true, opacity: 0.18, depthWrite: false });
@@ -98,6 +116,7 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
   let hoveredTarget: TargetName | null = null;
   let disposed = false;
   let frame = 0;
+  let feedbackFrame = 0;
   let motion: {
     fromPosition: THREE.Vector3; toPosition: THREE.Vector3;
     fromTarget: THREE.Vector3; toTarget: THREE.Vector3;
@@ -123,7 +142,35 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
       bottom: Math.max(0, window.innerHeight - Math.max(...ys)), left: Math.max(0, Math.min(...xs)),
     });
   }
-  function highlight(target: TargetName | null) {
+  function animateFeedback(target: TargetName | null, immediate = false) {
+    cancelAnimationFrame(feedbackFrame);
+    const starts = feedback.map(item => item.amount);
+    const startedAt = performance.now();
+    const tick = (now: number) => {
+      if (disposed) return;
+      const t = immediate ? 1 : Math.min((now - startedAt) / 280, 1);
+      feedback.forEach((item, index) => {
+        item.amount = THREE.MathUtils.lerp(starts[index], item.target === target ? 1 : 0, ease(t));
+        if (item.corners) {
+          const vertices = item.mesh.geometry.attributes.position as THREE.BufferAttribute;
+          for (let i = 0; i < vertices.count; i++) {
+            const x = item.corners[i * 3], y = item.corners[i * 3 + 1];
+            const corner = x > 0 && y < 0 ? 1 : 0;
+            vertices.setZ(i, item.corners[i * 3 + 2] + corner * item.amount * 0.012);
+          }
+          vertices.needsUpdate = true;
+          item.mesh.geometry.computeVertexNormals();
+          if (item.mesh.name.startsWith('polaroid_')) item.mesh.position.y = item.position.y + item.amount * 0.008;
+        }
+        if (item.glow) item.glow.emissiveIntensity = item.glowBase! + item.amount * (item.target === 'monitor' ? 0.24 : 0.09);
+      });
+      renderer.shadowMap.needsUpdate = true;
+      draw();
+      if (t < 1) feedbackFrame = requestAnimationFrame(tick);
+    };
+    tick(startedAt);
+  }
+  function highlight(target: TargetName | null, immediate = false) {
     hoveredTarget = target;
     for (const [name, material] of outlines) {
       material.color.copy(name === target ? white : charcoal);
@@ -131,7 +178,7 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
     }
     options.onHover?.(target);
     canvas.style.cursor = target ? 'pointer' : 'default';
-    draw();
+    animateFeedback(target, immediate);
   }
   function animate(now: number) {
     if (disposed || !motion) return;
@@ -152,7 +199,7 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
   }
   function goTo(destination: ViewName) {
     if (disposed || motion || currentView === destination) return;
-    highlight(null);
+    highlight(null, true);
     options.onLeave?.();
     motion = {
       fromPosition: camera.position.clone(), toPosition: new THREE.Vector3(...VIEWS[destination].position),
@@ -199,6 +246,7 @@ export async function createRoom(options: RoomOptions): Promise<RoomHandle> {
     dispose() {
       disposed = true;
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(feedbackFrame);
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('pointermove', pointerMove);
       canvas.removeEventListener('pointerleave', pointerLeave);

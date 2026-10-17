@@ -1,4 +1,5 @@
 ---
+import "../../v4/room/reading.css";
 import PageMotion from "../../v4/PageMotion.astro";
 import roomPoster from "../../assets/room/desk-poster.webp";
 import { Image, getImage } from "astro:assets";
@@ -456,6 +457,7 @@ const entries: Entry[] = [
                   target="_blank"
                   rel="noopener"
                   style={`--reveal-index: ${index % 9}`}
+                  data-frame={String(index + 1).padStart(2, "0")}
                   aria-label={`Open photograph ${index + 1}`}>
                   <Image
                     src={photo}
@@ -879,6 +881,11 @@ const entries: Entry[] = [
       }
 
       function setPortalFrame(frame: PortalFrame) {
+        const centerX = (frame.left + innerWidth - frame.right) / 2;
+        const centerY = (frame.top + innerHeight - frame.bottom) / 2;
+        const style = getComputedStyle(document.body);
+        panel.style.setProperty("--surface-x", `calc(${centerX}px - ${style.getPropertyValue("--reader-side")})`);
+        panel.style.setProperty("--surface-y", `calc(${centerY}px - ${style.getPropertyValue("--reader-top")})`);
         panel.style.setProperty("--portal-top", `${frame.top}px`);
         panel.style.setProperty("--portal-right", `${frame.right}px`);
         panel.style.setProperty("--portal-bottom", `${frame.bottom}px`);
@@ -978,6 +985,8 @@ const entries: Entry[] = [
         hover.classList.remove("on");
         const destination = view === "mac" ? projectsPanel : view === "achievements" ? certificatesPanel : view === "window" ? galleryPanel : continuePanel;
         destination.querySelectorAll<HTMLTemplateElement>("template[data-room-media]").forEach(template => template.replaceWith(template.content.cloneNode(true)));
+        panel.dataset.reading = view;
+        panel.setAttribute("aria-label", entry.label);
         returnView = view;
         body.dataset.active = view;
         document.documentElement.style.setProperty("--active-primary", entry.colours[0]);

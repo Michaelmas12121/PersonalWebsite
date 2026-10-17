@@ -70,8 +70,9 @@ the measured-bedroom layout and the stylised avatar. There is no character.
 A wood desk, monitor, keyboard, open notebook, project publications, camera,
 photographs and trophies sit in front of a project board and black steel
 floor-to-ceiling window. The reference's 23 mm camera is positioned above the
-front of the desk. Warm wood, cream paper, green screens and blue-grey city
-buildings provide the palette from the first frame. A restrained edge treatment
+front of the desk. Muted oak, cream paper, sage accessories, green screens and blue-grey city
+buildings provide the palette from the first frame. Bright accessory colors and
+colored decorative spill have been replaced with a restrained studio palette. A restrained edge treatment
 and real shadows keep the objects legible. The former monochrome-to-colour
 cascade is removed.
 
@@ -86,7 +87,7 @@ copied from outside the repository.
 ## Model pipeline
 
 The model is generated offline with the already-installed Blender. It is
-exported as `src/assets/room/desk-room.glb`, approximately 1.36 MB, including
+exported as `src/assets/room/desk-room.glb`, approximately 1.34 MB, including
 compressed textures and per-object interaction metadata. The exporter losslessly
 shares identical binary ranges using `optimize.py`; geometry and images stay unchanged. The matching fallback
 render is `src/assets/room/desk-poster.webp`. Astro makes responsive copies.
@@ -123,9 +124,17 @@ keys are retained for existing links and content code:
 Hover brightens an object's outline and shows a small label beside the pointer,
 clamped inside the viewport. The flat fallback also shows pointer labels. Clicking travels for
 about 1.1 seconds to a fixed close view. The screen, project board or photograph
-then expands into the HTML content layer. About uses a card beside the
-notebook; Honors uses the complete shared portfolio entries with on-demand certificate zoom. Closing retracts
-the content and returns the camera in about one second. Subviews inside the
+then expands into an inset reading surface. The close camera remains behind the
+content, softened with a 9 px backdrop blur and a light dimming layer. Visible
+margins preserve the sense of sitting at the desk; content never blurs. Closing
+removes the blur and returns the camera in about one second.
+
+Projects and Activities use numbered paper folios, with existing long accounts
+available inside them. Honors uses a numbered archive, pairing evidence with its
+description and paper links. Others and Gallery use a dark contact sheet with
+uncropped photographs mounted on pale paper. Continue fits inside a monitor
+frame with its existing apps. Phones retain a strip of background above the
+reading surface and use a covering poster while content is open. Subviews inside the
 workspace, project browser and gallery close before leaving their parent.
 
 The room has no name card, introductory text or visible menu. On the fallback
@@ -137,7 +146,11 @@ the capability-gated dynamic import. Phones, touch-first devices, reduced-motion
 visitors and devices without WebGL get the matching desk poster and full HTML
 object navigation. Failed model loading preserves this working fallback. The scene draws
 only when the camera, viewport or hover state changes, rather than continuously
-rendering a stationary desk.
+rendering a stationary desk. On hover, photograph corners lift, notebook and
+board-paper corners curl, the monitor brightens and trophies receive a subtle
+warm highlight. These effects settle in 280 ms and reset before camera travel.
+Shadows refresh only while geometry changes; reduced-motion visitors retain
+immediate labels and the flat poster without the model.
 
 The reference website uses offline image stylisation. Its ten alternate comic
 styles are not reproduced by exporting the model; the current room uses real
@@ -166,8 +179,9 @@ contains two destinations:
   contains route screenshots rather than GPX files or separate ride photographs,
   so the application does not invent a combined route or photo timeline.
 
-Games, Metabolis and Cycling use the entire viewport below the Continue system
-bar. Cycling fits every supplied route image inside the available map area
+Games, Metabolis and Cycling fill the monitor surface below the Continue system
+bar; their height follows the inset reader rather than the browser viewport.
+Cycling fits every supplied route image inside the available map area
 without cropping; its readable statistics and privacy note sit outside the map.
 
 New active work should extend the computer as another clear application or

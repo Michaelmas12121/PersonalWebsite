@@ -1,0 +1,146 @@
+/* The close camera remains visible around every reading surface. */
+body {
+  --reader-top: 12svh;
+  --reader-bottom: 7svh;
+  --reader-side: clamp(32px, 10vw, 180px);
+  --reader-height: calc(100svh - var(--reader-top) - var(--reader-bottom));
+  --sheet: #f4eee2;
+  --sheet-ink: #302f28;
+}
+#scrim {
+  background: rgb(25 29 26 / 18%);
+  -webkit-backdrop-filter: blur(9px) saturate(.78);
+  backdrop-filter: blur(9px) saturate(.78);
+  transition: opacity 420ms ease;
+}
+body[data-mode="flat"][data-active]:not([data-active=""]) .poster {
+  inset: 0;
+  width: 100vw;
+  height: 100svh;
+  transform: none;
+}
+body[data-mode="flat"][data-active]:not([data-active=""]) .poster img { object-fit: cover; }
+#panel {
+  z-index: 4;
+  top: auto;
+  bottom: var(--reader-bottom);
+  right: var(--reader-side);
+  left: auto;
+  width: min(440px, 42vw);
+  max-height: var(--reader-height);
+  overflow: auto;
+  padding: 36px;
+  border: 1px solid #c5bba5;
+  border-radius: 3px;
+  background: var(--sheet);
+  box-shadow: 0 24px 90px #141b2340, inset 0 0 70px #c6b38d12;
+  color: var(--sheet-ink);
+  clip-path: none;
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(.965);
+  transform-origin: var(--surface-x, 50%) var(--surface-y, 60%);
+  transition: opacity 280ms ease, transform 520ms cubic-bezier(.22,.72,.18,1);
+}
+#panel.app {
+  inset: var(--reader-top) var(--reader-side) var(--reader-bottom);
+  width: auto;
+  height: var(--reader-height);
+  padding: 0;
+  overscroll-behavior: contain;
+}
+#panel.on { opacity: 1; transform: translate3d(0, 0, 0) scale(1); clip-path: none; }
+#panel .app-content {
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  padding: clamp(24px, 4vw, 58px);
+}
+#panel .app-content, #panel .continue-content, #panel .standard-content {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+#panel .mac-app-bar { display: none; }
+#panel .projects-heading { align-items: start; gap: 24px; padding-bottom: 28px; border-color: #c4baa4; }
+#panel .projects-heading h2 { font: 400 clamp(32px, 4vw, 58px)/1.06 Georgia, serif; letter-spacing: -.04em; margin: 12px 0 0; }
+#panel .projects-heading > p { max-width: 240px; padding-top: 7px; font-size: 12px; line-height: 1.65; }
+#panel .panel-state { font: 500 10px/1.4 Arial, sans-serif; letter-spacing: .15em; color: #746950; }
+#panel .swatches { display: none; }
+#panel .panel-body { font: 17px/1.8 Georgia, serif; }
+#back, body[data-layer="app"] #back {
+  top: calc(var(--reader-top) - 48px);
+  right: var(--reader-side);
+  padding: 10px 18px;
+  border: 1px solid #f5efdf80;
+  background: #f6f0e4f5;
+  color: #34372e;
+  box-shadow: 0 3px 15px #161b2020;
+}
+/* A photographic contact sheet has its own quiet, dark mounting surface. */
+#panel[data-reading="window"] { background: #272c28; color: #f2eddf; border-color: #555c50; }
+#panel[data-reading="window"] .projects-heading { border-color: #616458; }
+#panel[data-reading="window"] .projects-heading > p,
+#panel[data-reading="window"] .panel-state { color: #c6c9b7; }
+#panel #gallery-panel::before { display: none; }
+#panel .gallery-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; columns: auto; }
+#panel .gallery-photo {
+  position: relative;
+  margin: 0;
+  padding: 10px 10px 30px;
+  background: #e8e2d4;
+  border: 0;
+  box-shadow: 0 5px 14px #0003;
+  opacity: 1;
+  transform: none;
+  animation: none;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+#panel .gallery-photo::after { content: attr(data-frame); position: absolute; bottom: 11px; left: 12px; color: #66665a; font: 10px/1 Arial, sans-serif; letter-spacing: .15em; }
+#panel .gallery-photo img { width: 100%; height: 180px; object-fit: contain; background: #dcd8cb; }
+@media (hover: hover) {
+  #panel .gallery-photo:hover { transform: translateY(-4px) rotate(-.5deg); box-shadow: 0 10px 24px #0005; }
+}
+#panel .interest-links { margin-top: 20px; }
+#panel #room-photographs { font: 400 32px/1.2 Georgia, serif; }
+/* The workspace fits inside the monitor surface, rather than covering the desk. */
+#panel.workspace { background: #e8eee6; border: 6px solid #343f39; border-radius: 12px; overflow: hidden; }
+#panel .continue-content, #panel .continue-desktop { min-height: calc(var(--reader-height) - 12px); }
+#panel .continue-menu-bar { position: absolute; min-height: 52px; padding: 0 24px; background: #edf0e8; backdrop-filter: none; }
+#panel .continue-desktop { padding: 90px 32px 110px; }
+#panel .continue-os-window { position: absolute; inset: 52px 0 0; width: 100%; backdrop-filter: none; opacity: 1; transform: none; animation: none; }
+#panel .os-title-bar { min-height: 54px; }
+#panel .game-library, #panel .metabolis-deck, #panel .cycling-app-layout { height: calc(var(--reader-height) - 118px); }
+#panel .computer-dock { position: absolute; bottom: 24px; }
+#panel .desktop-welcome h2 { font-size: clamp(44px, 7vw, 88px); }
+#panel .desktop-welcome span { max-width: 340px; }
+#panel .route-image img, #panel .game-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  object-fit: contain;
+}
+#panel .gallery-lightbox { background: #202620f5; }
+#panel .gallery-lightbox img { max-height: calc(var(--reader-height) - 100px); }
+@media (max-width: 899px) {
+  body { --reader-top: 13svh; --reader-bottom: 20px; --reader-side: 16px; }
+  #panel { width: auto; left: var(--reader-side); padding: 28px; }
+  #panel .app-content { padding: 26px 22px 40px; }
+  #panel .projects-heading { display: block; }
+  #panel .projects-heading > p { max-width: none; margin-top: 16px; text-align: left; }
+  #panel .gallery-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  #panel .gallery-photo img { height: 140px; }
+  #panel .continue-desktop { padding: 74px 12px 108px; }
+  #panel .continue-menu-bar { padding: 0 14px; }
+  #panel .desktop-welcome { margin-top: 3vh; }
+  #panel .cycling-route-stage { height: calc(var(--reader-height) - 118px); }
+}
+@media (max-width: 450px) {
+  #panel .gallery-columns { grid-template-columns: minmax(0, 1fr); }
+  #panel .gallery-photo img { height: 240px; }
+  #back, body[data-layer="app"] #back { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #panel, #scrim, #panel .gallery-photo { transition: none; animation: none; }
+}

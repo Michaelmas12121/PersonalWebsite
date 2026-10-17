@@ -37,6 +37,10 @@
 - [x] Defer room collection media and long accounts until opened; losslessly pack
       the model and reuse the static shadow map.
 
+- [x] Combine object-specific folios, a visible blurred close-up desk background,
+      and bounded paper/photo/screen/trophy hover feedback.
+- [x] Unify the desk palette and regenerate the matching lightweight poster.
+
 ## Content
 
 - [ ] Replace the placeholder Who am I copy with a concise first-person account

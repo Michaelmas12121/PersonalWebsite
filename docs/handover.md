@@ -110,8 +110,8 @@ another parallel implementation here.
 - **Continue represents active work as a personal computer.** It always opens
   on its desktop. Games is a folder, Metabolis is its only active game, and
   Cycling is a separate route application. Metabolis uses all four supplied
-  video recordings as a full-screen, swipeable four-page presentation; only the
-  current muted H.264 slide plays. Games and Cycling also fill the screen below
+  video recordings as a swipeable four-page presentation inside the monitor; only the
+  current muted H.264 slide plays. Games and Cycling also fill the monitor below
   the system bar, and Cycling uses complete uncropped route-map derivatives.
   Continue does not duplicate completed activity accounts from the project board.
 - **Cycling records use screenshots, not invented route data.** A ride becomes a
@@ -281,7 +281,23 @@ and reduced-motion visitors continue to avoid the model and three.js.
 The exported GLB is losslessly packed from 1,831,704 to 1,358,232 bytes by sharing
 identical buffer ranges. Every geometry/image range and all scene metadata were
 verified unchanged. `model/optimize.py` runs as part of future exports. Static
-shadow maps are rendered once and reused during camera travel and hover.
+shadow maps are reused during camera travel and idle states; physical hover
+feedback refreshes them while paper geometry moves.
 
-The separate desk-side reading and object-to-story concept previews remain in
-ignored `docs/local/`; neither visual direction is applied to the website.
+The user approved combining all three proposed directions: object-specific
+reading formats, the close desk blurred behind readable content, and restrained
+physical hover feedback. The separate concept previews remain under ignored
+`docs/local/` as discussion artifacts; the live implementation now combines
+these directions.
+
+`room/reading.css` owns the inset surfaces and blurred backdrop. Projects use
+paper folios, Honors a numbered archive, and photography a dark contact sheet.
+The monitor apps use the available reader height; do not restore viewport-sized
+children, which would clip them inside the inset monitor. Phones retain a
+background margin and never load three.js.
+
+The model and matching poster use muted wood, paper and sage accessories. Hover
+feedback curls paper corners, lifts photos, brightens the screen and warms trophy
+highlights, then stops rendering. Camera travel resets that feedback. Shadow maps
+are reused while idle and refreshed during the brief paper movement. The
+regenerated model is approximately 1.34 MB and the poster approximately 86 KB.
