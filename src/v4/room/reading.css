@@ -100,8 +100,6 @@ body[data-mode="flat"][data-active]:not([data-active=""]) .poster img { object-f
 @media (hover: hover) {
   #panel .gallery-photo:hover { transform: translateY(-4px) rotate(-.5deg); box-shadow: 0 10px 24px #0005; }
 }
-#panel .interest-links { margin-top: 20px; }
-#panel #room-photographs { font: 400 32px/1.2 Georgia, serif; }
 /* The workspace fits inside the monitor surface, rather than covering the desk. */
 #panel.workspace { background: #e8eee6; border: 6px solid #343f39; border-radius: 12px; overflow: hidden; }
 #panel .continue-content, #panel .continue-desktop { min-height: calc(var(--reader-height) - 12px); }

@@ -33,11 +33,10 @@ for ob in list(bpy.data.objects):
 TARGETS = {
     'notebook': 'figure', 'contact': 'figure',
     'monitor': 'monitor', 'keyboard': 'monitor',
-    'board': 'mac', 'press': 'mac', 'news': 'mac', 'projects': 'mac',
-    'zine-echo': 'mac', 'zine-roundtable': 'mac', 'zine-athena': 'mac', 'zine-preuni': 'mac',
+    'board': 'mac', 'zine-preuni': 'activities',
     'trophy': 'achievements', 'camera': 'window', 'photos': 'window',
 }
-PORTALS = {'mon_screen': 'monitor', 'board_face': 'mac', 'polaroid_b': 'window'}
+PORTALS = {'mon_screen': 'monitor', 'board_face': 'mac', 'polaroid_b': 'window', 'zine_preuni': 'activities'}
 for ob in bpy.data.objects:
     if ob.type != 'MESH':
         continue

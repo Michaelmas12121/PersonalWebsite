@@ -19,7 +19,7 @@ import metabolisOverviewVideo from "../../assets/continue/metabolis/video/system
  * Readable content remains HTML and is shared with the existing portfolio.
  */
 interface Entry {
-  view: "figure" | "monitor" | "mac" | "achievements" | "window";
+  view: "figure" | "monitor" | "mac" | "activities" | "achievements" | "window";
   label: string;
   note: string;
   object: string;
@@ -100,11 +100,19 @@ const entries: Entry[] = [
   },
   {
     view: "mac",
-    label: "Projects & Activities",
+    label: "Projects",
     note: "Project board",
-    object: "Projects and activities from the board",
-    body: "Choose a project or activity. Conrad is one part of the record, not the whole of it.",
+    object: "Projects from the board",
+    body: "Projects and the stories behind them.",
     colours: ["#3f526b", "#a46b58", "#c9a45b"],
+  },
+  {
+    view: "activities",
+    label: "Activities",
+    note: "Blue activity book",
+    object: "Beyond the desk",
+    body: "Activities and the people behind them.",
+    colours: ["#586d85", "#8c9c92", "#c9a45b"],
   },
   {
     view: "achievements",
@@ -116,7 +124,7 @@ const entries: Entry[] = [
   },
   {
     view: "window",
-    label: "Others & Gallery",
+    label: "Gallery",
     note: "Camera",
     object: "Photographs from behind the lens",
     body: "Photographs, uncaptioned.",
@@ -388,22 +396,22 @@ const entries: Entry[] = [
       <div id="projects-panel" hidden>
         <div class="mac-app-bar" aria-hidden="true">
           <span class="mac-window-controls"><i></i><i></i><i></i></span>
-          <span>Projects & Activities</span>
+          <span>Portfolio</span>
           <span>Projects and activities</span>
         </div>
 
         <div class="app-content">
           <header class="projects-heading">
             <div>
-              <p class="panel-state">The project board</p>
-              <h2>Projects & Activities</h2>
+              <p class="panel-state" id="work-context">The project board</p>
+              <h2 id="work-title">Projects</h2>
             </div>
-            <p>Projects, activities and the stories behind them.</p>
+            <p id="work-intro">Projects and the stories behind them.</p>
           </header>
 
           <div id="project-grid">
-            <PortfolioContent section="projects" entries={portfolio.filter(entry => entry.section === "projects")} stories={activities.map(entry => entry.id)} />
-            <PortfolioContent section="activities" entries={portfolio.filter(entry => entry.section === "activities")} stories={activities.map(entry => entry.id)} />
+            <div data-work-section="projects"><PortfolioContent section="projects" showHeading={false} entries={portfolio.filter(entry => entry.section === "projects")} stories={activities.map(entry => entry.id)} /></div>
+            <div data-work-section="activities" hidden><PortfolioContent section="activities" showHeading={false} entries={portfolio.filter(entry => entry.section === "activities")} stories={activities.map(entry => entry.id)} /></div>
           </div>
 
           <div class="project-reader" id="project-reader" hidden>
@@ -436,18 +444,11 @@ const entries: Entry[] = [
           <header class="projects-heading">
             <div>
               <p class="panel-state">Behind the lens</p>
-              <h2>Others & Gallery</h2>
+              <h2>Gallery</h2>
             </div>
             <p>{photos.length} frames, uncaptioned. Open one to see it full size.</p>
           </header>
 
-          <PortfolioContent section="others" entries={portfolio.filter(entry => entry.section === "others")} />
-          <nav class="interest-links" aria-label="Explore interests">
-            <button type="button" data-room-app="cycling">Explore all 17 rides →</button>
-            <button type="button" data-room-app="metabolis">Watch Metabolis →</button>
-            <a href="#room-photographs">Browse all photographs ↓</a>
-          </nav>
-          <h2 id="room-photographs">Photographs</h2>
           <div class="gallery-columns">
             {
               photos.map((photo, index) => (
@@ -494,7 +495,7 @@ const entries: Entry[] = [
     <script>
       import { canRenderRoom } from "../../v4/room/enhance";
 
-      type ViewName = "figure" | "monitor" | "mac" | "achievements" | "window";
+      type ViewName = "figure" | "monitor" | "mac" | "activities" | "achievements" | "window";
       type Entry = {
         view: ViewName;
         label: string;
@@ -787,7 +788,7 @@ const entries: Entry[] = [
           activeProject = detail;
           projectGrid.hidden = true;
           projectReader.hidden = false;
-          back.textContent = "← All projects";
+          back.textContent = returnView === "activities" ? "← All activities" : "← All projects";
           panel.scrollTo({ top: 0, behavior: "auto" });
         };
         const focusTitle = () => detail.querySelector<HTMLElement>("h2")?.focus({ preventScroll: true });
@@ -983,7 +984,17 @@ const entries: Entry[] = [
         const entry = byView.get(view);
         if (!entry) return;
         hover.classList.remove("on");
-        const destination = view === "mac" ? projectsPanel : view === "achievements" ? certificatesPanel : view === "window" ? galleryPanel : continuePanel;
+        const isWork = view === "mac" || view === "activities";
+        const workSection = view === "activities" ? "activities" : "projects";
+        projectGrid.querySelectorAll<HTMLElement>("[data-work-section]").forEach(section => {
+          section.hidden = section.dataset.workSection !== workSection;
+        });
+        if (isWork) {
+          document.getElementById("work-title")!.textContent = entry.label;
+          document.getElementById("work-context")!.textContent = view === "activities" ? "The activity book" : "The project board";
+          document.getElementById("work-intro")!.textContent = entry.body;
+        }
+        const destination = isWork ? projectGrid.querySelector<HTMLElement>(`[data-work-section="${workSection}"]`)! : view === "achievements" ? certificatesPanel : view === "window" ? galleryPanel : continuePanel;
         destination.querySelectorAll<HTMLTemplateElement>("template[data-room-media]").forEach(template => template.replaceWith(template.content.cloneNode(true)));
         panel.dataset.reading = view;
         panel.setAttribute("aria-label", entry.label);
@@ -994,24 +1005,23 @@ const entries: Entry[] = [
         document.documentElement.style.setProperty("--active-accent", entry.colours[2]);
         // The screen, project board and photograph expand into HTML content.
         const isContinue = view === "monitor";
-        const isMac = view === "mac";
         const isCertificates = view === "achievements";
         const isGallery = view === "window";
-        const isPortal = isContinue || isMac || isGallery;
-        const isApp = isContinue || isMac || isCertificates || isGallery;
+        const isPortal = isContinue || isWork || isGallery;
+        const isApp = isContinue || isWork || isCertificates || isGallery;
         standardPanel.hidden = isApp;
         continuePanel.hidden = !isContinue;
-        projectsPanel.hidden = !isMac;
+        projectsPanel.hidden = !isWork;
         certificatesPanel.hidden = !isCertificates;
         galleryPanel.hidden = !isGallery;
         panel.classList.toggle("app", isApp);
-        panel.classList.toggle("framed", isMac);
+        panel.classList.toggle("framed", isWork);
         panel.classList.toggle("portal", isPortal);
         panel.classList.toggle("workspace", isContinue);
         panel.dataset.portal = isPortal ? view : "";
         body.dataset.layer = isApp ? "app" : "card";
         if (isApp) panel.scrollTo({ top: 0, behavior: "auto" });
-        if (isMac) {
+        if (isWork) {
           showProjectGrid(false);
         } else if (isContinue) {
           showContinueScreen("desktop");
@@ -1078,7 +1088,7 @@ const entries: Entry[] = [
           showContinueScreen("desktop");
           return;
         }
-        if (body.dataset.active === "mac" && activeProject) {
+        if ((body.dataset.active === "mac" || body.dataset.active === "activities") && activeProject) {
           showProjectGrid(true);
           return;
         }
@@ -1123,13 +1133,7 @@ const entries: Entry[] = [
         moveHint(event);
       });
       menu.addEventListener("pointerleave", () => hover.classList.remove("on"));
-      galleryPanel.addEventListener("click", event => {
-        const app = (event.target as Element).closest<HTMLElement>("[data-room-app]")?.dataset.roomApp;
-        if (app === "cycling" || app === "metabolis") {
-          showPanel("monitor");
-          showContinueScreen(app);
-        }
-      });
+
       const initialView = location.hash.slice(1) as ViewName;
       if (byView.has(initialView)) showPanel(initialView);
 
@@ -1323,6 +1327,7 @@ const entries: Entry[] = [
       .menu [data-view="figure"] { left: 44.4%; top: 76%; width: 14%; height: 13%; }
       .menu [data-view="monitor"] { left: 33.5%; top: 47.5%; width: 18%; height: 18%; }
       .menu [data-view="mac"] { left: 27%; top: 25%; width: 35%; height: 25%; }
+      .menu [data-view="activities"] { left: 65.5%; top: 77%; width: 9%; height: 13%; }
       .menu [data-view="achievements"] { left: 65.3%; top: 49%; width: 10%; height: 13%; }
       .menu [data-view="window"] { left: 80.6%; top: 69%; width: 10%; height: 13%; }
       .menu .label {
@@ -2611,8 +2616,6 @@ const entries: Entry[] = [
 
       .hover.on { opacity: 1; }
       @media (hover: none) { .hover { display: none; } }
-      .interest-links { display: flex; flex-wrap: wrap; gap: 20px; margin: 0 0 40px; }
-      .interest-links button, .interest-links a { background: transparent; border: 0; padding: 10px 0; color: inherit; font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 
       @media (max-width: 899px) {
 

@@ -17,8 +17,8 @@
 - [x] Replace the bedroom and avatar with the approved reference desk geometry
       and original overhead camera, retaining MIT attribution.
 - [x] Replace the reference author's textures with portfolio artwork and approved photos.
-- [x] Connect the notebook, monitor, project board, trophies and camera to the
-      five existing content destinations, preserving real camera travel.
+- [x] Connect the notebook, monitor, project board, activity book, trophies and camera to the
+      six content destinations, preserving real camera travel.
 - [x] Include the reference's floor-to-ceiling window and a matching phone poster.
 - [x] Keep three.js and the GLB behind the desktop capability gate.
 - [x] Preserve reversible project-card, screen and photograph transitions.

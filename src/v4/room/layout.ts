@@ -15,6 +15,11 @@ export const TARGET_PALETTES = {
     secondary: 0xa46b58,
     accent: 0xc9a45b,
   },
+  activities: {
+    primary: 0x586d85,
+    secondary: 0x8c9c92,
+    accent: 0xc9a45b,
+  },
   achievements: {
     primary: 0x705845,
     secondary: 0xb39861,

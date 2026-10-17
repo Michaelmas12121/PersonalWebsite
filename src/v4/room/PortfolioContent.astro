@@ -7,11 +7,12 @@ interface Props {
   entries: PortfolioEntry[];
   section: Section;
   stories?: string[];
+  showHeading?: boolean;
 }
-const { entries, section, stories = [] } = Astro.props;
+const { entries, section, stories = [], showHeading = true } = Astro.props;
 ---
 <section class="room-collection" data-room-section={section} aria-label={section}>
-  {section !== "honors" && <header><h2>{section}</h2><span>{String(entries.length).padStart(2, "0")}</span></header>}
+  {showHeading && section !== "honors" && <header><h2>{section}</h2><span>{String(entries.length).padStart(2, "0")}</span></header>}
   <div class="collection-grid">
     {entries.map((entry, index) => (
       <article data-portfolio-entry={entry.id} class:list={{ "has-media": entry.images.length > 0 }}>

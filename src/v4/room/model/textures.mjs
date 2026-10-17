@@ -41,14 +41,14 @@ const project = await photo('src/content/activities/eldercare-robot/prototype-ov
 await svg('board.png', 1100, 540,
   text(40, 65, 33, 'THINGS I HAVE MADE', '#423a2b', 600) +
   `<rect x="36" y="98" width="450" height="350" fill="#faf3e5"/><image href="${project}" x="48" y="110" width="426" height="275" preserveAspectRatio="xMidYMid meet"/>` + text(58, 423, 23, 'ElderGo') +
-  `<rect x="520" y="98" width="535" height="152" fill="#e7e9d8"/><rect x="520" y="272" width="535" height="176" fill="#ead4b3"/>` + text(548, 145, 20, 'EXPLORE / BUILD / SHARE') + text(548, 206, 38, 'Projects &amp; activities', '#2c4841', 600) + text(548, 321, 21, 'From an idea to something useful.') + text(548, 391, 29, 'A collection of work.'), '#bb9666');
+  `<rect x="520" y="98" width="535" height="152" fill="#e7e9d8"/><rect x="520" y="272" width="535" height="176" fill="#ead4b3"/>` + text(548, 145, 20, 'EXPLORE / BUILD / SHARE') + text(548, 206, 38, 'Projects', '#2c4841', 600) + text(548, 321, 21, 'From an idea to something useful.') + text(548, 391, 29, 'A collection of work.'), '#bb9666');
 await svg('notebook.png', 700, 490,
   `<path d="M350 0V490" stroke="#c4baa6" stroke-width="4"/>` + text(34, 66, 18, 'A FEW WORDS ABOUT ME') + text(34, 137, 42, 'Yanlang', '#233e36', 600) + text(34, 187, 42, 'Liu', '#233e36', 600) + text(34, 252, 17, 'Notes, questions, possibilities.') +
   Array.from({length: 9}, (_, i) => `<path d="M385 ${75 + i * 37}H665" stroke="#c7cfca" stroke-width="2"/>`).join('') + text(390, 65, 20, 'Keep exploring.'), '#f7f0df');
 for (const [name, title, subtitle, color] of [
   ['zine_echo', 'ELDERGO', 'DESIGNING FOR CARE', '#b87a50'],
   ['zine_roundtable', 'TURING', 'LEARNING TOGETHER', '#365a52'],
-  ['zine_athena', 'PROJECTS', 'FROM IDEA TO REALITY', '#bd9750'],
+  ['zine_athena', 'FIELD STUDIES', 'FROM IDEA TO REALITY', '#bd9750'],
   ['zine_preuni', 'ACTIVITIES', 'BEYOND THE DESK', '#586d85'],
   ['newspaper', 'FIELD NOTES', 'PROJECTS / ACTIVITIES / IDEAS', '#555c50'],
 ]) {

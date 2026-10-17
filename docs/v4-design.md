@@ -117,9 +117,10 @@ keys are retained for existing links and content code:
 | --- | --- | --- |
 | `figure` | Open notebook and name card | Who am I |
 | `monitor` | Monitor and keyboard | Continue workspace |
-| `mac` | Project board and publications | All Projects and Activities, plus full activity accounts |
+| `mac` | Project board | All Projects and their full accounts |
+| `activities` | Blue activity book | All Activities and their full accounts |
 | `achievements` | Trophies | All Honors, certificates and papers |
-| `window` | Camera and photographs | Others, gallery and links to cycling/game apps |
+| `window` | Camera and photographs | Gallery only |
 
 Hover brightens an object's outline and shows a small label beside the pointer,
 clamped inside the viewport. The flat fallback also shows pointer labels. Clicking travels for
@@ -131,14 +132,14 @@ removes the blur and returns the camera in about one second.
 
 Projects and Activities use numbered paper folios, with existing long accounts
 available inside them. Honors uses a numbered archive, pairing evidence with its
-description and paper links. Others and Gallery use a dark contact sheet with
+description and paper links. Gallery uses a dark contact sheet with
 uncropped photographs mounted on pale paper. Continue fits inside a monitor
 frame with its existing apps. Phones retain a strip of background above the
 reading surface and use a covering poster while content is open. Subviews inside the
 workspace, project browser and gallery close before leaving their parent.
 
 The room has no name card, introductory text or visible menu. On the fallback
-poster, transparent buttons sit over the five objects. Keyboard focus outlines
+poster, transparent buttons sit over the six objects. Keyboard focus outlines
 the selected object and reveals its name. On desktop, pointer interaction uses
 the real model while the same buttons provide keyboard access.
 Only the scene module imports three.js and GLTFLoader; that module stays behind
@@ -190,7 +191,7 @@ Escape actions return to the desktop before closing Continue back into the room.
 
 ## Project board navigation
 
-The project board displays **Projects & Activities**, generated from the same
+The project board displays **Projects** and the blue book displays **Activities**, generated from the same
 `getPortfolio()` data as the homepage categories. All descriptions, supplied
 images, logos and links remain available in a responsive reading grid. Entries
 with an existing longer Markdown account have a full-account button. Back from
@@ -199,8 +200,9 @@ a full account returns to the collection before leaving the board.
 The trophies display all eight **Honors** entries, including publication and
 awards without images. The shared certificate viewer loads large copies only
 when opened and preserves Escape dismissal and focus return. The camera opens
-**Others & Gallery**, with the three shared interest entries, all photographs,
-and shortcuts into the existing Cycling and Metabolis applications.
+**Gallery** only, with all photographs. Cycling and Metabolis remain exclusively
+in Continue. Newspapers, other publications, wall clippings and the gamepad are
+decorative; they no longer duplicate the project entrance.
 
 Portfolio carousels and long accounts start inside inert templates. Only the
 selected destination attaches its media to the page. The initial room image

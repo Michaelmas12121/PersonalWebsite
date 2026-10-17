@@ -30,6 +30,11 @@ export const VIEWS: Record<"wide" | TargetName, View> = {
     target: [-0.72, 1.45, -0.55],
     parent: "wide",
   },
+  activities: {
+    position: [0.50, 1.40, 0.98],
+    target: [0.50, 0.77, 0.34],
+    parent: "wide",
+  },
   achievements: {
     position: [0.70, 1.38, 0.74],
     target: [0.70, 0.94, -0.33],

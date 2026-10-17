@@ -30,7 +30,7 @@ retained only in the private history backup.
 
 **Complete foundations:** the photographic homepage and portfolio categories;
 the interactive desk with reference-derived Blender geometry, a 23 mm overhead
-camera, real camera travel, five object destinations with pointer-following labels, no avatar, a matching
+camera, real camera travel, six object destinations with pointer-following labels, no avatar, a matching
 phone poster and the capability gate; all four shared portfolio collections, the expanded Honors archive, gallery,
 Continue desktop with Games, Metabolis and Cycling; and the approved activity
 photographs and certificates. The reference desk now includes the large black
@@ -104,8 +104,8 @@ another parallel implementation here.
 - **Physical surfaces become interfaces.** The screen, project board and
   photographs expand into HTML content after the camera approaches.
 - **Text is HTML.** Never render substantial readable content inside three.js.
-- **The project board represents completed work.** It opens Projects and Activities
-  from the same portfolio collection data as the main site. Existing long activity
+- **Projects and Activities have separate objects.** The board opens Projects;
+  the blue activity book opens Activities, using the same portfolio data as the main site. Existing long activity
   accounts remain accessible from their entries.
 - **Continue represents active work as a personal computer.** It always opens
   on its desktop. Games is a folder, Metabolis is its only active game, and
@@ -265,10 +265,11 @@ Regeneration instructions and interaction mappings are in `docs/v4-design.md`.
 
 ## Room content and loading update
 
-The board includes all five Projects and three Activities. The trophies open
+The board includes all five Projects; the blue book opens the three Activities. The trophies open
 Honors with all eight awards/publications, four paper links and the shared
-certificate viewer. The camera opens all three Others entries plus the complete
-gallery; its cycling and Metabolis shortcuts open the existing computer apps.
+certificate viewer. The camera opens only the complete gallery. Cycling and Metabolis remain inside
+Continue. Other publications, wall clippings and the gamepad are decorative,
+without duplicate project links.
 Descriptions, images, logos and links are read through `getPortfolio()` rather
 than copied into a separate room content list.
 
